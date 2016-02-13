@@ -1,0 +1,12 @@
+#!/bin/zsh
+
+# Script to use gnuplot in command-line w/o quoataion marks
+# http://agentzlerich.blogspot.com.au/2011/04/using-gnuplot-from-command-line.html
+# https://github.com/RhysU/gplot
+
+file=$1
+shift
+gnuplot -persist <(cat <<-GNUPLOTSCRIPT
+plot '$file' $*
+GNUPLOTSCRIPT
+)
