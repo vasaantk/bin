@@ -193,7 +193,10 @@ if 'comp' in usrFile:
         if 'atate' in usrFile:
             for j in xrange(len(compAdd)):
                 annotate(compAdd[j],xy=(xoffAdd[j],yoffAdd[j]))
-        colorbar()
+        xlabel('x offset')
+        ylabel('y offset')
+        cbar = colorbar()
+        cbar.set_label('Velocity')
         gca().invert_xaxis()
         show(block = False)
         response = raw_input(machineQuery)
@@ -214,9 +217,13 @@ if 'seq' in usrFile:
         if 'atate' in usrFile:
             for j in xrange(len(xoff[i])):
                 annotate(comp[i][j],xy=(xoff[i][j],yoff[i][j]))
-        colorbar()
+        xlabel('x offset')
+        ylabel('y offset')
+        cbar = colorbar()
+        cbar.set_label('Velocity')
         gca().invert_xaxis()
         show(block = False)
+
         response = raw_input('Component '+str(comp[i][0])+':')
         if response == 'q':
             exit()
@@ -235,7 +242,10 @@ if 'plot' in usrFile:
             for j in xrange(len(xoff[i])):
                 annotate(comp[i][j],xy=(xoff[i][j],yoff[i][j]))
     gca().invert_xaxis()
-    colorbar()
+    xlabel('x offset')
+    ylabel('y offset')
+    cbar = colorbar()
+    cbar.set_label('Velocity')
     show()
 
 
