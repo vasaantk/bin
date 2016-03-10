@@ -10,6 +10,9 @@
 (defun date ()
   (insert (shell-command-to-string "echo -n $(date +%A,%t%d%t%B%t%Y,%t%H:%M%t%p)")))
 
+(defun time ()
+  (insert (shell-command-to-string "echo -n $(date +%H:%M%t%p)")))
+
 (defun deg2rad (ANGLE)
 "Convert an angle from degrees to radians."
 (* ANGLE
