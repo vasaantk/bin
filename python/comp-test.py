@@ -101,6 +101,18 @@ close(usrFile[0])
 
 
 #=====================================================================
+#   The final values from *Tmp need to be mannualy added:
+#
+chan.append(cTmp)
+vels.append(vTmp)
+peak.append(pTmp)
+xoff.append(xTmp)
+yoff.append(yTmp)
+comp.append(mTmp)
+
+
+
+#=====================================================================
 #   Based on 'chan' array, determine the positions of the '\n's:
 #
 for i in xrange(len(chan)):
