@@ -201,18 +201,20 @@ if 'comp' in usrFile:
                     peakAdd.append(peak[i][j])
                     velsAdd.append(vels[i][j])
                     compAdd.append(comp[i][j])
-        scatter(xoffAdd,yoffAdd,s=peakAdd,c=velsAdd,vmin=velMin,vmax=velMax)
-        if 'atate' in usrFile:
-            for j in xrange(len(compAdd)):
-                annotate(compAdd[j],xy=(xoffAdd[j],yoffAdd[j]))
-        xlabel('x offset')
-        ylabel('y offset')
-        cbar = colorbar()
-        cbar.set_label('Velocity')
-        gca().invert_xaxis()
-        show(block = False)
+        if xoffAdd != []:                         # Catch scrip in-case first choice is empty array
+            scatter(xoffAdd,yoffAdd,s=peakAdd,c=velsAdd,vmin=velMin,vmax=velMax)
+            if 'atate' in usrFile:
+                for j in xrange(len(compAdd)):
+                    annotate(compAdd[j],xy=(xoffAdd[j],yoffAdd[j]))
+            xlabel('x offset')
+            ylabel('y offset')
+            cbar = colorbar()
+            cbar.set_label('Velocity')
+            gca().invert_xaxis()
+            show(block = False)
         response = raw_input(machineQuery)
         clf()
+        close()
 
 
 
@@ -241,6 +243,7 @@ if 'seq' in usrFile:
             exit()
         else:
             clf()
+            close()
 
 
 
