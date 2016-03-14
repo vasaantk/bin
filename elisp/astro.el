@@ -8,9 +8,11 @@
 ;;; Code:
 ;;
 (defun date ()
+  (backward-kill-sexp)
   (insert (shell-command-to-string "echo -n $(date +%A,%t%d%t%B%t%Y,%t%H:%M%t%p)")))
 
 (defun time ()
+  (backward-kill-sexp)
   (insert (shell-command-to-string "echo -n $(date +%H:%M%t%p)")))
 
 (defun deg2rad (ANGLE)
@@ -80,19 +82,21 @@
 ;;
 (defun deg2ra (ANGLE)
   "Convert an angle from degrees to right ascension."
+  (backward-kill-sexp)
   (if (< ANGLE 360.0)
       (progn
         (setq HH (floor (/ ANGLE 15)))
         (setq MM (floor (* (- ANGLE (* 15 HH)) 4)))
         (setq SS (* (- (* 4 ANGLE) (* 60 HH) MM) 60))
-        (message "%02d %02d %.5f" HH MM SS)
+        (insert (message "%02d %02d %.5f" HH MM SS))
         )
-    (message "%f is more than 360 degrees" ANGLE)
+    (insert (message "%f is more than 360 degrees" ANGLE))
     )
   )
 
 (defun deg2dec (ANGLE)
   "Convert an angle from degrees to right ascension."
+  (backward-kill-sexp)
   (if (< ANGLE 0)
       (setq NEG -1)
     (setq NEG  1)
@@ -112,11 +116,12 @@
         (setq MM (floor (* (- DEG HH) 60)))
         (setq SS (* (- (* (- DEG HH) 60) MM) 60))
         (if (> NEG 0)
-            (message "%02d %02d %.5f" HH MM SS)
-          (message "-%02d %02d %.5f" HH MM SS)
+            (insert (message "%02d %02d %.5f" HH MM SS))
+          (insert (message "-%02d %02d %.5f" HH MM SS))
           )
         )
-    (message "abs(%f) is more than 180 degrees." ANGLE))
+    (insert (message "abs(%f) is more than 180 degrees." ANGLE))
+    )
   )
 
 (defun ra2deg (HRS MIN SEC)
