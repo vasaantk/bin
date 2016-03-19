@@ -1,6 +1,7 @@
 from scipy import *
 from ephem import *
 
+
 # Vasaant's custum functions
 
 def d2r(degrees):    # Degrees to Radians
@@ -69,3 +70,18 @@ def space(charOfInterest,spaces = 3):
     else:
         spaceDiff = len(SPACES)
     return str(spaceDiff*" ")
+
+
+
+# Adaptation of J. Mac's MATlAB function
+def wMean(x,W,rms=False):
+    wmean = sum(multiply(x,W))/sum(W)      # element-by-element multiplication
+    if len(x) == 1:
+        wrms = 0
+    else:
+        x = [(x - wmean)**2 for x in x]
+        wrms = sqrt(sum(multiply(x,W))/sum(W))
+    if rms:
+        return wmean,wrms
+    else:
+        return wmean
