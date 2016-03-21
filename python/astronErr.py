@@ -10,7 +10,7 @@ usrInp = sys.argv[1:]
 if len(usrInp) == 0:
     print ""
     print "# astronErr.py takes the astrometric accuracy (arcsec) as the first argument,"
-    print "# the distance (kpc) to the source as the second argument and **estimates**"
+    print "# the distance (parsec) to the source as the second argument and **estimates**"
     print "# the percentage accuracy of the measurement."
     print "# 's' option for short print."
     print ""
