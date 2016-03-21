@@ -1,4 +1,4 @@
-clf
+;%clf
 
 % Parameters to allow 'textscan' to harvest data correctly
 startRow = 2;
@@ -59,18 +59,18 @@ plot(mdelTraRA,mdelTraDec,'ok')
 dataTraRA(:)  = dataTraRA(:) - xavgTra - xoff;
 dataTraDec(:) = dataTraDec(:) - yavgTra;
 plot(dataTraRA, dataTraDec,'r^')
-errorbar(dataTraRA, dataTraDec, serrTraRA,'r', 'Marker', 'none', 'LineStyle', 'none')
+errorbar( dataTraRA, dataTraDec, serrTraRA, 'r', 'Marker', 'none', 'LineStyle', 'none')
 herrorbar(dataTraRA, dataTraDec, serrTraDec,'.r')
 
 xlim([floor(min(colXTra))-0.5,ceil(max(colXTra))+0.5])
-ylim([floor(min(colYTra)),ceil(max(colYTra))])
+ylim([floor(min(colYTra))-0.5,ceil(max(colYTra))+0.5])
 set(gca,'Xdir','reverse');
 
 xlabel('East Offset (mas)')
 ylabel('North Offset (mas)')
 
-text(1.6, 1.7, '2012.2')
-text(-0.8, -1.6, '2013.9')
+text( 2.7,  0.8, '2013.2')
+text(-1.5, -0.9, '2013.9')
 
 
 
@@ -149,7 +149,7 @@ resiDecpm = pmDataDec{:,4};
 serrDecpm = pmDataDec{:,5};
 
 dataDecpm(:) = dataDecpm(:) - yavgPM - yoff;
-plot(yearDecpm,dataDecpm,'b^')
+plot(yearDecpm,dataDecpm,'bo')
 
 xlim([floor(min(colXPM)),ceil(max(colXPM))])
 % Use limits from sky plot (Tra) to keep panel dimensions the same
@@ -200,7 +200,7 @@ plot(dashRange, Y, '--k','LineWidth',0.05)
 
 xlim([floor(parSigRA(1,1)),ceil(parSigRA(end,1))])
 ylim([-0.8,0.8])
-ylim([-1,1])
+ylim([-1.2,1.2])
 
 % Parallax model datapoints RA
 fileIDRA = fopen('par_fit_results_desloped_ra.dat_001','r');
@@ -223,8 +223,8 @@ dataDec = parModDec{:,2};
 mdelDec = parModDec{:,3};
 resiDec = parModDec{:,4};
 serrDec = parModDec{:,5};
-plot(yearDec,dataDec,'b^')
-errorbar(yearDec,dataDec,serrDec,'b', 'Marker', 'none', 'LineStyle','none')
+%plot(yearDec,dataDec,'bo')
+%errorbar(yearDec,dataDec,serrDec,'b', 'Marker', 'none', 'LineStyle','none')
 
 xlabel('Epoch (years)')
 ylabel('Offset (mas)')

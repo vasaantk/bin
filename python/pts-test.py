@@ -239,6 +239,7 @@ if 'comp' in usrFile:
     xoffAdd = []
     yoffAdd = []
     peakAdd = []
+    fluxAdd = []
     velsAdd = []
     compAdd = []
 
@@ -253,10 +254,11 @@ if 'comp' in usrFile:
                 xoffAdd.append(xoff[i])
                 yoffAdd.append(yoff[i])
                 peakAdd.append(peak[i])
+                fluxAdd.append(flux[i])
                 velsAdd.append(vels[i])
                 compAdd.append(comp[i])
         if xoffAdd != []:                         # Catch scrip in-case first choice is empty array
-            scatter(xoffAdd,yoffAdd,s=peakAdd,c=velsAdd,vmin=velMin,vmax=velMax)
+            scatter(xoffAdd,yoffAdd,s=fluxAdd,c=velsAdd,vmin=velMin,vmax=velMax)
             if 'atate' in usrFile:
                 for i in xrange(len(compAdd)):
                     annotate(compAdd[i],xy=(xoffAdd[i],yoffAdd[i]))
@@ -281,7 +283,7 @@ if 'seq' in usrFile:
     print ""
     for i in xrange(len(comp)):
 
-        scatter(xoff[i],yoff[i],s=peak[i],c=vels[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
+        scatter(xoff[i],yoff[i],s=flux[i],c=vels[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
 
         if 'atate' in usrFile:
             annotate(comp[i],xy=(xoff[i],yoff[i]))
@@ -307,12 +309,16 @@ if 'seq' in usrFile:
 #
 if 'plot' in usrFile:
     for i in xrange(len(chan)):
-        scatter(xoff[i],yoff[i],s=peak[i],c=homoVel[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
+        scatter(xoff[i],yoff[i],s=flux[i],c=homoVel[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
         if 'atate' in usrFile:
             annotate(comp[i],xy=(xoff[i],yoff[i]))
+
+        print '    %-*d  %-*.3f  %-*d  %7.3f  %7.3f  %4.3f  %4.3f' %(5,int(comp[i]),5,float(vels[i]),5,int(chan[i]),float(peak[i]),float(flux[i]),float(xoff[i]),float(yoff[i]))
+        #print comp[i], vel[i], chan[i], peak[i], flux[i], xoff[i], yoff[i]
+
     gca().invert_xaxis()
     xlabel('x offset')
     ylabel('y offset')
     cbar = colorbar()
     cbar.set_label('Velocity')
-    show()
+    show(block = False)
