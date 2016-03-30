@@ -25,22 +25,22 @@ import matplotlib.pyplot as plt
 userInp = 0       # Cmd-line argument position keeper
 
 # Variables for histogram
-x = []            # x coordinate for RGB histogram; 8-bit
+x    = []         # x coordinate for RGB histogram; 8-bit
 yOne = []         # Red pixel array for RGB histogram
 yTwo = []         # Green pixel array for RGB histogram
 yThr = []         # Blue pixel array for RGB histogram
 
 # Variables for 3D pixel distribution
-lenRed = []       # Red pix count along length of image
-widRed = []       # Red pix count along width of image
-pixValRed = []    # Red pix intensity value
+lenRed    = []       # Red pix count along length of image
+widRed    = []       # Red pix count along width of image
+pixValRed = []       # Red pix intensity value
 
-lenGre = []       # Green Pixels
-widGre = []
+lenGre    = []       # Green Pixels
+widGre    = []
 pixValGre = []
 
-lenBlu = []       # Blue pixels
-widBlu = []
+lenBlu    = []       # Blue pixels
+widBlu    = []
 pixValBlu = []
 
 # %%%% # %%%% # %%%% # %%%% # %%%% # %%%% #
@@ -50,11 +50,11 @@ pixValBlu = []
 # %%%% # %%%% # %%%% # %%%% # %%%% # %%%% #
 
 # Switching options for user:
-showPlot = False  # Plot histogram --> hist <-- in cmd-line
-show3D = False    # Plot pixel intensity for (x,y) distribution --> 3d=?? <-- in cmd-line. Sampling freq: ?? is any +ve int
-printStat = False # Print some image statistics
-alpha3D = False   # Plot pixel intensity for (x,y) distribution --> alpha=?? <-- in cmd-line. Sampling freq: ?? is any +ve int
-alpha2D = False   # Plot pixel distrubution --> 2d=?? <-- in cmd-line. Sampling freq: ?? is any +ve int
+showPlot  = False   # Plot histogram --> hist <-- in cmd-line
+show3D    = False   # Plot pixel intensity for (x,y) distribution --> 3d=?? <-- in cmd-line. Sampling freq: ?? is any +ve int
+printStat = False   # Print some image statistics
+alpha3D   = False   # Plot pixel intensity for (x,y) distribution --> alpha=?? <-- in cmd-line. Sampling freq: ?? is any +ve int
+alpha2D   = False   # Plot pixel distrubution --> 2d=?? <-- in cmd-line. Sampling freq: ?? is any +ve int
 
 # Cmd-line options harvested
 userFile = sys.argv[1:]
@@ -123,9 +123,9 @@ if showPlot:
         else:
             yThr.append(pixIntnsty[i])
     xlim(-10,267)
-    scatter(x,yOne,c='r',marker='|')
-    scatter(x,yTwo,c='y',marker='|')
-    scatter(x,yThr,c='b',marker='|')
+    scatter(x,yOne,c='b',marker='|')
+    scatter(x,yTwo,c='g',marker='|')
+    scatter(x,yThr,c='r',marker='|')
     show()
 
 ################################
@@ -144,24 +144,24 @@ if show3D:
             lenBlu.append(j)
             pixValBlu.append(pixParms[i,j][1])
     plot3D = gca(projection='3d')
-    plot3D.scatter(lenRed, widRed, pixValRed, c='r',  marker = 'x')
-    plot3D.scatter(lenBlu, widBlu, pixValBlu, c='g',  marker = 'x')
-    plot3D.scatter(lenGre, widGre, pixValGre, c='b',  marker = 'x')
+    plot3D.scatter(lenRed, widRed, pixValRed, c='b',  marker = '.', edgecolors='none')
+    plot3D.scatter(lenBlu, widBlu, pixValBlu, c='g',  marker = '.', edgecolors='none')
+    plot3D.scatter(lenGre, widGre, pixValGre, c='r',  marker = '.', edgecolors='none')
     show()
 
 if alpha3D:
     plot3D = gca(projection='3d')
     for i in range(0,imageWidth,userResAlpha):
         for j in range(0,imageHeight,userResAlpha):
-            plot3D.scatter(i,j,pixParms[i,j][0], c='r', alpha=pixParms[i,j][0]/257., marker = 'x')
-            plot3D.scatter(i,j,pixParms[i,j][1], c='y', alpha=pixParms[i,j][1]/257., marker = 'x')
-            plot3D.scatter(i,j,pixParms[i,j][2], c='b', alpha=pixParms[i,j][2]/257., marker = 'x')
+            plot3D.scatter(i,j,pixParms[i,j][0], c='b', alpha=pixParms[i,j][0]/257., marker = 'x')
+            plot3D.scatter(i,j,pixParms[i,j][1], c='g', alpha=pixParms[i,j][1]/257., marker = 'x')
+            plot3D.scatter(i,j,pixParms[i,j][2], c='r', alpha=pixParms[i,j][2]/257., marker = 'x')
     show()
 
 if alpha2D:
     for i in range(0,imageWidth,userAlpha):
         for j in range(0,imageHeight,userAlpha):
-            scatter(i,j, c='r', alpha=pixParms[i,j][0]/257., edgecolors='none')
+            scatter(i,j, c='b', alpha=pixParms[i,j][0]/257., edgecolors='none')
             scatter(i,j, c='g', alpha=pixParms[i,j][1]/257., edgecolors='none')
-            scatter(i,j, c='b', alpha=pixParms[i,j][2]/257., edgecolors='none')
+            scatter(i,j, c='r', alpha=pixParms[i,j][2]/257., edgecolors='none')
     show()

@@ -26,7 +26,7 @@ if len(usrFile) == 0:
     print "# vel   = allows user specified velocty range for the colourbar."
     print "# scale = scales the peak flux of the data by a constant factor."
     print ""
-    print "--> ./pts-test.py file_name.COMP plot* vel=xx.x,yy.y atate scale=xx"
+    print "--> pts-test.py file_name.COMP plot* vel=xx.x,yy.y atate scale=xx"
     print ""
     exit()
 
@@ -173,6 +173,7 @@ xerr = [wMean(xerr[i],flux[i]) for i in xrange(len(comp))]
 yoff = [wMean(yoff[i],flux[i]) for i in xrange(len(comp))]
 yerr = [wMean(yerr[i],flux[i]) for i in xrange(len(comp))]
 
+# These do not need weighted means, only the first (or max) is used:
 comp = [comp[i][0] for i in xrange(len(comp))]
 chan = [chan[i][0] for i in xrange(len(chan))]
 flux = [flux[i][0] * scaleFactor for i in xrange(len(comp))]
@@ -313,12 +314,11 @@ if 'plot' in usrFile:
         if 'atate' in usrFile:
             annotate(comp[i],xy=(xoff[i],yoff[i]))
 
-        print '    %-*d  %-*.3f  %-*d  %7.3f  %7.3f  %4.3f  %4.3f' %(5,int(comp[i]),5,float(vels[i]),5,int(chan[i]),float(peak[i]),float(flux[i]),float(xoff[i]),float(yoff[i]))
-        #print comp[i], vel[i], chan[i], peak[i], flux[i], xoff[i], yoff[i]
-
+        # Format to match input .PTS file:
+        print '%6d %10.3f %4d %13.5f %13.5f %33.6f %25.6f' %(int(comp[i]),float(vels[i]),int(chan[i]),float(flux[i]),float(peak[i]),float(xoff[i]),float(yoff[i]))
     gca().invert_xaxis()
     xlabel('x offset')
     ylabel('y offset')
     cbar = colorbar()
     cbar.set_label('Velocity')
-    show(block = False)
+    show()
