@@ -306,6 +306,17 @@ if 'seq' in usrFile:
 
 
 #=====================================================================
+#   Format to match input .PTS file:
+#
+if 'print' in usrFile:
+    print ""
+    for i in xrange(len(chan)):
+        print '%6d %10.3f %4d %13.5f %13.5f %33.6f %25.6f' %(int(comp[i]),float(vels[i]),int(chan[i]),float(flux[i]/scaleFactor),float(peak[i]/scaleFactor),float(xoff[i]),float(yoff[i]))
+    print ""
+
+
+
+#=====================================================================
 #   Plots spot map of maser emission:
 #
 if 'plot' in usrFile:
@@ -314,8 +325,6 @@ if 'plot' in usrFile:
         if 'atate' in usrFile:
             annotate(comp[i],xy=(xoff[i],yoff[i]))
 
-        # Format to match input .PTS file:
-        print '%6d %10.3f %4d %13.5f %13.5f %33.6f %25.6f' %(int(comp[i]),float(vels[i]),int(chan[i]),float(flux[i]),float(peak[i]),float(xoff[i]),float(yoff[i]))
     gca().invert_xaxis()
     xlabel('x offset')
     ylabel('y offset')
