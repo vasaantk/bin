@@ -7,6 +7,7 @@ from pylab import *
 import sys
 import numpy as np
 
+
 usrFile = sys.argv[1:]
 
 if len(usrFile) == 0:
