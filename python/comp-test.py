@@ -54,6 +54,7 @@ defaultVels  = True         # Otherwise usrVelLim
 defaultScale = True         # Otherwise usrScale
 
 channel = '(\d+)'           # 'Channel' variable from *.COMP
+spaDigs = '\s+?\d+?'         # 'Space digits'
 floats  = '([+-]?\d+.\d+)'  # Any float variable from *.COMP
 
 
@@ -75,15 +76,17 @@ if defaultScale:             # This allows "scale=" to appear anywhere in usrFil
 #   Harvest values:
 #
 for line in open(usrFile[0],'r'):
-    #                      Channel         Velocity      Peak Flux      xOff         yOff    Remaining stuff...    Components
-    reqInfo = re.search('\s+'+channel+'\s+'+floats +'\s+'+floats+'\s+'+floats+'\s+'+floats+'.*'+'\s+'+floats+'\s+'+channel, line)
+    #                       Channel         Velocity      Peak Flux      xOff         yOff    Remaining stuff...    Components
+    #reqInfo = re.search('\s+'+channel+'\s+'+floats +'\s+'+floats+'\s+'+floats+'\s+'+floats+'.*'+'\s+'+floats+'\s+'+channel, line)
+
+    reqInfo = re.search('\s+'+channel+10*('\s+'+floats) +'\s+'+channel+'.*?', line)
     if reqInfo:                                    # Populate temp arrays, which are reset after each component is harvested
         cTmp.append(  int(reqInfo.group(1)))
         vTmp.append(float(reqInfo.group(2)))
         pTmp.append(float(reqInfo.group(3))*scaleFactor)
         xTmp.append(float(reqInfo.group(4)))
         yTmp.append(float(reqInfo.group(5)))
-        mTmp.append(  str(reqInfo.group(7)))       # String format for annotations for scatterplots
+        mTmp.append(  str(reqInfo.group(12)))       # String format for annotations for scatterplots
     if line == '\n':                               # This statement allows each component to exist as its own list within the complete array
         chan.append(cTmp)
         vels.append(vTmp)
