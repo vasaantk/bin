@@ -18,8 +18,7 @@
   (setq cellsize
         (/ beamsize 4)
         )
-  (message "%.6f" cellsize)
-   )
+  )
 
 (defun date ()
   (backward-kill-sexp)
