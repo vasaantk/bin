@@ -78,8 +78,7 @@ if defaultScale:             # This allows "scale=" to appear anywhere in usrFil
 for line in open(usrFile[0],'r'):
     #                       Channel         Velocity      Peak Flux      xOff         yOff    Remaining stuff...    Components
     #reqInfo = re.search('\s+'+channel+'\s+'+floats +'\s+'+floats+'\s+'+floats+'\s+'+floats+'.*'+'\s+'+floats+'\s+'+channel, line)
-
-    reqInfo = re.search('\s+'+channel+10*('\s+'+floats) +'\s+'+channel+'.*?', line)
+    reqInfo = re.search('\s+'+channel+10*('\s+'+floats) +'\s+'+channel+'.*?', line) # Added on Sunday, 10 April 2016, 16:42 PM to grab first column components specifically.
     if reqInfo:                                    # Populate temp arrays, which are reset after each component is harvested
         cTmp.append(  int(reqInfo.group(1)))
         vTmp.append(float(reqInfo.group(2)))

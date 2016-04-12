@@ -7,6 +7,20 @@
 ;;;========================================================
 ;;; Code:
 ;;
+
+(defun cellsize (baseline)
+  (setq beamsize
+        (* (/ 180.0 pi)
+           3600.0
+           (/ 1 baseline)
+           )
+        )
+  (setq cellsize
+        (/ beamsize 4)
+        )
+  (message "%.6f" cellsize)
+   )
+
 (defun date ()
   (backward-kill-sexp)
   (insert (shell-command-to-string "echo -n $(date +%A,%t%d%t%B%t%Y,%t%H:%M%t%p)")))
