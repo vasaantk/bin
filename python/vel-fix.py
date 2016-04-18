@@ -72,52 +72,13 @@ mfVel      = []  # MF velocity
 
 chanVel    = []  # Array of computed vels
 fixedVels  = []  # Final array of fixe3d fixed
-
-# possCha    = []  # POSSM channel
-# possVel    = []  # POSSM velocity
-# possPks    = []  # POSSM fluxes
-# possmSecondPass = False
-# possmSequential = True
-# findVelStep     = True
 #=====================================================================
-
-
-
-# if len(usrFile) == 2:
-#     possm  = usrFile[0]
-#     mfFile = usrFile[1]
-# else:
-#     print "Check your input files."
-#     startScript = False
-
 
 
 if startScript:
     #=====================================================================
     #   Harvest values:
     #
-
-    # for line in open(possm,'r'):
-    #     reqInfo = re.search(  spaDigs        # (1) Channel
-    #                         + spaDigs        # (2) IF
-    #                         + '\s+\S+\s+'    #     Stokes
-    #                         + spaFlot        # (3) Freq
-    #                         + spaFlot        # (4) Vel
-    #                         + spaFlot        # (5) Real(Jy)
-    #                         + spaFlot,       # (6) Imag(Jy)
-    #                         line)
-    #     if reqInfo:
-    #         possCha.append(  int(reqInfo.group(1)))
-    #         # Check if adjacent channels are sequential or not from
-    #         # the second pass onwards:
-    #         if possmSecondPass:
-    #             if (possCha[-1] - possCha[-2]) != 1:
-    #                 print "POSSM channels %d and %d are not in sequence."%(possCha[-2],possCha[-1])
-    #                 possmSequential = False
-    #         possVel.append(float(reqInfo.group(4)))
-    #         possPks.append(float(reqInfo.group(5)))
-    #         possmSecondPass = True
-    # close(possm)
 
     for line in open(mfFile,'r'):
         reqInfo = re.search(  spaFlot   # (1)  Channel
@@ -146,45 +107,8 @@ if startScript:
             mfVel.append(     float(reqInfo.group(11)))
     close(mfFile)
 
-    #====================================================================#
-    #                                                                    #
-    #   I have been trying to fix the velocities in Q_339.COMP as a      #
-    #   result of the changes in the FQ table in AIPS before applying    #
-    #   delay calibration.                                               #
-    #                                                                    #
-    #   I have managed to figure out 2-ways to implement this. One using #
-    #   emipircal data from POSSM, and the second using the Doppler      #
-    #   approximation to determine the velocity resolution.              #
-    #                                                                    #
-    #   Option 1 naturally gives the more accurate result, as the vels   #
-    #   are determined directly from POSSM. Here,                        #
-    #   Delta_V=-0.0438961406936981 km/s.                                #
-    #                                                                    #
-    #   Option 2 gives Delta_V=-0.0438929579312 km/s.                    #
-    #                                                                    #
-    #   The fractional difference between the two may only               #
-    #   -7.25119154072e-05, but afer about 10 iterations, it starts to   #
-    #   hit the velocity resolution of the bins in POSSM, and so an      #
-    #   offset begins to appear in the spectra.                          #
-    #                                                                    #
-    #   So for now, I am going to use Option 1 to fix the problem, but   #
-    #   it would be good to constrain Option 2, as it is an analytic     #
-    #   solution.                                                        #
-    #                                                                    #
-    #====================================================================#
-
-
     #=====================================================================
-    #   Option 1:
-    #
-
-    # chanVel = linspace(23.4564,-66.3990,2048,retstep=True)
-    # chanVel    = linspace(23.4564,-66.3990,channels)
-    #=====================================================================
-
-
-    #=====================================================================
-    #   Option 2:
+    #   Doppler corrections:
     #
     bandStop    = bandStart + bandWidth
     # Frequencies exactly as in POSSM:
@@ -193,7 +117,6 @@ if startScript:
     # Doppler approximation:
     velStep     = -sc.c * freqStep/centreFreq * metres2kilo
     # Create array of velocities based on Doppler computations:
-    # for i in linspace(1,channels,channels):
     for i in xrange(channels):
         chanVel.append(suVel + velStep*int(i))
     #=====================================================================
