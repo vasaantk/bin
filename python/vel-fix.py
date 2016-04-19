@@ -81,6 +81,24 @@ fixedVels  = []  # Final array of fixe3d fixed
 
 
 if startScript:
+
+    chanOffsetCorrected = chanOffset-1
+
+    #=====================================================================
+    #   Doppler corrections:
+    #
+    bandStop    = bandStart + bandWidth
+    # Frequencies exactly as in POSSM:
+    chanFreqs   = linspace(bandStart,bandStop,channels)
+    centreFreq  = chanFreqs[setjyChan]
+    # Doppler approximation:
+    velStep     = -sc.c * freqStep/centreFreq * metres2kilo
+    # Create array of velocities based on Doppler computations:
+    for i in xrange(channels):
+        chanVel.append(suVel + velStep*int(i))
+    #=====================================================================
+
+
     #=====================================================================
     #   Harvest values:
     #
@@ -98,52 +116,21 @@ if startScript:
                             + spaFlot   # (10) DeconPA
                             + spaFlot,  # (11) Vel
                             line)
-        if reqInfo:
-            mfCha.append( int(float(reqInfo.group(1))))
-            mfPks.append(     float(reqInfo.group(2)))
-            mfXoff.append(    float(reqInfo.group(3)))
-            mfYoff.append(    float(reqInfo.group(4)))
-            mfMajAx.append(   float(reqInfo.group(5)))
-            mfMinAx.append(   float(reqInfo.group(6)))
-            mfPosAng.append(  float(reqInfo.group(7)))
-            mfDeconMaj.append(float(reqInfo.group(8)))
-            mfDeconMin.append(float(reqInfo.group(9)))
-            mfDeconPos.append(float(reqInfo.group(10)))
-            mfVel.append(     float(reqInfo.group(11)))
+        if not reqInfo:
+            print line,
+        else:
+            for i in xrange(len(chanVel)):
+                if i == int(float(reqInfo.group(1))):
+                    print "%9.3f%11.3f%12.3f%12.3f%11.3f%11.3f%11.3f%11.3f%11.3f%11.3f%11.3f"%(
+                        float(reqInfo.group(1)),
+                        float(reqInfo.group(2)),
+                        float(reqInfo.group(3)),
+                        float(reqInfo.group(4)),
+                        float(reqInfo.group(5)),
+                        float(reqInfo.group(6)),
+                        float(reqInfo.group(7)),
+                        float(reqInfo.group(8)),
+                        float(reqInfo.group(9)),
+                        float(reqInfo.group(10)),
+                        chanVel[i+chanOffsetCorrected])
     close(mfFile)
-
-    #=====================================================================
-    #   Doppler corrections:
-    #
-    bandStop    = bandStart + bandWidth
-    # Frequencies exactly as in POSSM:
-    chanFreqs   = linspace(bandStart,bandStop,channels)
-    centreFreq  = chanFreqs[setjyChan]
-    # Doppler approximation:
-    velStep     = -sc.c * freqStep/centreFreq * metres2kilo
-    # Create array of velocities based on Doppler computations:
-    for i in xrange(channels):
-        chanVel.append(suVel + velStep*int(i))
-    #=====================================================================
-
-    # 0 vs. 1 offsets in Python/AIPS arrays:
-    chanOffsetCorrected = chanOffset-1
-
-    for i in xrange(len(mfCha)):
-        mfCurrentChan = mfCha[i]
-        for j in xrange(len(chanVel)):
-            if j == mfCurrentChan:
-                fixedVels.append(chanVel[j+chanOffsetCorrected])
-        # Print format to be consistent with AIPS MFPRT; optype = 'line':
-        print "%9.3f%11.3f%12.3f%12.3f%11.3f%11.3f%11.3f%11.3f%11.3f%11.3f%11.3f"%(
-            mfCha[i],
-            mfPks[i],
-            mfXoff[i],
-            mfYoff[i],
-            mfMajAx[i],
-            mfMinAx[i],
-            mfPosAng[i],
-            mfDeconMaj[i],
-            mfDeconMin[i],
-            mfDeconPos[i],
-            fixedVels[i])
