@@ -43,6 +43,11 @@ if len(usrFile) == 0:
     print "Start frequency of the LINE data [bandStart]: %g Hz"%bandStart
     print "Bandwidth of the LINE data       [bandWidth]: %g Hz"%bandWidth
     print ""
+    print "As of Tuesday, 19 April 2016, the corrections are accurate to 2"
+    print "decimal places for most frames, and 1 decimal place at the higher"
+    print "frames. This is because I am still unable to determine the exact"
+    print "velocity step size which is used in POSSM."
+    print ""
     print "--> vel-fix.py userfile.MF"
     print ""
     exit()
