@@ -12,13 +12,6 @@ from scipy import constants as sc
 
 usrFile = sys.argv[1:]
 
-#=====================================================================
-#   Please check your script parameters:
-#
-chanOffset = 1100           # First channel in the image cube
-#=====================================================================
-
-
 if len(usrFile) == 0:
     print ""
     print "In the v255 experiments, we have to image the masers with modified FQ"
@@ -27,18 +20,19 @@ if len(usrFile) == 0:
     print ""
     print "This script fixes the velocities for the output from AIPS MFPRT;"
     print "optype = 'line' and matches the frames with the velocities from"
-    print "the spectra from POSSM."
+    print "the autocorrelation spectra from POSSM."
     print ""
-    print "First plane in the image cube   [chanOffset]: %d"%chanOffset
+    print "Ensure that all floats are in decimal and not scientific format."
     print ""
+    print "The 'offset' option is used if only a subset of the channels are"
+    print "CLEANed. E.g. if bchan/echan in IMAGR is 500/1000, then offset=500."
     print ""
-    print "--> vel-fix.py userfile.possm userfile.MF"
+    print "--> vel-fix.py userfile.possm userfile.MF [offset=0]"
     print ""
     exit()
 else:
     mfFile = usrFile[0]
     startScript = True
-
 
 #=====================================================================
 #   Define variables:
@@ -47,17 +41,32 @@ spaDigs = '\s+(\d+)'           # 'Space digits'
 spaFlot = '\s+?([+-]?\d+.\d+)' # 'Space floats'
 #=====================================================================
 
-if len(usrFile) == 2:
+
+
+#=====================================================================
+#   Check user inputs:
+#
+if len(usrFile) >= 2:
     possm  = usrFile[0]
     mfFile = usrFile[1]
+
+    for i in usrFile:
+        usrOffset = re.search('offset=(\d+)',i)
+        if usrOffset:
+            chanOffset = int(usrOffset.group(1))
+        else:
+            chanOffset = 0
 else:
     print "Check your input files."
     startScript = False
+#=====================================================================
 
+
+
+#=====================================================================
+#   Harvest values:
+#
 if startScript:
-    #=====================================================================
-    #   Harvest values:
-    #
     for line in open(mfFile,'r'):
         reqInfo = re.search(  spaFlot   # (1)  Channel
                             + spaFlot   # (2)  Peak
@@ -76,7 +85,6 @@ if startScript:
         else:
             # If data exists, grab the channel:
             currentChanMF = int(float(reqInfo.group(1)))
-
             for line in open(possm,'r'):
                 reqPossInfo = re.search(  spaDigs        # (1) Channel
                                         + spaDigs        # (2) IF
@@ -88,7 +96,6 @@ if startScript:
                                           line)
                 if reqPossInfo:
                     currentChanPoss = int(float(reqPossInfo.group(1)))
-
                     # Compare the POSSM and MF channels. Need to offset by the "First plane in the image cube":
                     if currentChanPoss == currentChanMF+chanOffset:
                         print "%9.3f%11.3f%12.3f%12.3f%11.3f%11.3f%11.3f%11.3f%11.3f%11.3f%11.3f"%(
@@ -103,5 +110,6 @@ if startScript:
                             float(reqInfo.group(9)),
                             float(reqInfo.group(10)),
                             float(reqPossInfo.group(4)))
-    close(possm)
+            close(possm)
     close(mfFile)
+#=====================================================================
