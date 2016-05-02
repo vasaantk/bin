@@ -7,7 +7,7 @@ from pylab import *
 import sys
 import numpy as np
 from functions import *
-
+import random
 
 
 usrFile = sys.argv[1:]
@@ -21,10 +21,12 @@ if len(usrFile) == 0:
     print "# First argument must be *.PTS. Order for remaining options"
     print "# does not matter:"
     print ""
-    print "# plot* = options are: plot, seq and comp."
-    print "# atate = annotates the spots with their component."
-    print "# vel   = allows user specified velocty range for the colourbar."
-    print "# scale = scales the peak flux of the data by a constant factor."
+    print "# plot*  = options are: plot, seq and comp."
+    print "# err    = plots errorbars."
+    print "# atate  = annotates the spots with their component."
+    print "# vatate = annotates the spots with their velocity."
+    print "# vel    = allows user specified velocty range for the colourbar."
+    print "# scale  = scales the peak flux of the data by a constant factor."
     print ""
     print "--> pts-test.py file_name.COMP plot* vel=xx.x,yy.y atate scale=xx"
     print ""
@@ -89,7 +91,7 @@ if defaultScale:             # This allows "scale=" to appear anywhere in usrFil
 for line in open(usrFile[0],'r'):
 
     reqInfo = re.search(ints + floats + ints + manyFloats, line)
-    if reqInfo:                                    # Populate temp arrays, which are reset after each component is harvestedo
+    if reqInfo:                                    # Populate temp arrays, which are reset after each component is harvested
         mTmp.append(  str(reqInfo.group(1)))       # String format for annotations for scatterplots
         vTmp.append(float(reqInfo.group(2)))
         cTmp.append(  int(reqInfo.group(3)))
@@ -243,6 +245,8 @@ if 'comp' in usrFile:
     fluxAdd = []
     velsAdd = []
     compAdd = []
+    xerrAdd = []
+    yerrAdd = []
 
     print "Enter 'q' to quit."
     print ""
@@ -258,11 +262,19 @@ if 'comp' in usrFile:
                 fluxAdd.append(flux[i])
                 velsAdd.append(vels[i])
                 compAdd.append(comp[i])
+                xerrAdd.append(xerr[i])
+                yerrAdd.append(yerr[i])
         if xoffAdd != []:                         # Catch scrip in-case first choice is empty array
-            scatter(xoffAdd,yoffAdd,s=fluxAdd,c=velsAdd,vmin=velMin,vmax=velMax)
+            scatter( xoffAdd,yoffAdd,s=fluxAdd,c=velsAdd,vmin=velMin,vmax=velMax)
+            if 'err' in usrFile:
+                errorbar(xoffAdd,yoffAdd,xerrAdd,yerrAdd)
             if 'atate' in usrFile:
                 for i in xrange(len(compAdd)):
                     annotate(compAdd[i],xy=(xoffAdd[i],yoffAdd[i]))
+            if 'vatate' in usrFile:
+                for i in xrange(len(compAdd)):
+                    annotate(float("{0:.1f}".format(velsAdd[i])),xy=(xoffAdd[i],yoffAdd[i]))
+
             xlabel('x offset')
             ylabel('y offset')
             cbar = colorbar()
@@ -284,10 +296,13 @@ if 'seq' in usrFile:
     print ""
     for i in xrange(len(comp)):
 
-        scatter(xoff[i],yoff[i],s=flux[i],c=vels[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
-
+        scatter( xoff[i],yoff[i],s=flux[i],c=vels[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
+        if 'err' in usrFile:
+            errorbar(xoff[i],yoff[i],xerr=xerr[i],yerr=yerr[i])
         if 'atate' in usrFile:
             annotate(comp[i],xy=(xoff[i],yoff[i]))
+        if 'vatate' in usrFile:
+            annotate(float("{0:.1f}".format(vels[i])),xy=(xoff[i],yoff[i]))
 
         xlabel('x offset')
         ylabel('y offset')
@@ -311,7 +326,10 @@ if 'seq' in usrFile:
 if 'print' in usrFile:
     print ""
     for i in xrange(len(chan)):
-        print '%6d %10.3f %4d %13.5f %13.5f %33.6f %25.6f' %(int(comp[i]),float(vels[i]),int(chan[i]),float(flux[i]/scaleFactor),float(peak[i]/scaleFactor),float(xoff[i]),float(yoff[i]))
+        print '%6d %10.3f %4d %13.5f %13.5f %33.6f %10.7f %14.6f %10.7f'%(
+              int(comp[i]),float(vels[i]),int(chan[i]),float(flux[i]/scaleFactor),
+            float(peak[i]/scaleFactor),float(xoff[i]),float(xerr[i]),float(yoff[i]),
+            float(yerr[i]))
     print ""
 
 
@@ -321,9 +339,13 @@ if 'print' in usrFile:
 #
 if 'plot' in usrFile:
     for i in xrange(len(chan)):
-        scatter(xoff[i],yoff[i],s=flux[i],c=homoVel[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
+        scatter( xoff[i],yoff[i],s=flux[i],c=homoVel[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
+        if 'err' in usrFile:
+            errorbar(xoff[i],yoff[i],xerr=xerr[i],yerr=yerr[i])
         if 'atate' in usrFile:
             annotate(comp[i],xy=(xoff[i],yoff[i]))
+        if 'vatate' in usrFile:
+            annotate(float("{0:.1f}".format(vels[i])),xy=(xoff[i],yoff[i]))
 
     gca().invert_xaxis()
     xlabel('x offset')

@@ -51,7 +51,7 @@ if len(usrFile) >= 2:
     mfFile = usrFile[1]
 
     for i in usrFile:
-        usrOffset = re.search('offset=(\d+)',i)
+        usrOffset = re.search('offset=([+-]?\d+)',i)
         if usrOffset:
             chanOffset = int(usrOffset.group(1))
         else:
