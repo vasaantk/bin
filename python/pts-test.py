@@ -277,6 +277,7 @@ if 'comp' in usrFile:
 
             xlabel('x offset')
             ylabel('y offset')
+            title(str(usrFile[0]))
             cbar = colorbar()
             cbar.set_label('Velocity')
             gca().invert_xaxis()
@@ -306,6 +307,7 @@ if 'seq' in usrFile:
 
         xlabel('x offset')
         ylabel('y offset')
+        title(str(usrFile[0]))
         cbar = colorbar()
         cbar.set_label('Velocity')
         gca().invert_xaxis()
@@ -348,6 +350,7 @@ if 'plot' in usrFile:
             annotate(float("{0:.1f}".format(vels[i])),xy=(xoff[i],yoff[i]))
 
     gca().invert_xaxis()
+    title(str(usrFile[0]))
     xlabel('x offset')
     ylabel('y offset')
     cbar = colorbar()
