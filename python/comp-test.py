@@ -195,29 +195,59 @@ if 'comp' in usrFile:
     machineQuery = 'Component ID: '
     response     = raw_input(machineQuery)
     while response != 'q':
-        usrComp = int(response)
-        for i in xrange(len(comp)):               # Iterate through the list
-            if usrComp == int(comp[i][0]):
-                for j in xrange(len(xoff[i])):    # Iterate through sub-lists
-                    xoffAdd.append(xoff[i][j])
-                    yoffAdd.append(yoff[i][j])
-                    peakAdd.append(peak[i][j])
-                    velsAdd.append(vels[i][j])
-                    compAdd.append(comp[i][j])
-        if xoffAdd != []:                         # Catch scrip in-case first choice is empty array
-            scatter(xoffAdd,yoffAdd,s=peakAdd,c=velsAdd,vmin=velMin,vmax=velMax)
-            if 'atate' in usrFile:
-                for j in xrange(len(compAdd)):
-                    annotate(compAdd[j],xy=(xoffAdd[j],yoffAdd[j]))
-            xlabel('x offset')
-            ylabel('y offset')
-            cbar = colorbar()
-            cbar.set_label('Velocity')
-            gca().invert_xaxis()
-            show(block = False)
-        response = raw_input(machineQuery)
-        clf()
-        close()
+        if response == '' or float(response) < 0:
+            response = raw_input(machineQuery)
+        else:
+            usrComp = int(response)
+            for i in xrange(len(comp)):               # Iterate through the list
+                if usrComp == int(comp[i][0]):
+                    for j in xrange(len(xoff[i])):    # Iterate through sub-lists
+                        xoffAdd.append(xoff[i][j])
+                        yoffAdd.append(yoff[i][j])
+                        peakAdd.append(peak[i][j])
+                        velsAdd.append(vels[i][j])
+                        compAdd.append(comp[i][j])
+            if xoffAdd != []:                         # Catch scrip in-case first choice is empty array
+                scatter(xoffAdd,yoffAdd,s=peakAdd,c=velsAdd,vmin=velMin,vmax=velMax)
+                if 'atate' in usrFile:
+                    for j in xrange(len(compAdd)):
+                        annotate(compAdd[j],xy=(xoffAdd[j],yoffAdd[j]))
+                xlabel('x offset')
+                ylabel('y offset')
+                cbar = colorbar()
+                cbar.set_label('Velocity')
+                gca().invert_xaxis()
+                show(block = False)
+            response = raw_input(machineQuery)
+            clf()
+            close()
+
+    # Replaced this block with if/else above on Wednesday, 25 May 2016, 12:22 PM.
+    # while response != 'q':
+    #     usrComp = int(response)
+    #     for i in xrange(len(comp)):               # Iterate through the list
+    #         if usrComp == int(comp[i][0]):
+    #             for j in xrange(len(xoff[i])):    # Iterate through sub-lists
+    #                 xoffAdd.append(xoff[i][j])
+    #                 yoffAdd.append(yoff[i][j])
+    #                 peakAdd.append(peak[i][j])
+    #                 velsAdd.append(vels[i][j])
+    #                 compAdd.append(comp[i][j])
+    #     if xoffAdd != []:                         # Catch scrip in-case first choice is empty array
+    #         scatter(xoffAdd,yoffAdd,s=peakAdd,c=velsAdd,vmin=velMin,vmax=velMax)
+    #         if 'atate' in usrFile:
+    #             for j in xrange(len(compAdd)):
+    #                 annotate(compAdd[j],xy=(xoffAdd[j],yoffAdd[j]))
+    #         xlabel('x offset')
+    #         ylabel('y offset')
+    #         cbar = colorbar()
+    #         cbar.set_label('Velocity')
+    #         gca().invert_xaxis()
+    #         show(block = False)
+    #     response = raw_input(machineQuery)
+    #     clf()
+    #     close()
+
 
 
 
