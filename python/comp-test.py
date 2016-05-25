@@ -212,6 +212,7 @@ if 'comp' in usrFile:
                 if 'atate' in usrFile:
                     for j in xrange(len(compAdd)):
                         annotate(compAdd[j],xy=(xoffAdd[j],yoffAdd[j]))
+                title(str(usrFile[0]))
                 xlabel('x offset')
                 ylabel('y offset')
                 cbar = colorbar()
@@ -264,6 +265,7 @@ if 'seq' in usrFile:
         if 'atate' in usrFile:
             for j in xrange(len(xoff[i])):
                 annotate(comp[i][j],xy=(xoff[i][j],yoff[i][j]))
+        title(str(usrFile[0]))
         xlabel('x offset')
         ylabel('y offset')
         cbar = colorbar()
@@ -290,6 +292,7 @@ if 'plot' in usrFile:
             for j in xrange(len(xoff[i])):
                 annotate(comp[i][j],xy=(xoff[i][j],yoff[i][j]))
     gca().invert_xaxis()
+    title(str(usrFile[0]))
     xlabel('x offset')
     ylabel('y offset')
     cbar = colorbar()

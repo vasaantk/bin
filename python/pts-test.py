@@ -277,10 +277,9 @@ if 'comp' in usrFile:
                 if 'vatate' in usrFile:
                     for i in xrange(len(compAdd)):
                         annotate(float("{0:.1f}".format(velsAdd[i])),xy=(xoffAdd[i],yoffAdd[i]))
-
+                title(str(usrFile[0]))
                 xlabel('x offset')
                 ylabel('y offset')
-                title(str(usrFile[0]))
                 cbar = colorbar()
                 cbar.set_label('Velocity')
                 gca().invert_xaxis()
