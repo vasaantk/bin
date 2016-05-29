@@ -14,21 +14,22 @@ usrFile = sys.argv[1:]
 
 if len(usrFile) == 0:
     print ""
-    print "# pts-test.py takes input from *.PTS files to study the"
+    print "# pts-test.py takes input from a single .PTS file to study the"
     print "# component allocation from Luca Moscadelli's pts-diff.f."
     print "# The component positions and velocities are flux weighted"
     print "# using the algorithm from functions.py."
     print "# First argument must be *.PTS. Order for remaining options"
     print "# does not matter:"
     print ""
-    print "# plot*  = options are: plot, seq and comp."
-    print "# err    = plots errorbars."
+    print "# plot*  = options are: plot, seq, print and comp."
+    print "# err    = plots fluxweighted errorbars."
     print "# atate  = annotates the spots with their component."
     print "# vatate = annotates the spots with their velocity."
     print "# vel    = allows user specified velocty range for the colourbar."
     print "# scale  = scales the peak flux of the data by a constant factor."
+    print "# print  = print the details of the flux weighted components."
     print ""
-    print "--> pts-test.py file_name.COMP plot* vel=xx.x,yy.y atate scale=xx"
+    print "--> pts-test.py file_name.PTS plot* vel=xx.x,yy.y atate scale=xx"
     print ""
     exit()
 
