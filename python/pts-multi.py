@@ -16,6 +16,7 @@ if len(usrFile) == 0:
     print "# pts-multi.py takes input from multiple COMP.PTS files"
     print "# from Luca Moscadelli's pts-diff.f and plots the"
     print "# relative positions of the features."
+    print "# It is a variation of pts-test.py."
     print "# The component positions and velocities are flux weighted"
     print "# using the algorithm from functions.py."
     print "# The script is useful for allocating maser emission across"
