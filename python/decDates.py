@@ -37,7 +37,7 @@ elif len(userInp) == 3 or len(userInp) == 4:
     print decDate
 
     if "-f" in userInp:
-        print "Julian day = " + str(jDay)
+        print "D.O.Y = " + str(jDay)
         if yearLen == 366:
             print "Leap year  = True"
         else:

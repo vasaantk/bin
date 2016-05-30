@@ -1,0 +1,7 @@
+set plot portrait
+$frmodel
+column x 1 y 2 /file combmt.dat
+limits
+box
+point
+

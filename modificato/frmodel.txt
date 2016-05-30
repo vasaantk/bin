@@ -1,0 +1,87 @@
+README_frmodel
+
+
+What is 'frmodel'?
+  'frmodel' simulates motion of a Galactic source due 
+to the Galactic rotation, the annual parallax and the 
+solar motion. The Galactic rotation is assumed to follow 
+the simple Flat Rotation Model(FRM).
+
+
+How to get them?
+  You can find a tar+gz package 'FlatRot.tgz' in 'Cybose' --> 
+'Bunsho-kanri' --> 'VERAbunsho' --> 'Tools' --> 'FlatRot'.
+After downloading and unpacking it as
+
+  tar xvfz FlatRot.tgz ,
+
+you will get a directory 'FlatRot' where you will find an 
+executable program 'frmodel'. Or, if you are not a Linux 
+user, you can compile them using Make files as
+
+  make -f frmodel.mk .
+
+
+How to use it?
+
+  Type ./frmodel in a directory where you stored the 
+executable program.
+
+  Then, you will be asked about the coordinates of the 
+source. The epoch of the equinox point is not asked 
+since it could be left arbitrary for the rough simulation 
+purpose. 
+
+  Next, you will be asked if you have an estimated value
+of the distance to the source. If you answer 'y', then
+you will be asked to enter the estimated distance value.
+If you answer 'n', then you will be asked to enter the
+radial velocity value of the source. In the latter case,
+the distance to the source is estimated based on the FRM.
+If the source is located in the inner part of the Solar
+Circle, two distance values are derived.
+
+  If your source is too far from the Galactic plane or
+your radial velocity is out of the range allowable in the 
+FRM, an error or warning message will be issued.
+
+  Then, some relevant parameters will be displayed as 
+shown in the following example. Also a gnuplot script file 
+will be generated for plotting the simulated trajectory of 
+the source. If you have both 'gnuplot' and 'gv', the 
+simulated trajectory will appear on your screen.
+
+  If you wish to improve your figure by changing titles or 
+aspect ratio, you could edit the gnuplot script file 
+'frmodel.gp'.
+
+
+Example
+
+***********************************************************
+
+ ./frmodel
+ Galactic Rotation, Solar Motion  and Parallax
+
+ Enter right ascention in HH MM SS.SSS
+02 27 04.83
+ Enter declination in +/- DD MM SS.SSS
++ 61 52 24.607
+ Do you have an estimated distance to the source?
+y
+ Enter distance in kpc : 
+2.3
+ Galactic longitude and latitude =   133.957256,   1.06514205
+ Position angle of the galactic plane =   111.155658
+
+ Distance from the Galactic center =   10.23 kpc
+ Estimated LSR velocity =  -26.80 km/s
+ Transversal velocity   =   23.62 km/s
+ PM due to GR           =    2.16 mas/y
+ PM due to GR in RA and Dec =  -2.01850403    0.781129485  mas/y
+ Solar motion effect in RA and Dec =   1.26827928   -1.21427282  mas/y
+
+ Do you have "gnuplot" (y/n)?
+y
+ Do you have "gv" (y/n)?
+y
