@@ -234,6 +234,7 @@ for pts in range(len(ptsFiles)):
     yerr = [yerr[i] for i in compMask]
 
 
+
     #=====================================================================
     #   Determine weighted means:
     #
@@ -243,11 +244,12 @@ for pts in range(len(ptsFiles)):
     yoff = [wMean(yoff[i],flux[i]) for i in xrange(len(comp))]
     yerr = [wMean(yerr[i],flux[i]) for i in xrange(len(comp))]
 
-    # These do not need weighted means, only the first (or max) is used:
+    # These do not need weighted means, using the element with greatest flux:
     comp = [comp[i][0] for i in xrange(len(comp))]
-    chan = [chan[i][0] for i in xrange(len(chan))]
-    flux = [flux[i][0] * scaleFactor for i in xrange(len(comp))]
-    peak = [peak[i][0] * scaleFactor for i in xrange(len(comp))]
+    chan = [chan[i][flux[i].index(max(flux[i]))] for i in xrange(len(chan))]
+    peak = [peak[i][flux[i].index(max(flux[i]))] * scaleFactor for i in xrange(len(comp))]
+    flux = [flux[i][flux[i].index(max(flux[i]))] * scaleFactor for i in xrange(len(comp))]
+
 
 
     #=====================================================================
