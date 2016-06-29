@@ -250,19 +250,18 @@ for pts in range(len(ptsFiles)):
     peak = [peak[i][0] * scaleFactor for i in xrange(len(comp))]
 
 
-
     #=====================================================================
     #   Sorting
     #   http://stackoverflow.com/questions/6618515/sorting-list-based-on-values-from-another-list
+    vels = [x for (y,x) in sorted(zip(chan,vels), key=lambda pair: pair[0])]
+    xoff = [x for (y,x) in sorted(zip(chan,xoff), key=lambda pair: pair[0])]
+    xerr = [x for (y,x) in sorted(zip(chan,xerr), key=lambda pair: pair[0])]
+    yoff = [x for (y,x) in sorted(zip(chan,yoff), key=lambda pair: pair[0])]
+    yerr = [x for (y,x) in sorted(zip(chan,yerr), key=lambda pair: pair[0])]
+    comp = [x for (y,x) in sorted(zip(chan,comp), key=lambda pair: pair[0])]
+    flux = [x for (y,x) in sorted(zip(chan,flux), key=lambda pair: pair[0])]
+    peak = [x for (y,x) in sorted(zip(chan,peak), key=lambda pair: pair[0])]
     chan = sorted(chan)
-    vels = [x for (y,x) in sorted(zip(comp,vels), key=lambda pair: pair[0])]
-    xoff = [x for (y,x) in sorted(zip(comp,xoff), key=lambda pair: pair[0])]
-    xerr = [x for (y,x) in sorted(zip(comp,xerr), key=lambda pair: pair[0])]
-    yoff = [x for (y,x) in sorted(zip(comp,yoff), key=lambda pair: pair[0])]
-    yerr = [x for (y,x) in sorted(zip(comp,yerr), key=lambda pair: pair[0])]
-    comp = [x for (y,x) in sorted(zip(comp,comp), key=lambda pair: pair[0])]
-    flux = [x for (y,x) in sorted(zip(comp,flux), key=lambda pair: pair[0])]
-    peak = [x for (y,x) in sorted(zip(comp,peak), key=lambda pair: pair[0])]
 
 
     #=====================================================================
