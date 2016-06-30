@@ -29,8 +29,9 @@ if len(usrFile) == 0:
     print "# vel    = allows user specified velocty range for the colourbar."
     print "# scale  = scales the peak flux of the data by a constant factor."
     print "# print  = print the details of the flux weighted components."
+    print "# sort   = options are: comp,chan,vels,flux,xoff,yoff"
     print ""
-    print "--> pts-multi.py file_name.COMP.PTS plot* vel=xx.x,yy.y atate scale=xx"
+    print "--> pts-multi.py file_name.COMP.PTS plot* vel=xx.x,yy.y atate scale=xx sort=xxxx"
     print ""
     exit()
 
@@ -129,6 +130,18 @@ velsAbsMin = min(vels)
 
 
 #=====================================================================
+#   Sorting
+#   http://stackoverflow.com/questions/6618515/sorting-list-based-on-values-from-another-list
+for i in usrFile:
+    usrSort = re.search('sort=(\S\S\S\S)',i)
+    if usrSort:
+        sortRequest = str(usrSort.group(1))
+        usrFile.append('print')
+
+
+
+
+#=====================================================================
 #   Main script starts here - iterate through each of the input files:
 #
 for pts in range(len(ptsFiles)):
@@ -167,7 +180,7 @@ for pts in range(len(ptsFiles)):
     for line in open(ptsFiles[pts],'r'):
         reqInfo = re.search(ints + floats + ints + manyFloats, line)
         if reqInfo:                                    # Populate temp arrays, which are reset after each component is harvested
-            mTmp.append(  str(reqInfo.group(1)))       # String format for annotations for scatterplots
+            mTmp.append(  int(reqInfo.group(1)))
             vTmp.append(float(reqInfo.group(2)))
             cTmp.append(  int(reqInfo.group(3)))
             iTmp.append(float(reqInfo.group(4)))
@@ -254,16 +267,68 @@ for pts in range(len(ptsFiles)):
 
     #=====================================================================
     #   Sorting
-    #   http://stackoverflow.com/questions/6618515/sorting-list-based-on-values-from-another-list
-    vels = [x for (y,x) in sorted(zip(chan,vels), key=lambda pair: pair[0])]
-    xoff = [x for (y,x) in sorted(zip(chan,xoff), key=lambda pair: pair[0])]
-    xerr = [x for (y,x) in sorted(zip(chan,xerr), key=lambda pair: pair[0])]
-    yoff = [x for (y,x) in sorted(zip(chan,yoff), key=lambda pair: pair[0])]
-    yerr = [x for (y,x) in sorted(zip(chan,yerr), key=lambda pair: pair[0])]
-    comp = [x for (y,x) in sorted(zip(chan,comp), key=lambda pair: pair[0])]
-    flux = [x for (y,x) in sorted(zip(chan,flux), key=lambda pair: pair[0])]
-    peak = [x for (y,x) in sorted(zip(chan,peak), key=lambda pair: pair[0])]
-    chan = sorted(chan)
+    #
+    if sortRequest == 'comp':
+        vels = [x for (y,x) in sorted(zip(comp,vels), key=lambda pair: pair[0])]
+        xoff = [x for (y,x) in sorted(zip(comp,xoff), key=lambda pair: pair[0])]
+        xerr = [x for (y,x) in sorted(zip(comp,xerr), key=lambda pair: pair[0])]
+        yoff = [x for (y,x) in sorted(zip(comp,yoff), key=lambda pair: pair[0])]
+        yerr = [x for (y,x) in sorted(zip(comp,yerr), key=lambda pair: pair[0])]
+        chan = [x for (y,x) in sorted(zip(comp,chan), key=lambda pair: pair[0])]
+        flux = [x for (y,x) in sorted(zip(comp,flux), key=lambda pair: pair[0])]
+        peak = [x for (y,x) in sorted(zip(comp,peak), key=lambda pair: pair[0])]
+        comp = sorted(comp)
+    if sortRequest == 'vels':
+        comp = [x for (y,x) in sorted(zip(vels,comp), key=lambda pair: pair[0],reverse=True)]
+        xoff = [x for (y,x) in sorted(zip(vels,xoff), key=lambda pair: pair[0],reverse=True)]
+        xerr = [x for (y,x) in sorted(zip(vels,xerr), key=lambda pair: pair[0],reverse=True)]
+        yoff = [x for (y,x) in sorted(zip(vels,yoff), key=lambda pair: pair[0],reverse=True)]
+        yerr = [x for (y,x) in sorted(zip(vels,yerr), key=lambda pair: pair[0],reverse=True)]
+        chan = [x for (y,x) in sorted(zip(vels,chan), key=lambda pair: pair[0],reverse=True)]
+        flux = [x for (y,x) in sorted(zip(vels,flux), key=lambda pair: pair[0],reverse=True)]
+        peak = [x for (y,x) in sorted(zip(vels,peak), key=lambda pair: pair[0],reverse=True)]
+        vels = sorted(vels,reverse=True)
+    if sortRequest == 'xoff':
+        vels = [x for (y,x) in sorted(zip(xoff,vels), key=lambda pair: pair[0],reverse=True)]
+        comp = [x for (y,x) in sorted(zip(xoff,comp), key=lambda pair: pair[0],reverse=True)]
+        xerr = [x for (y,x) in sorted(zip(xoff,xerr), key=lambda pair: pair[0],reverse=True)]
+        yoff = [x for (y,x) in sorted(zip(xoff,yoff), key=lambda pair: pair[0],reverse=True)]
+        yerr = [x for (y,x) in sorted(zip(xoff,yerr), key=lambda pair: pair[0],reverse=True)]
+        chan = [x for (y,x) in sorted(zip(xoff,chan), key=lambda pair: pair[0],reverse=True)]
+        flux = [x for (y,x) in sorted(zip(xoff,flux), key=lambda pair: pair[0],reverse=True)]
+        peak = [x for (y,x) in sorted(zip(xoff,peak), key=lambda pair: pair[0],reverse=True)]
+        xoff = sorted(xoff,reverse=True)
+    if sortRequest == 'yoff':
+        vels = [x for (y,x) in sorted(zip(yoff,vels), key=lambda pair: pair[0],reverse=True)]
+        xoff = [x for (y,x) in sorted(zip(yoff,xoff), key=lambda pair: pair[0],reverse=True)]
+        xerr = [x for (y,x) in sorted(zip(yoff,xerr), key=lambda pair: pair[0],reverse=True)]
+        comp = [x for (y,x) in sorted(zip(yoff,comp), key=lambda pair: pair[0],reverse=True)]
+        yerr = [x for (y,x) in sorted(zip(yoff,yerr), key=lambda pair: pair[0],reverse=True)]
+        chan = [x for (y,x) in sorted(zip(yoff,chan), key=lambda pair: pair[0],reverse=True)]
+        flux = [x for (y,x) in sorted(zip(yoff,flux), key=lambda pair: pair[0],reverse=True)]
+        peak = [x for (y,x) in sorted(zip(yoff,peak), key=lambda pair: pair[0],reverse=True)]
+        yoff = sorted(yoff,reverse=True)
+    if sortRequest == 'flux':
+        vels = [x for (y,x) in sorted(zip(flux,vels), key=lambda pair: pair[0],reverse=True)]
+        xoff = [x for (y,x) in sorted(zip(flux,xoff), key=lambda pair: pair[0],reverse=True)]
+        xerr = [x for (y,x) in sorted(zip(flux,xerr), key=lambda pair: pair[0],reverse=True)]
+        yoff = [x for (y,x) in sorted(zip(flux,yoff), key=lambda pair: pair[0],reverse=True)]
+        yerr = [x for (y,x) in sorted(zip(flux,yerr), key=lambda pair: pair[0],reverse=True)]
+        chan = [x for (y,x) in sorted(zip(flux,chan), key=lambda pair: pair[0],reverse=True)]
+        comp = [x for (y,x) in sorted(zip(flux,comp), key=lambda pair: pair[0],reverse=True)]
+        peak = [x for (y,x) in sorted(zip(flux,peak), key=lambda pair: pair[0],reverse=True)]
+        flux = sorted(flux,reverse=True)
+    elif sortRequest == 'chan':
+        vels = [x for (y,x) in sorted(zip(chan,vels), key=lambda pair: pair[0])]
+        xoff = [x for (y,x) in sorted(zip(chan,xoff), key=lambda pair: pair[0])]
+        xerr = [x for (y,x) in sorted(zip(chan,xerr), key=lambda pair: pair[0])]
+        yoff = [x for (y,x) in sorted(zip(chan,yoff), key=lambda pair: pair[0])]
+        yerr = [x for (y,x) in sorted(zip(chan,yerr), key=lambda pair: pair[0])]
+        comp = [x for (y,x) in sorted(zip(chan,comp), key=lambda pair: pair[0])]
+        flux = [x for (y,x) in sorted(zip(chan,flux), key=lambda pair: pair[0])]
+        peak = [x for (y,x) in sorted(zip(chan,peak), key=lambda pair: pair[0])]
+        chan = sorted(chan)
+
 
 
     #=====================================================================
@@ -322,6 +387,7 @@ for pts in range(len(ptsFiles)):
                 annotate(comp[j],xy=(xoff[j],yoff[j]))
             if 'vatate' in usrFile:
                 annotate(float("{0:.1f}".format(vels[j])),xy=(xoff[j],yoff[j]))
+
 
 
 #=====================================================================
