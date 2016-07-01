@@ -66,8 +66,9 @@ velMask    = []             # Average of each component
 homoVelTmp = []
 homoVel    = []             # Homogenised velocity
 
-defaultVels  = True         # Otherwise usrVelLim
-defaultScale = True         # Otherwise usrScale
+defaultVels   = True         # Otherwise usrVelLim
+defaultScale  = True         # Otherwise usrScale
+offsetRequest = False        # Reposition the centre position
 
 ints       = '\s+(\d+)'           # 'Channel' variable from *.COMP
 floats     = '\s+([+-]?\d+.\d+)'  # Any float variable from *.COMP
@@ -137,8 +138,8 @@ for i in usrFile:
     if usrSort:
         sortRequest = str(usrSort.group(1))
         usrFile.append('print')
-
-
+    else:
+        sortRequest = 'chan'
 
 
 #=====================================================================
@@ -178,6 +179,11 @@ for pts in range(len(ptsFiles)):
     #   Harvest values:
     #
     for line in open(ptsFiles[pts],'r'):
+        offInfo = re.search('offset='+'\s*'+'([+-]?\d+.\d+)'+'\s*'+','+'\s*'+'([+-]?\d+.\d+)',line)
+        if offInfo:
+            offsetRequest = True
+            xcentOff = float(offInfo.group(1))
+            ycentOff = float(offInfo.group(2))
         reqInfo = re.search(ints + floats + ints + manyFloats, line)
         if reqInfo:                                    # Populate temp arrays, which are reset after each component is harvested
             mTmp.append(  int(reqInfo.group(1)))
@@ -247,6 +253,13 @@ for pts in range(len(ptsFiles)):
     yerr = [yerr[i] for i in compMask]
 
 
+    #=====================================================================
+    #   Apply centre offset
+    #
+    if offsetRequest:
+        xoff = [[i + xcentOff for i in element] for element in xoff]
+        yoff = [[i + ycentOff for i in element] for element in yoff]
+
 
     #=====================================================================
     #   Determine weighted means:
@@ -262,7 +275,6 @@ for pts in range(len(ptsFiles)):
     chan = [chan[i][flux[i].index(max(flux[i]))] for i in xrange(len(chan))]
     peak = [peak[i][flux[i].index(max(flux[i]))] * scaleFactor for i in xrange(len(comp))]
     flux = [flux[i][flux[i].index(max(flux[i]))] * scaleFactor for i in xrange(len(comp))]
-
 
 
     #=====================================================================
@@ -318,7 +330,7 @@ for pts in range(len(ptsFiles)):
         comp = [x for (y,x) in sorted(zip(flux,comp), key=lambda pair: pair[0],reverse=True)]
         peak = [x for (y,x) in sorted(zip(flux,peak), key=lambda pair: pair[0],reverse=True)]
         flux = sorted(flux,reverse=True)
-    elif sortRequest == 'chan':
+    if sortRequest == 'chan':
         vels = [x for (y,x) in sorted(zip(chan,vels), key=lambda pair: pair[0])]
         xoff = [x for (y,x) in sorted(zip(chan,xoff), key=lambda pair: pair[0])]
         xerr = [x for (y,x) in sorted(zip(chan,xerr), key=lambda pair: pair[0])]
