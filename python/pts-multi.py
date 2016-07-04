@@ -137,13 +137,13 @@ velsAbsMin = min(vels)
 #=====================================================================
 #   Sorting
 #   http://stackoverflow.com/questions/6618515/sorting-list-based-on-values-from-another-list
+sortRequest = 'chan'
 for i in usrFile:
-    usrSort = re.search('sort=(\S\S\S\S)',i)
+    usrSort = re.search('sort=(\S+)',i)
     if usrSort:
-        sortRequest = str(usrSort.group(1))
-        usrFile.append('print')
-    else:
-        sortRequest = 'chan'
+        if usrSort.group(1) in ['comp','vels','xoff','yoff','flux','chan']:
+            sortRequest = str(usrSort.group(1))
+            usrFile.append('print')
 
 
 #=====================================================================
@@ -346,7 +346,6 @@ for pts in range(len(ptsFiles)):
         chan = sorted(chan)
 
 
-
     #=====================================================================
     #   Determine if user has requested for custom vel range:
     #
@@ -405,9 +404,13 @@ for pts in range(len(ptsFiles)):
                 annotate(float("{0:.1f}".format(vels[j])),xy=(xoff[j],yoff[j]))
 
 
+#=====================================================================
+#   The main for-loop stops here.
+#=====================================================================
+
 
 #=====================================================================
-#   The main for-loop stops here:
+#   Plot title and axes info.
 #
 if 'plot' in usrFile:
     titleName = ''
