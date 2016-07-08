@@ -6,7 +6,6 @@ import re
 from pylab import *
 import sys
 import numpy as np
-from functions import *
 import random
 
 usrFile = sys.argv[1:]
@@ -17,78 +16,66 @@ if len(usrFile) == 0:
     print "# from Luca Moscadelli's pts-diff.f and plots the"
     print "# relative positions of the features."
     print "# It is a variation of pts-test.py."
-    print "# The component positions and velocities are flux weighted"
-    print "# using the algorithm from functions.py."
+    print "# The component positions and velocities are flux weighted."
     print "# The script is useful for allocating maser emission across"
     print "# several epochs to the same feature."
     print ""
-    print "# If a centre offset needs to be applied, indicate:"
-    print "  offset= xx.x,yy,y"
-    print "# in the first line of the relevent .COMP.PTS file."
-    print ""
-    print "# plot*  = options are: plot and print."
+    print "# plot   = produces scatterplot."
     print "# err    = plots flux weighted errorbars."
-    print "# atate  = annotates the spots with their component."
-    print "# vatate = annotates the spots with their velocity."
-    print "# vel    = allows user specified velocty range for the colourbar."
-    print "# scale  = scales the peak flux of the data by a constant factor."
+    print "# atate  = annotate the spots with their component number."
+    print "# vatate = annotate the spots with their velocity identifier."
+    print "# vel    = specify velocty range for the colourbar."
+    print "# scale  = scale the size of the datapoints by a factor."
     print "# print  = print the details of the flux weighted components."
-    print "# sort   = options are: comp,chan,vels,flux,xoff,yoff"
+    print "# sort   = options are: comp, chan, vels, flux"
+    print "# ref    = reference component to fix at origin."
     print ""
-    print "--> pts-multi.py file_name.COMP.PTS plot* vel=xx.x,yy.y atate scale=xx sort=xxxx"
+    print "--> pts-multi.py file_name.COMP.PTS plot* vel=xx.x,yy.y atate scale=xx sort=xxxx ref=xx"
     print ""
     exit()
 
 
+defaultVels   = True        # Otherwise usrVelLim
+defaultScale  = True        # Otherwise usrScale
+offsetRequest = False       # Reposition the centre position
 
-
-#=====================================================================
-#   Define variables:
-#
-cTmp = []                   # chan temp
-vTmp = []                   # velo temp
-iTmp = []                   # flux temp (integrated)
-pTmp = []                   # peak temp
-xTmp = []                   # xoff temp
-xeTp = []                   # xerr temp
-yTmp = []                   # yoff temp
-yeTp = []                   # xerr temp
-mTmp = []                   # Co(m)p temp
-
-chan = []
-vels = []
-flux = []
-peak = []
-xoff = []
-xerr = []
-yoff = []
-yerr = []
-comp = []
-
-compMask   = []             # Subset of arrays which are not blank
-velMask    = []             # Average of each component
-homoVelTmp = []
-homoVel    = []             # Homogenised velocity
-
-defaultVels   = True         # Otherwise usrVelLim
-defaultScale  = True         # Otherwise usrScale
-offsetRequest = False        # Reposition the centre position
 
 ints       = '\s+(\d+)'           # 'Channel' variable from *.COMP
 floats     = '\s+([+-]?\d+.\d+)'  # Any float variable from *.COMP
 manyFloats = 14*floats            # space+floats seq gets repeated this many times after chans
 
 
-markers = {'o'    : 'circle',
-           's'    : 'square',
-           '8'    : 'octagon',
-           '*'    : 'star',
-           'v'    : 'triangle_down',
-           '^'    : 'triangle_up',
-           'h'    : 'hexagon1',
-           'p'    : 'pentagon',
-           'D'    : 'diamond'}
-markerKeys = markers.keys()
+
+#=====================================================================#
+#=====================================================================#
+#                     Setup preliminaries.                            #
+#=====================================================================#
+#=====================================================================#
+
+#=====================================================================
+#   Adaptation of J. Mac's MATlAB function
+#
+def wMean(x,W,rms=False):
+    wmean = sum(multiply(x,W))/sum(W)      # element-by-element multiplication
+    if len(x) == 1:
+        wrms = 0
+    else:
+        x = [(x - wmean)**2 for x in x]
+        wrms = sqrt(sum(multiply(x,W))/sum(W))
+    if rms:
+        return wmean,wrms
+    else:
+        return wmean
+
+
+#=====================================================================
+#   User requested reference component:
+#
+for i in usrFile:
+    compRequest = re.search('ref='+'(\d+)',i)
+    if compRequest:
+        relativeComp  = int(compRequest.group(1))
+        offsetRequest = True
 
 
 #=====================================================================
@@ -116,12 +103,15 @@ for i in usrFile:
 #=====================================================================
 #   Find the maximum/minimum velocities from all .COMP.PTS files:
 #
+vels    = []
+vTmp    = []
+velMask = []
 for pts in range(len(ptsFiles)):
     for line in open(ptsFiles[pts],'r'):
         reqInfo = re.search(ints + floats + ints + manyFloats, line)
-        if reqInfo:                                    # Populate temp arrays, which are reset after each component is harvested
+        if reqInfo:                                # Populate temp arrays, which are reset after each component is harvested
             vels.append(float(reqInfo.group(2)))
-        if line == '\n':                               # This statement allows each component to exist as its own list within the complete array
+        if line == '\n':                           # This statement allows each component to exist as its own list within the complete array
             vels.append(vTmp)
             vTmp = []
     close(ptsFiles[pts])
@@ -147,9 +137,27 @@ for i in usrFile:
 
 
 #=====================================================================
-#   Main script starts here - iterate through each of the input files:
+#   Condition to automatically toggle plotting
 #
-for pts in range(len(ptsFiles)):
+if 'atate' in usrFile or 'vatate' in usrFile:
+    usrFile.append('plot')
+
+#=====================================================================#
+#=====================================================================#
+#                        End preliminaries.                           #
+#=====================================================================#
+#=====================================================================#
+
+
+
+#=====================================================================#
+#=====================================================================#
+#                   Main script starts here.                          #
+#=====================================================================#
+#=====================================================================#
+
+for pts in range(len(ptsFiles)): # Iterate through each of the input files.
+
     #=====================================================================
     #   Define variables:
     #
@@ -183,11 +191,6 @@ for pts in range(len(ptsFiles)):
     #   Harvest values:
     #
     for line in open(ptsFiles[pts],'r'):
-        offInfo = re.search('offset='+'\s*'+'([+-]?\d+.\d+)'+'\s*'+','+'\s*'+'([+-]?\d+.\d+)',line)
-        if offInfo:
-            offsetRequest = True
-            xcentOff = float(offInfo.group(1))
-            ycentOff = float(offInfo.group(2))
         reqInfo = re.search(ints + floats + ints + manyFloats, line)
         if reqInfo:                                    # Populate temp arrays, which are reset after each component is harvested
             mTmp.append(  int(reqInfo.group(1)))
@@ -258,14 +261,6 @@ for pts in range(len(ptsFiles)):
 
 
     #=====================================================================
-    #   Apply centre offset
-    #
-    if offsetRequest:
-        xoff = [[i + xcentOff for i in element] for element in xoff]
-        yoff = [[i + ycentOff for i in element] for element in yoff]
-
-
-    #=====================================================================
     #   Determine weighted means:
     #
     vels = [wMean(vels[i],flux[i]) for i in xrange(len(comp))]
@@ -273,76 +268,105 @@ for pts in range(len(ptsFiles)):
     xerr = [wMean(xerr[i],flux[i]) for i in xrange(len(comp))]
     yoff = [wMean(yoff[i],flux[i]) for i in xrange(len(comp))]
     yerr = [wMean(yerr[i],flux[i]) for i in xrange(len(comp))]
-
     # These do not need weighted means, using the element with greatest flux:
     comp = [comp[i][0] for i in xrange(len(comp))]
     chan = [chan[i][flux[i].index(max(flux[i]))] for i in xrange(len(chan))]
-    peak = [peak[i][flux[i].index(max(flux[i]))] * scaleFactor for i in xrange(len(comp))]
-    flux = [flux[i][flux[i].index(max(flux[i]))] * scaleFactor for i in xrange(len(comp))]
+    peak = [peak[i][flux[i].index(max(flux[i]))]*scaleFactor for i in xrange(len(comp))]
+    flux = [flux[i][flux[i].index(max(flux[i]))]*scaleFactor for i in xrange(len(comp))]
+
+
+    #=====================================================================
+    #   Component uniqueness test.
+    #
+    occuranceTest = True
+    for i in xrange(len(comp)):
+        occuranceCount = comp.count(comp[i])
+        if occuranceCount != 1:
+            if occuranceTest:
+                print "\t\tWARNING. Component ** %d ** is not unique in %s"%(comp[i],ptsFiles[pts])
+                occuranceTest = False
+
+
+    #=====================================================================
+    #   Apply offset to obtain relative position.
+    #
+    if offsetRequest:
+        compCountKeep = 0
+        for i in xrange(len(comp)):
+            if relativeComp == comp[i]:   # If component exists in the .PTS file
+                compCountKeep = compCountKeep + 1
+                # Determine position of component of relative spot in the array:
+                compPosArray  = [i for i,x in enumerate(comp) if x == relativeComp]
+                compPos       = compPosArray[0]
+                # Now compute relative x/y-offsets:
+                xZero = xoff[compPos]
+                yZero = yoff[compPos]
+                xoff  = [i-xZero for i in xoff]
+                yoff  = [i-yZero for i in yoff]
 
 
     #=====================================================================
     #   Sorting
     #
     if sortRequest == 'comp':
-        vels = [x for (y,x) in sorted(zip(comp,vels), key=lambda pair: pair[0])]
-        xoff = [x for (y,x) in sorted(zip(comp,xoff), key=lambda pair: pair[0])]
-        xerr = [x for (y,x) in sorted(zip(comp,xerr), key=lambda pair: pair[0])]
-        yoff = [x for (y,x) in sorted(zip(comp,yoff), key=lambda pair: pair[0])]
-        yerr = [x for (y,x) in sorted(zip(comp,yerr), key=lambda pair: pair[0])]
-        chan = [x for (y,x) in sorted(zip(comp,chan), key=lambda pair: pair[0])]
-        flux = [x for (y,x) in sorted(zip(comp,flux), key=lambda pair: pair[0])]
-        peak = [x for (y,x) in sorted(zip(comp,peak), key=lambda pair: pair[0])]
+        vels = [x for (y,x) in sorted(zip(comp,vels),key=lambda pair: pair[0])]
+        xoff = [x for (y,x) in sorted(zip(comp,xoff),key=lambda pair: pair[0])]
+        xerr = [x for (y,x) in sorted(zip(comp,xerr),key=lambda pair: pair[0])]
+        yoff = [x for (y,x) in sorted(zip(comp,yoff),key=lambda pair: pair[0])]
+        yerr = [x for (y,x) in sorted(zip(comp,yerr),key=lambda pair: pair[0])]
+        chan = [x for (y,x) in sorted(zip(comp,chan),key=lambda pair: pair[0])]
+        flux = [x for (y,x) in sorted(zip(comp,flux),key=lambda pair: pair[0])]
+        peak = [x for (y,x) in sorted(zip(comp,peak),key=lambda pair: pair[0])]
         comp = sorted(comp)
     if sortRequest == 'vels':
-        comp = [x for (y,x) in sorted(zip(vels,comp), key=lambda pair: pair[0],reverse=True)]
-        xoff = [x for (y,x) in sorted(zip(vels,xoff), key=lambda pair: pair[0],reverse=True)]
-        xerr = [x for (y,x) in sorted(zip(vels,xerr), key=lambda pair: pair[0],reverse=True)]
-        yoff = [x for (y,x) in sorted(zip(vels,yoff), key=lambda pair: pair[0],reverse=True)]
-        yerr = [x for (y,x) in sorted(zip(vels,yerr), key=lambda pair: pair[0],reverse=True)]
-        chan = [x for (y,x) in sorted(zip(vels,chan), key=lambda pair: pair[0],reverse=True)]
-        flux = [x for (y,x) in sorted(zip(vels,flux), key=lambda pair: pair[0],reverse=True)]
-        peak = [x for (y,x) in sorted(zip(vels,peak), key=lambda pair: pair[0],reverse=True)]
+        comp = [x for (y,x) in sorted(zip(vels,comp),key=lambda pair: pair[0],reverse=True)]
+        xoff = [x for (y,x) in sorted(zip(vels,xoff),key=lambda pair: pair[0],reverse=True)]
+        xerr = [x for (y,x) in sorted(zip(vels,xerr),key=lambda pair: pair[0],reverse=True)]
+        yoff = [x for (y,x) in sorted(zip(vels,yoff),key=lambda pair: pair[0],reverse=True)]
+        yerr = [x for (y,x) in sorted(zip(vels,yerr),key=lambda pair: pair[0],reverse=True)]
+        chan = [x for (y,x) in sorted(zip(vels,chan),key=lambda pair: pair[0],reverse=True)]
+        flux = [x for (y,x) in sorted(zip(vels,flux),key=lambda pair: pair[0],reverse=True)]
+        peak = [x for (y,x) in sorted(zip(vels,peak),key=lambda pair: pair[0],reverse=True)]
         vels = sorted(vels,reverse=True)
     if sortRequest == 'xoff':
-        vels = [x for (y,x) in sorted(zip(xoff,vels), key=lambda pair: pair[0],reverse=True)]
-        comp = [x for (y,x) in sorted(zip(xoff,comp), key=lambda pair: pair[0],reverse=True)]
-        xerr = [x for (y,x) in sorted(zip(xoff,xerr), key=lambda pair: pair[0],reverse=True)]
-        yoff = [x for (y,x) in sorted(zip(xoff,yoff), key=lambda pair: pair[0],reverse=True)]
-        yerr = [x for (y,x) in sorted(zip(xoff,yerr), key=lambda pair: pair[0],reverse=True)]
-        chan = [x for (y,x) in sorted(zip(xoff,chan), key=lambda pair: pair[0],reverse=True)]
-        flux = [x for (y,x) in sorted(zip(xoff,flux), key=lambda pair: pair[0],reverse=True)]
-        peak = [x for (y,x) in sorted(zip(xoff,peak), key=lambda pair: pair[0],reverse=True)]
+        vels = [x for (y,x) in sorted(zip(xoff,vels),key=lambda pair: pair[0],reverse=True)]
+        comp = [x for (y,x) in sorted(zip(xoff,comp),key=lambda pair: pair[0],reverse=True)]
+        xerr = [x for (y,x) in sorted(zip(xoff,xerr),key=lambda pair: pair[0],reverse=True)]
+        yoff = [x for (y,x) in sorted(zip(xoff,yoff),key=lambda pair: pair[0],reverse=True)]
+        yerr = [x for (y,x) in sorted(zip(xoff,yerr),key=lambda pair: pair[0],reverse=True)]
+        chan = [x for (y,x) in sorted(zip(xoff,chan),key=lambda pair: pair[0],reverse=True)]
+        flux = [x for (y,x) in sorted(zip(xoff,flux),key=lambda pair: pair[0],reverse=True)]
+        peak = [x for (y,x) in sorted(zip(xoff,peak),key=lambda pair: pair[0],reverse=True)]
         xoff = sorted(xoff,reverse=True)
     if sortRequest == 'yoff':
-        vels = [x for (y,x) in sorted(zip(yoff,vels), key=lambda pair: pair[0],reverse=True)]
-        xoff = [x for (y,x) in sorted(zip(yoff,xoff), key=lambda pair: pair[0],reverse=True)]
-        xerr = [x for (y,x) in sorted(zip(yoff,xerr), key=lambda pair: pair[0],reverse=True)]
-        comp = [x for (y,x) in sorted(zip(yoff,comp), key=lambda pair: pair[0],reverse=True)]
-        yerr = [x for (y,x) in sorted(zip(yoff,yerr), key=lambda pair: pair[0],reverse=True)]
-        chan = [x for (y,x) in sorted(zip(yoff,chan), key=lambda pair: pair[0],reverse=True)]
-        flux = [x for (y,x) in sorted(zip(yoff,flux), key=lambda pair: pair[0],reverse=True)]
-        peak = [x for (y,x) in sorted(zip(yoff,peak), key=lambda pair: pair[0],reverse=True)]
+        vels = [x for (y,x) in sorted(zip(yoff,vels),key=lambda pair: pair[0],reverse=True)]
+        xoff = [x for (y,x) in sorted(zip(yoff,xoff),key=lambda pair: pair[0],reverse=True)]
+        xerr = [x for (y,x) in sorted(zip(yoff,xerr),key=lambda pair: pair[0],reverse=True)]
+        comp = [x for (y,x) in sorted(zip(yoff,comp),key=lambda pair: pair[0],reverse=True)]
+        yerr = [x for (y,x) in sorted(zip(yoff,yerr),key=lambda pair: pair[0],reverse=True)]
+        chan = [x for (y,x) in sorted(zip(yoff,chan),key=lambda pair: pair[0],reverse=True)]
+        flux = [x for (y,x) in sorted(zip(yoff,flux),key=lambda pair: pair[0],reverse=True)]
+        peak = [x for (y,x) in sorted(zip(yoff,peak),key=lambda pair: pair[0],reverse=True)]
         yoff = sorted(yoff,reverse=True)
     if sortRequest == 'flux':
-        vels = [x for (y,x) in sorted(zip(flux,vels), key=lambda pair: pair[0],reverse=True)]
-        xoff = [x for (y,x) in sorted(zip(flux,xoff), key=lambda pair: pair[0],reverse=True)]
-        xerr = [x for (y,x) in sorted(zip(flux,xerr), key=lambda pair: pair[0],reverse=True)]
-        yoff = [x for (y,x) in sorted(zip(flux,yoff), key=lambda pair: pair[0],reverse=True)]
-        yerr = [x for (y,x) in sorted(zip(flux,yerr), key=lambda pair: pair[0],reverse=True)]
-        chan = [x for (y,x) in sorted(zip(flux,chan), key=lambda pair: pair[0],reverse=True)]
-        comp = [x for (y,x) in sorted(zip(flux,comp), key=lambda pair: pair[0],reverse=True)]
-        peak = [x for (y,x) in sorted(zip(flux,peak), key=lambda pair: pair[0],reverse=True)]
+        vels = [x for (y,x) in sorted(zip(flux,vels),key=lambda pair: pair[0],reverse=True)]
+        xoff = [x for (y,x) in sorted(zip(flux,xoff),key=lambda pair: pair[0],reverse=True)]
+        xerr = [x for (y,x) in sorted(zip(flux,xerr),key=lambda pair: pair[0],reverse=True)]
+        yoff = [x for (y,x) in sorted(zip(flux,yoff),key=lambda pair: pair[0],reverse=True)]
+        yerr = [x for (y,x) in sorted(zip(flux,yerr),key=lambda pair: pair[0],reverse=True)]
+        chan = [x for (y,x) in sorted(zip(flux,chan),key=lambda pair: pair[0],reverse=True)]
+        comp = [x for (y,x) in sorted(zip(flux,comp),key=lambda pair: pair[0],reverse=True)]
+        peak = [x for (y,x) in sorted(zip(flux,peak),key=lambda pair: pair[0],reverse=True)]
         flux = sorted(flux,reverse=True)
     if sortRequest == 'chan':
-        vels = [x for (y,x) in sorted(zip(chan,vels), key=lambda pair: pair[0])]
-        xoff = [x for (y,x) in sorted(zip(chan,xoff), key=lambda pair: pair[0])]
-        xerr = [x for (y,x) in sorted(zip(chan,xerr), key=lambda pair: pair[0])]
-        yoff = [x for (y,x) in sorted(zip(chan,yoff), key=lambda pair: pair[0])]
-        yerr = [x for (y,x) in sorted(zip(chan,yerr), key=lambda pair: pair[0])]
-        comp = [x for (y,x) in sorted(zip(chan,comp), key=lambda pair: pair[0])]
-        flux = [x for (y,x) in sorted(zip(chan,flux), key=lambda pair: pair[0])]
-        peak = [x for (y,x) in sorted(zip(chan,peak), key=lambda pair: pair[0])]
+        vels = [x for (y,x) in sorted(zip(chan,vels),key=lambda pair: pair[0])]
+        xoff = [x for (y,x) in sorted(zip(chan,xoff),key=lambda pair: pair[0])]
+        xerr = [x for (y,x) in sorted(zip(chan,xerr),key=lambda pair: pair[0])]
+        yoff = [x for (y,x) in sorted(zip(chan,yoff),key=lambda pair: pair[0])]
+        yerr = [x for (y,x) in sorted(zip(chan,yerr),key=lambda pair: pair[0])]
+        comp = [x for (y,x) in sorted(zip(chan,comp),key=lambda pair: pair[0])]
+        flux = [x for (y,x) in sorted(zip(chan,flux),key=lambda pair: pair[0])]
+        peak = [x for (y,x) in sorted(zip(chan,peak),key=lambda pair: pair[0])]
         chan = sorted(chan)
 
 
@@ -395,7 +419,10 @@ for pts in range(len(ptsFiles)):
     #
     if 'plot' in usrFile:
         for j in xrange(len(chan)):
-            scatter( xoff[j],yoff[j],s=flux[j],c=homoVel[j],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax,marker=markerKeys[pts])
+            if pts == 0:   # First marker is a circle....
+                scatter( xoff[j],yoff[j],s=flux[j],c=homoVel[j],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax,marker="o")
+            else:          # ... second marker onwards corresponds to number of corners.
+                scatter( xoff[j],yoff[j],s=flux[j],c=homoVel[j],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax,marker=(pts+1,1,0))
             if 'err' in usrFile:
                 errorbar(xoff[j],yoff[j],xerr=xerr[j],yerr=yerr[j])
             if 'atate' in usrFile:
@@ -403,10 +430,12 @@ for pts in range(len(ptsFiles)):
             if 'vatate' in usrFile:
                 annotate(float("{0:.1f}".format(vels[j])),xy=(xoff[j],yoff[j]))
 
+#=====================================================================#
+#=====================================================================#
+#                  The main for-loop stops here.                      #
+#=====================================================================#
+#=====================================================================#
 
-#=====================================================================
-#   The main for-loop stops here.
-#=====================================================================
 
 
 #=====================================================================
@@ -415,8 +444,8 @@ for pts in range(len(ptsFiles)):
 if 'plot' in usrFile:
     titleName = ''
     for i in range(len(ptsFiles)):
-        titleName = titleName + ptsFiles[i][:-9] + ' [' + markers[markerKeys[i]] + '], '
-    titleName = titleName[:-2]    # Remove the trailing "], " for the final title name
+        titleName = titleName + ptsFiles[i][:-9] + '  **  '
+    titleName = titleName[:-5]    # Remove the trailing "**  " for the final title name
     gca().invert_xaxis()
     title(titleName)
     xlabel('x offset')
