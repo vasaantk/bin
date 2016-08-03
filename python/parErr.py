@@ -1,16 +1,15 @@
 #! /usr/bin/env python
 
 import sys
-from functions import *
 
 usrInp = sys.argv[1:]
 
 if len(usrInp) != 2:
     print ""
-    print "# parErr.py takes a parallax angle with error"
+    print "# parErr.py takes a parallax angle with uncertainty"
     print "# and converts it to the parallax distance."
     print ""
-    print "\t --> parErr.py parallax_angle error"
+    print "\t --> parErr.py   parallax_angle   uncertainty"
     print ""
     sys.exit()
 
@@ -22,5 +21,4 @@ parallax = 1/par
 parCeil  = 1./(par-err) - parallax
 parFloor = parallax - 1./(par+err)
 
-print "Parallax   +       -"
-print "  "+str(nsf(parallax))+"   "+str(nsf(parCeil))+"   "+str(nsf(parFloor))
+print "%.3f\t+%.3f\t-%.3f"%(parallax,parCeil,parFloor)

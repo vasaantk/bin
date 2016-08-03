@@ -170,11 +170,11 @@ yerr = [yerr[i] for i in compMask]
 #=====================================================================
 #   Determine weighted means:
 #
-vels = [wMean(vels[i],flux[i]) for i in xrange(len(comp))]
-xoff = [wMean(xoff[i],flux[i]) for i in xrange(len(comp))]
-xerr = [wMean(xerr[i],flux[i]) for i in xrange(len(comp))]
-yoff = [wMean(yoff[i],flux[i]) for i in xrange(len(comp))]
-yerr = [wMean(yerr[i],flux[i]) for i in xrange(len(comp))]
+vels = [wmean(vels[i],flux[i]) for i in xrange(len(comp))]
+xoff = [wmean(xoff[i],flux[i]) for i in xrange(len(comp))]
+xerr = [wmean(xerr[i],flux[i]) for i in xrange(len(comp))]
+yoff = [wmean(yoff[i],flux[i]) for i in xrange(len(comp))]
+yerr = [wmean(yerr[i],flux[i]) for i in xrange(len(comp))]
 
 # These do not need weighted means, using the element with greatest flux:
 comp = [comp[i][0] for i in xrange(len(comp))]

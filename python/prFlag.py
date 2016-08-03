@@ -3,7 +3,20 @@
 
 import re
 import sys
-from functions import space
+
+
+# Ensure equally spaced columns:
+def space(charOfInterest,spaces = 3):
+    SPACES = spaces * " "
+    charDiff = len(str(charOfInterest)) - len(SPACES)
+    if charDiff < 0:
+        spaceDiff = len(SPACES) + abs(charDiff)
+    elif charDiff > 0:
+        spaceDiff = len(SPACES) - charDiff
+    else:
+        spaceDiff = len(SPACES)
+    return str(spaceDiff*" ")
+
 
 userInp = sys.argv[1:]
 
