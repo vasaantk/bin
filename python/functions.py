@@ -1,6 +1,6 @@
-from scipy import *
-from ephem import *
-
+from scipy   import *
+from ephem   import *
+from astropy import *
 
 
 
@@ -28,7 +28,6 @@ def wmean(x,W,rms=False):
 
 
 
-
 # Variance Weighted Mean. Wednesday, 03 August 2016
 def varmean(x,W,rms=False):
     if len(x) == 1:
@@ -41,3 +40,19 @@ def varmean(x,W,rms=False):
             return varmean,err
         else:
             return varmean
+
+
+
+# mas/yr to km/s, Sunday, 11 September 2016
+def asyr2kms(asyr,parsecDistance):
+    # Constants conversions:
+    parsec2km = units.pc.to(units.km) * parsecDistance
+    yr2sec    = 365.2425 * 24 * 60 * 60
+    as2rad    = radians(1./3600.)
+
+    # Variable converstions:
+    theta     = asyr * as2rad    #  arcsec/yr  -->  radians/yr
+    theta     = theta/yr2sec     # radians/yr  -->  radians/sec
+    kms       = parsec2km*theta
+
+    return kms
