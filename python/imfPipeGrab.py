@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# A modification of imfGrab.py to take inputs from grep.
+# A modification of imfGrab.py to take inputs from pipe.
 
 import re
 import sys
@@ -16,7 +16,10 @@ for line in sys.stdin:
                         +   ints
                         +   floats        # Flux
                         +   floats+'\S+?' # Flux err (with units?)
-                        +10*floats
+                        #+10*floats
+                        + 4*floats
+                        + '\s+([+-]?\d+.\d+)\s*?([+-]?\d+.\d+)'
+                        + 4*floats
                         + 2*ints
                         + 2*floats
                         +   ints
