@@ -6,7 +6,7 @@ import re
 import sys
 
 filler     = 12*'.'
-ints       = '\s+(\d+)'           # 'Channel' variable from *.COMP
+ints       = '\s+([+-]?\d+)'           # 'Channel' variable from *.COMP
 floats     = '\s+([+-]?\d+.\d+)'  # Any float variable from *.COMP
 loopkeeper = True
 reqInfo    = False
