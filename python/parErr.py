@@ -16,9 +16,9 @@ if len(usrInp) != 2:
 par    = float(usrInp[0])
 err    = float(usrInp[1])
 
-parallax = 1/par
+parallax = 1./par
 
-parCeil  = 1./(par-err) - parallax
-parFloor = parallax - 1./(par+err)
+parCeil  =  1./(par-err) - parallax
+parFloor = -1./(par+err) + parallax
 
 print "%.3f\t+%.3f\t-%.3f"%(parallax,parCeil,parFloor)

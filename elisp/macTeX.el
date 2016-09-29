@@ -9,7 +9,6 @@
 ;;
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp")
 (add-to-list 'load-path "/Library/TeX/texbin/")
-(add-to-list 'exec-path "/Library/TeX/texbin/")
 
 (require 'tex-site)
 
