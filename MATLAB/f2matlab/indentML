@@ -1,0 +1,9 @@
+(autoload 'matlab-mode "~/matlab/emacs/matlabnew" "Enter Matlab mode." t)
+(matlab-mode)
+(setq make-backup-files nil)
+(custom-set-variables
+'(auto-save-default nil)
+'(matlab-verify-on-save-flag nil)
+'(matlab-indent-level 1))
+(indent-region 0 (buffer-size)  nil)
+(save-buffer)

@@ -1,0 +1,6 @@
+The installation of f2matlab is straightforward. Simply unzip the source files
+into some convenint directory. Note that f2matlab does not make its own directory. 
+
+Put the f2matlab directory onto the matlab path using, for example, pathtool in matlab.
+
+At this point, testing of f2matlab.m can be accomplished by following the README file.
