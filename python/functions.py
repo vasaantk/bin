@@ -1,6 +1,7 @@
 from scipy   import *
 from ephem   import *
 from astropy import *
+from astropy import units
 
 
 
@@ -44,7 +45,7 @@ def varmean(x,W,rms=False):
 
 
 # mas/yr to km/s, Sunday, 11 September 2016
-def asyr2kms(asyr,parsecDistance):
+def masyr2kms(asyr,parsecDistance):
     # Constants conversions:
     parsec2km = units.pc.to(units.km) * parsecDistance
     yr2sec    = 365.2425 * 24 * 60 * 60
