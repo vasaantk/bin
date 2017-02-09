@@ -7,7 +7,6 @@ from pylab import *
 import sys
 import numpy as np
 
-
 usrFile = sys.argv[1:]
 
 if len(usrFile) == 0:
@@ -54,7 +53,7 @@ defaultVels  = True         # Otherwise usrVelLim
 defaultScale = True         # Otherwise usrScale
 
 channel = '(\d+)'           # 'Channel' variable from *.COMP
-spaDigs = '\s+?\d+?'         # 'Space digits'
+spaDigs = '\s+?\d+?'        # 'Space digits'
 floats  = '([+-]?\d+.\d+)'  # Any float variable from *.COMP
 
 
