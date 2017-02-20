@@ -42,7 +42,7 @@ for line in open(usrFile[0],'r'):
         # Print the line immediately after IBLED
         print "%55s"%(str(commRow)+line[8:-1])
     if reqInfo:
-        if int(reqInfo.group(1)) in ibledRowNum
+        if int(reqInfo.group(1)) in ibledRowNum:
             # %78s referes to the line length
             print "%78s"%(str(rowDict[int(reqInfo.group(1))])+line[8:-1])
     if reqBled:
