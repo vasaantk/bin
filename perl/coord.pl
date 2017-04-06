@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Perl script for arbitary astronomical coordinate conversion
+# Perl script for arbitary astronomical coordinate conversion. Simon Ellingsen.
 
 # Standard perl modules
 use Carp;
