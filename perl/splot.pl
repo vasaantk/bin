@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 # This perl script reads a simple format of text file and plots the
-# data stored in the text file using PGPLOT
+# data stored in the text file using PGPLOT. Simon Ellingsen.
 
 =head1 NAME
 
