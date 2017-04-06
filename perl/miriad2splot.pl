@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 # Perl script for converting files written in miriad's text output format into
-# splot format.
+# splot format. Simon Ellingsen.
 #
 # History
 #
