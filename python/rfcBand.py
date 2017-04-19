@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Written by Vasaant S/O Krishnan. Monday, 17 October 2016, 17:12 PM.
+# Written by Vasaant S/O Krishnan. Monday, 17 October 2016.
 
 import re
 from ephem import *
