@@ -1,7 +1,7 @@
 function [Group]=VLBI_Grouper_err(RA,RA_err, Dec, Dec_err, Vel,Amp, maxvel)
 % Usage [Group]=VLBI_Grouper(RA, Dec, Vel,Amp,maxvel)
 % Now using err estimates to search for emission within 3-sigma globally and 2-sigma in either direction where sigma is the sum of the errors.
-
+% Jamie McCallum.
 
 RA=RA(:);
 RA_err=RA(:);
