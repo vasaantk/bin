@@ -1,5 +1,5 @@
 %% Plot_ATMOS is a script to plot observatory clocks
-%  in ATMOS.FITS
+%  in ATMOS.FITS. Vasaant Krishnan.
 
 % 16th October 2015
 
