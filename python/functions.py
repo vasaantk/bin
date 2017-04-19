@@ -3,7 +3,7 @@ from ephem   import *
 from astropy import *
 from astropy import units
 
-
+# Vasaant Krishnan
 
 def wave(freq):      # Frequency to Wavelength
     wavelength = c/freq
