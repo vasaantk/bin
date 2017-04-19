@@ -1,5 +1,5 @@
 %% "Time_ATMOS is a  script to extrapolate observatory clocks linearly
-% from existing values in ATMOS.FITS
+% from existing values in ATMOS.FITS. Vasaant Krishnan
 
 % 24th July 2014
 
