@@ -6,7 +6,7 @@ function [Group]=VLBI_Grouper_simple(RA,Dec, Vel,Amp, PosErr, maxvel)
 % Amp - array of fluxes for each channel
 % PosErr - maximum position difference between points to be grouped
 % maxvel - maximum velocity difference between points to be grouped
-
+% Jamie McCallum
 
 RA=RA(:);
 
