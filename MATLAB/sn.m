@@ -1,6 +1,6 @@
 function sn(res,option,delim);
 
-% Function to read in the multi-band delays (1st instance) from FRING and plot them out
+% Function to read in the multi-band delays (1st instance) from FRING and plot them out. Vasaant Krishnan.
 
 % Script for importing  from the following text file:
 %
