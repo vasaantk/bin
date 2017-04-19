@@ -1,11 +1,11 @@
+% Vasaant Krishnan
+
 clf
 
 % Variables
 SIGMA = 1;
 NU_0  = 10;         % Centre freq in Hz
 NU = -20:0.01:20;   % Freq range around centre in Hz
-
-
 
 %%====================================
 %
@@ -30,11 +30,6 @@ plot(NU,AMP)
 %%======================
 
 
-
-
-
-
-
 %%====================================
 %
 %    Take the I.F.T of AMP
@@ -45,11 +40,6 @@ s = fftshift(real(DELAY));
 plot(NU,s)
 
 %%======================
-
-
-
-
-
 
 
 %%====================================
@@ -63,16 +53,6 @@ B = cos( 2* pi*NU_0*NU);
 R = A.*B;     % I.F.T of AMP is the DELAY
 
 %%======================
-
-
-
-
-
-
-
-
-
-
 
 
 Fs = 1000;                    % Sampling frequency
