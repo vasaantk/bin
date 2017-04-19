@@ -7,6 +7,7 @@ function [selVel, selAmp]=scatter_interactive(X,Y,Amp,Vel);
 % are also printed out, column-wise for copy-paste afterwards. Pressing any
 % key will then cause the program to loop to the start for more plotting fun.
 % This will keep on going until figure (2) is killed. Enjoy!
+% Jamie McCallum.
 
 
 
