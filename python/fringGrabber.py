@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# For program details run "fringPlotter.py" with no command-line arguments 16 February 2014
+# Vasaant Krishnan. For program details run "fringPlotter.py" with no command-line arguments 16 February 2014
 
 from pylab import *
 import re
