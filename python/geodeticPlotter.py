@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# Vasaant Krishnan.
+
 # This script reads in the file name of the argument from the command line and plots out the multiband delays and fringe rates against universal time. The abovementioned file is any .dat output from Mark Reid's fit_geoblocs.f fortran program.
 
 # End the commandline input with the word: save - to automatically get a .eps file of the output
