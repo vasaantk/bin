@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# Written by Vasaant S/O Krishnan. Friday, 27 May 2016, 10:03 AM.
+# Written by Vasaant S/O Krishnan. Friday, 27 May 2016.
 
 import re
 from pylab import *
