@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# Written by Vasaant S/O Krishnan. Tuesday, 19 April 2016, 14:35 PM.
+# Written by Vasaant S/O Krishnan. Tuesday, 19 April 2016.
 # Run without arguments for instructions.
 
 import re
