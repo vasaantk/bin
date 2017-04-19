@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-
+#! /usr/bin/env python
+# Vasaant Krishnan
 # Script to read in a compact array off-source information text file and output it in a format compatible with AIPS uvflgs
 
 # Example inout: atcaFlagger.py monica.log
