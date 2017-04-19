@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# A modification of imfGrab.py to take inputs from pipe.
+# Vasaant Krishnan. A modification of imfGrab.py to take inputs from pipe.
 
 import re
 import sys
