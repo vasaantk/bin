@@ -1,4 +1,5 @@
-;%clf
+% Vasaan Krishnan. Based on Mark Reid's algorithm.
+%clf
 
 % Parameters to allow 'textscan' to harvest data correctly
 startRow = 2;
