@@ -3,7 +3,7 @@
 from scipy import *
 import scipy.constants as sc
 
-# Determines the tropospheric excess delay (Delta_l) based on Equation (2) in Honma et al. (2008)
+# Vasaant Krishnan. Determines the tropospheric excess delay (Delta_l) based on Equation (2) in Honma et al. (2008)
 
 
 # Change these as necessary:
