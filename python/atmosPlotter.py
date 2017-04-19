@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# This script has been harvested from definitions_bessel_current.py on 7th November 2013
+# Vasaant Krishnan. This script has been harvested from definitions_bessel_current.py on 7th November 2013
 
 # It plots the data found in the output from Mark Reid's fit_geoblocks.f script (ATMOS.FITS).
 
