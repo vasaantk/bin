@@ -18,7 +18,7 @@ if len(usrFile) == 0:
     print "# The script is useful for determining if the spots in a"
     print "# feature are self-consistent throughout epochs."
     print ""
-    print "# comp   = user specified component of interest."
+    print "# comp   = user specified component/feature of interest."
     print "# plot   = produces scatterplot."
     print "# err    = plots flux weighted errorbars."
     print "# atate  = annotate the spots with their component number."
@@ -27,8 +27,9 @@ if len(usrFile) == 0:
     print "# scale  = scale the size of the datapoints by a factor."
     print "# print  = print the details of the flux weighted components."
     print "# sort   = options are: chan, vels, flux, xoff, yoff"
+    print "# spec   = Produces a spectrum of the component/feature"
     print ""
-    print "--> pts-frag.py file_name.COMP.PTS plot* vel=xx.x,yy.y atate scale=xx sort=xxxx comp=xx"
+    print "--> pts-frag.py file_name.COMP.PTS plot* vel=xx.x,yy.y atate scale=xx sort=xxxx comp=xx spec"
     print ""
     exit()
 
@@ -146,7 +147,7 @@ for i in usrFile:
 #=====================================================================
 #   Condition to automatically toggle plotting
 #
-if 'atate' in usrFile or 'vatate' in usrFile:
+if 'atate' in usrFile or 'vatate' in usrFile or 'spec' in usrFile:
     usrFile.append('plot')
 
 #=====================================================================#
@@ -386,18 +387,26 @@ for pts in range(len(ptsFiles)): # Iterate through each of the input files.
         #
         if 'plot' in usrFile:
             for j in xrange(len(chan)):
-                if pts == 0:   # First marker is a circle....
-                    scatter( xoff[j],yoff[j],s=flux[j],c=vels[j],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax,marker="o")
-                else:          # ... second marker onwards corresponds to number of corners.
-                    scatter( xoff[j],yoff[j],s=flux[j],c=vels[j],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax,marker=(pts+1,1,0))
-                if 'err' in usrFile:
-                    errorbar(xoff[j],yoff[j],xerr=xerr[j],yerr=yerr[j])
-                if 'atate' in usrFile:
-                    annotate(comp[j],xy=(xoff[j],yoff[j]))
-                if 'vatate' in usrFile:
-                    annotate(float("{0:.1f}".format(vels[j])),xy=(xoff[j],yoff[j]))
+                if 'spec' in usrFile:
+                    if pts == 0:   # First marker is a circle....
+                        plot(vels[j],flux[j],marker="o")
+                    else:          # ... second marker onwards corresponds to number of corners.
+                        plot(vels[j],flux[j],marker=(pts+1,1,0))
+                    cbarFlag = False
+                else:
+                    cbarFlag = True
+                    if pts == 0:   # First marker is a circle....
+                        scatter( xoff[j],yoff[j],s=flux[j],c=vels[j],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax,marker="o")
+                    else:          # ... second marker onwards corresponds to number of corners.
+                        scatter( xoff[j],yoff[j],s=flux[j],c=vels[j],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax,marker=(pts+1,1,0))
+                    if 'err' in usrFile:
+                        errorbar(xoff[j],yoff[j],xerr=xerr[j],yerr=yerr[j])
+                    if 'atate' in usrFile:
+                        annotate(comp[j],xy=(xoff[j],yoff[j]))
+                    if 'vatate' in usrFile:
+                        annotate(float("{0:.1f}".format(vels[j])),xy=(xoff[j],yoff[j]))
     else: # Closes if plotFlag:
-        print "\t\tWARNING. Component ** %d ** not found in %s"%(userComp,ptsFiles[pts])
+        print "\n\t\tWARNING. Component ** %d ** not found in %s"%(userComp,ptsFiles[pts])
 
 
 
@@ -479,6 +488,7 @@ if 'plot' in usrFile and atLeastOnce:
     title(titleName)
     xlabel('x offset')
     ylabel('y offset')
-    cbar = colorbar()
-    cbar.set_label('Velocity')
+    if cbarFlag:
+        cbar = colorbar()
+        cbar.set_label('Velocity')
     show()
