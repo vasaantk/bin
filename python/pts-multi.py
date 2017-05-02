@@ -111,7 +111,7 @@ for pts in range(len(ptsFiles)):
         reqInfo = re.search(ints + floats + ints + manyFloats, line)
         if reqInfo:                                # Populate temp arrays, which are reset after each component is harvested
             vels.append(float(reqInfo.group(2)))
-        if line == '\n':                           # This statement allows each component to exist as its own list within the complete array
+        if line == '\n':                           # Allow each component to exist as its own list within the complete array
             vels.append(vTmp)
             vTmp = []
     close(ptsFiles[pts])

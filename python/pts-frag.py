@@ -36,7 +36,6 @@ if len(usrFile) == 0:
 defaultVels   = True        # Otherwise usrVelLim
 defaultScale  = True        # Otherwise usrScale
 offsetRequest = False       # Reposition the centre position
-allGoodFlag   = False       # Do not create a plot unless component exists
 atLeastOnce   = False       # Need the user component to be present at least once
 
 ints       = '\s+(\d+)'           # 'Channel' variable from *.COMP
@@ -194,8 +193,9 @@ for pts in range(len(ptsFiles)): # Iterate through each of the input files.
     homoVelTmp = []
     homoVel    = []             # Homogenised velocity
 
-
     featurePosition = 0         # Position of requested array of spots
+
+    allGoodFlag  = False        # Do not create a plot unless userComp exists. Set to FALSE for each new .COMP.PTS file
 
 
     #=====================================================================
@@ -405,7 +405,7 @@ for pts in range(len(ptsFiles)): # Iterate through each of the input files.
                         annotate(comp[j],xy=(xoff[j],yoff[j]))
                     if 'vatate' in usrFile:
                         annotate(float("{0:.1f}".format(vels[j])),xy=(xoff[j],yoff[j]))
-    else: # Closes if plotFlag:
+    else:    # Closes "if allGoodFlag:"
         print "\n\t\tWARNING. Component ** %d ** not found in %s"%(userComp,ptsFiles[pts])
 
 
