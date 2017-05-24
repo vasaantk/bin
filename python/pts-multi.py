@@ -5,7 +5,7 @@
 import re
 from pylab import *
 import sys
-import numpy as np
+#import numpy as np
 import random
 
 usrFile = sys.argv[1:]
