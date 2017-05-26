@@ -179,8 +179,8 @@ yerr = [wmean(yerr[i],flux[i]) for i in xrange(len(comp))]
 # These do not need weighted means, using the element with greatest flux:
 comp = [comp[i][0] for i in xrange(len(comp))]
 chan = [chan[i][flux[i].index(max(flux[i]))] for i in xrange(len(chan))]
-peak = [peak[i][flux[i].index(max(flux[i]))] * scaleFactor for i in xrange(len(comp))]
-flux = [flux[i][flux[i].index(max(flux[i]))] * scaleFactor for i in xrange(len(comp))]
+peak = [peak[i][flux[i].index(max(flux[i]))] for i in xrange(len(comp))]
+flux = [flux[i][flux[i].index(max(flux[i]))] for i in xrange(len(comp))]
 
 
 
@@ -269,7 +269,7 @@ if 'comp' in usrFile:
                     xerrAdd.append(xerr[i])
                     yerrAdd.append(yerr[i])
             if xoffAdd != []:                         # Catch scrip in-case first choice is empty array
-                scatter( xoffAdd,yoffAdd,s=fluxAdd,c=velsAdd,vmin=velMin,vmax=velMax)
+                scatter( xoffAdd,yoffAdd,s=abs(scaleFactor*log(fluxAdd)),c=velsAdd,vmin=velMin,vmax=velMax)
                 if 'err' in usrFile:
                     errorbar(xoffAdd,yoffAdd,xerrAdd,yerrAdd)
                 if 'atate' in usrFile:
@@ -334,7 +334,7 @@ if 'seq' in usrFile:
     print ""
     for i in xrange(len(comp)):
 
-        scatter( xoff[i],yoff[i],s=flux[i],c=vels[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
+        scatter( xoff[i],yoff[i],s=abs(scaleFactor*log(flux[i])),c=vels[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
         if 'err' in usrFile:
             errorbar(xoff[i],yoff[i],xerr=xerr[i],yerr=yerr[i])
         if 'atate' in usrFile:
@@ -366,8 +366,8 @@ if 'print' in usrFile:
     print ""
     for i in xrange(len(chan)):
         print '%6d %10.3f %4d %13.5f %13.5f %33.6f %10.7f %14.6f %10.7f'%(
-              int(comp[i]),float(vels[i]),int(chan[i]),float(flux[i]/scaleFactor),
-            float(peak[i]/scaleFactor),float(xoff[i]),float(xerr[i]),float(yoff[i]),
+              int(comp[i]),float(vels[i]),int(chan[i]),float(flux[i]),
+            float(peak[i]),float(xoff[i]),float(xerr[i]),float(yoff[i]),
             float(yerr[i]))
     print ""
 
@@ -378,7 +378,7 @@ if 'print' in usrFile:
 #
 if 'plot' in usrFile:
     for i in xrange(len(chan)):
-        scatter( xoff[i],yoff[i],s=flux[i],c=homoVel[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
+        scatter( xoff[i],yoff[i],s=abs(scaleFactor*log(flux[i])),c=homoVel[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
         if 'err' in usrFile:
             errorbar(xoff[i],yoff[i],xerr=xerr[i],yerr=yerr[i])
         if 'atate' in usrFile:

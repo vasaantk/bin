@@ -81,7 +81,7 @@ for line in open(usrFile[0],'r'):
     if reqInfo:                                    # Populate temp arrays, which are reset after each component is harvested
         cTmp.append(  int(reqInfo.group(1)))
         vTmp.append(float(reqInfo.group(2)))
-        pTmp.append(float(reqInfo.group(3))*scaleFactor)
+        pTmp.append(float(reqInfo.group(3)))
         xTmp.append(float(reqInfo.group(4)))
         yTmp.append(float(reqInfo.group(5)))
         mTmp.append(  str(reqInfo.group(12)))       # String format for annotations for scatterplots
@@ -207,7 +207,7 @@ if 'comp' in usrFile:
                         velsAdd.append(vels[i][j])
                         compAdd.append(comp[i][j])
             if xoffAdd != []:                         # Catch scrip in-case first choice is empty array
-                scatter(xoffAdd,yoffAdd,s=peakAdd,c=velsAdd,vmin=velMin,vmax=velMax)
+                scatter(xoffAdd,yoffAdd,s=abs(scaleFactor*log(peakAdd)),c=velsAdd,vmin=velMin,vmax=velMax)
                 if 'atate' in usrFile:
                     for j in xrange(len(compAdd)):
                         annotate(compAdd[j],xy=(xoffAdd[j],yoffAdd[j]))
@@ -260,7 +260,7 @@ if 'seq' in usrFile:
     for i in xrange(len(comp)):
         velMin = min(vels[i])
         velMax = max(vels[i])
-        scatter(xoff[i],yoff[i],s=peak[i],c=vels[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
+        scatter(xoff[i],yoff[i],s=abs(scaleFactor*log(peak[i])),c=vels[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
         if 'atate' in usrFile:
             for j in xrange(len(xoff[i])):
                 annotate(comp[i][j],xy=(xoff[i][j],yoff[i][j]))
@@ -286,7 +286,7 @@ if 'seq' in usrFile:
 #
 if 'plot' in usrFile:
     for i in xrange(len(chan)):
-        scatter(xoff[i],yoff[i],s=peak[i],c=homoVel[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
+        scatter(xoff[i],yoff[i],s=abs(scaleFactor*log(peak[i])),c=homoVel[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
         if 'atate' in usrFile:
             for j in xrange(len(xoff[i])):
                 annotate(comp[i][j],xy=(xoff[i][j],yoff[i][j]))

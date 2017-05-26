@@ -353,8 +353,8 @@ for pts in range(len(ptsFiles)): # Iterate through each of the input files.
             print str(ptsFiles[pts])
             for k in xrange(len(chan)):
                 print '%6d %10.3f %4d %13.5f %13.5f %33.6f %10.7f %14.6f %10.7f'%(
-                      int(comp[k]),float(vels[k]),int(chan[k]),float(flux[k]/scaleFactor),
-                    float(peak[k]/scaleFactor),float(xoff[k]),float(xerr[k]),float(yoff[k]),
+                      int(comp[k]),float(vels[k]),int(chan[k]),float(flux[k]),
+                    float(peak[k]),float(xoff[k]),float(xerr[k]),float(yoff[k]),
                     float(yerr[k]))
             print ""
 
@@ -396,9 +396,9 @@ for pts in range(len(ptsFiles)): # Iterate through each of the input files.
                 else:
                     cbarFlag = True
                     if pts == 0:   # First marker is a circle....
-                        scatter( xoff[j],yoff[j],s=flux[j],c=vels[j],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax,marker="o")
+                        scatter( xoff[j],yoff[j],s=abs(scaleFactor*log(flux[j])),c=vels[j],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax,marker="o")
                     else:          # ... second marker onwards corresponds to number of corners.
-                        scatter( xoff[j],yoff[j],s=flux[j],c=vels[j],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax,marker=(pts+1,1,0))
+                        scatter( xoff[j],yoff[j],s=abs(scaleFactor*log(flux[j])),c=vels[j],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax,marker=(pts+1,1,0))
                     if 'err' in usrFile:
                         errorbar(xoff[j],yoff[j],xerr=xerr[j],yerr=yerr[j])
                     if 'atate' in usrFile:

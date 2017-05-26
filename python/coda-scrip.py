@@ -58,7 +58,7 @@ for i in usrFile:
     if codaSearch:
         codaFiles.append(i)
 
-if len(codaFiles) == 2:    # Assuming 1 chain  and 1 chain file
+if len(codaFiles) == 2:    # Assuming 1 index and 1 chain file
     for j in codaFiles:
         with open(j,'r') as chkTyp:    # Run a quick check on the first line only
             firstLine = chkTyp.readline()
