@@ -15,7 +15,7 @@ if len(usrFile) == 0:
     print ""
     print "# samp = Sample chain.txt data at this frequency (computational consideration)."
     print ""
-    print " -->$ coda-cont.py CODAindex.txt CODAchain.txt samp=xx print hist trace"
+    print " -->$ coda-cont.py CODAindex.txt CODAchain.txt samp=xx"
     print ""
     exit()
 
@@ -158,7 +158,7 @@ if indexFileFnd and chainFileFnd:
             print "    %10d lines harvested from %s."%(len(dataOne),varOne)
             print "    %10d lines harvested from %s."%(len(dataTwo),varTwo)
         else:
-            # This section to get data to the ~100s for computational consideration
+            # This section to get data to the ~100s for computational consideration...
             if len(dataOne) >= 1000:
                 sampleFactor = 10**int(np.floor(np.log10(len(dataOne)) - 2))
             elif len(dataOne) > 500 and len(dataOne) < 1000:
