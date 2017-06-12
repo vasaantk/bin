@@ -35,7 +35,8 @@ import matplotlib.mlab as mlab
 #   Define variables.
 #
 ints         = '\s+?([+-]?\d+)'              # Integers for regex
-floats       = '\s+?([+-]?\d+(?:\.\d+)?)'    # Floats or int
+#floats       = '\s+?([+-]?\d+(?:\.\d+)?)'    # Floats or int
+floats       = '\s+?[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?'    # Floats or int or scientific
 codaFiles    = []                            # CODAindex and CODAchain files
 indexFileFnd = False                         # CODAindex file identified?
 chainFileFnd = False                         # CODAchain file identified?
@@ -177,7 +178,7 @@ if indexFileFnd and chainFileFnd:
             strtIndx = indexCodes[i][0] - 1    # Python starts from 0. CODAindex from 1
             stopIndx = indexCodes[i][1]        # ... but np.array needs this to get to the end
 
-            npPerTile = np.percentile(chainData[strtIndx:stopIndx],[0,percentile])
+            npPerTile = np.percentile(chainData[strtIndx:stopIndx],[0,percentile])    # Numpy sorts internally
             minPer    = npPerTile[0]
             maxPer    = npPerTile[1]
             print "%8s  %10.4f %10.4f %6d, %6.3f"%(i, chainData[strtIndx:stopIndx].mean(),
