@@ -31,7 +31,7 @@ import seaborn as sns
 #
 ints         = '\s+?([+-]?\d+)'              # Integers for regex
 #floats       = '\s+?([+-]?\d+(?:\.\d+)?)'    # Floats or int
-floats       = '\s+?[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?'    # Floats or int or scientific
+floats       = '\s+?([+-]?\d+(?:\.\d+)?|\.\d+)([eE][+-]?\d+)?'    # Floats or int or scientific
 codaFiles    = []                            # CODAindex and CODAchain files
 indexFileFnd = False                         # CODAindex file identified?
 chainFileFnd = False                         # CODAchain file identified?
