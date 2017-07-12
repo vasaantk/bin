@@ -84,7 +84,7 @@ for line in open(usrFile[0],'r'):
         pTmp.append(float(reqInfo.group(3)))
         xTmp.append(float(reqInfo.group(4)))
         yTmp.append(float(reqInfo.group(5)))
-        mTmp.append(  str(reqInfo.group(12)))       # String format for annotations for scatterplots
+        mTmp.append(  str(reqInfo.group(12)))      # String format for annotations for scatterplots
     if line == '\n':                               # This statement allows each component to exist as its own list within the complete array
         chan.append(cTmp)
         vels.append(vTmp)
@@ -286,7 +286,7 @@ if 'seq' in usrFile:
 #
 if 'plot' in usrFile:
     for i in xrange(len(chan)):
-        scatter(xoff[i],yoff[i],s=abs(scaleFactor*log(peak[i])),c=homoVel[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
+        scatter(xoff[i],yoff[i],s=abs(scaleFactor*log(peak[i])),c=homoVel[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax,marker='^')
         if 'atate' in usrFile:
             for j in xrange(len(xoff[i])):
                 annotate(comp[i][j],xy=(xoff[i][j],yoff[i][j]))

@@ -485,8 +485,8 @@ if 'plot' in usrFile and atLeastOnce:
         titleName = titleName + ptsFiles[i][:-9] + '  **  '
     titleName = titleName[:-5]    # Remove the trailing "**  " for the final title name
     gca().invert_xaxis()
-    title(titleName)
-    xlabel('x offset')
+    title(titleName + 'comp = '+str(userComp))
+    xlabel('velocity')
     ylabel('y offset')
     if cbarFlag:
         cbar = colorbar()
