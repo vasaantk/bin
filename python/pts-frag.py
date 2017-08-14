@@ -390,6 +390,7 @@ for pts in range(len(ptsFiles)): # Iterate through each of the input files.
                 if 'spec' in usrFile:
                     if pts == 0:   # First marker is a circle....
                         plot(vels[j],flux[j],marker="o")
+                        #plot(chan[j],flux[j],marker="o")    #*** delete after Friday, 14 July 2017, 09:30 AM
                     else:          # ... second marker onwards corresponds to number of corners.
                         plot(vels[j],flux[j],marker=(pts+1,1,0))
                     cbarFlag = False
