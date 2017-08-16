@@ -420,9 +420,11 @@ for pts in range(len(ptsFiles)): # Iterate through each of the input files.
     if 'plot' in usrFile:
         for j in xrange(len(chan)):
             if pts == 0:   # First marker is a circle....
-                scatter( xoff[j],yoff[j],s=abs(scaleFactor*log(flux[j])),c=homoVel[j],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax,marker="o")
+                flux[j] = flux[j] + 1.0            # Add 1 to ensure that components with flux<1 are not negative when log.
+                scatter( xoff[j],yoff[j],s=scaleFactor*log(flux[j]),c=homoVel[j],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax,marker="o")
             else:          # ... second marker onwards corresponds to number of corners.
-                scatter( xoff[j],yoff[j],s=abs(scaleFactor*log(flux[j])),c=homoVel[j],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax,marker=(pts+1,1,0))
+                flux[j] = flux[j] + 1.0            # Add 1 to ensure that components with flux<1 are not negative when log.
+                scatter( xoff[j],yoff[j],s=scaleFactor*log(flux[j]),c=homoVel[j],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax,marker=(pts+1,1,0))
             if 'err' in usrFile:
                 errorbar(xoff[j],yoff[j],xerr=xerr[j],yerr=yerr[j])
             if 'atate' in usrFile:

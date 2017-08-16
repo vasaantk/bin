@@ -198,16 +198,16 @@ if 'comp' in usrFile:
             response = raw_input(machineQuery)
         else:
             usrComp = int(response)
-            for i in xrange(len(comp)):               # Iterate through the list
+            for i in xrange(len(comp)):                 # Iterate through the list
                 if usrComp == int(comp[i][0]):
-                    for j in xrange(len(xoff[i])):    # Iterate through sub-lists
+                    for j in xrange(len(xoff[i])):      # Iterate through sub-lists
                         xoffAdd.append(xoff[i][j])
                         yoffAdd.append(yoff[i][j])
-                        peakAdd.append(peak[i][j])
+                        peakAdd.append(peak[i][j]+1.0)  # Add 1 to ensure that components with flux<1 are not negative when log.
                         velsAdd.append(vels[i][j])
                         compAdd.append(comp[i][j])
-            if xoffAdd != []:                         # Catch scrip in-case first choice is empty array
-                scatter(xoffAdd,yoffAdd,s=abs(scaleFactor*log(peakAdd)),c=velsAdd,vmin=velMin,vmax=velMax)
+            if xoffAdd != []:                           # Catch scrip in-case first choice is empty array
+                scatter(xoffAdd,yoffAdd,s=scaleFactor*log(peakAdd),c=velsAdd,vmin=velMin,vmax=velMax)
                 if 'atate' in usrFile:
                     for j in xrange(len(compAdd)):
                         annotate(compAdd[j],xy=(xoffAdd[j],yoffAdd[j]))
@@ -260,7 +260,8 @@ if 'seq' in usrFile:
     for i in xrange(len(comp)):
         velMin = min(vels[i])
         velMax = max(vels[i])
-        scatter(xoff[i],yoff[i],s=abs(scaleFactor*log(peak[i])),c=vels[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
+        peak[i] = [j + 1.0 for j in peak[i]]            # Add 1 to ensure that components with flux<1 are not negative when log.
+        scatter(xoff[i],yoff[i],s=scaleFactor*log(peak[i]),c=vels[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
         if 'atate' in usrFile:
             for j in xrange(len(xoff[i])):
                 annotate(comp[i][j],xy=(xoff[i][j],yoff[i][j]))
@@ -286,7 +287,8 @@ if 'seq' in usrFile:
 #
 if 'plot' in usrFile:
     for i in xrange(len(chan)):
-        scatter(xoff[i],yoff[i],s=abs(scaleFactor*log(peak[i])),c=homoVel[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax,marker='^')
+        peak[i] = [j + 1.0 for j in peak[i]]            # Add 1 to ensure that components with flux<1 are not negative when log.
+        scatter(xoff[i],yoff[i],s=scaleFactor*log(peak[i]),c=homoVel[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax,marker='^')
         if 'atate' in usrFile:
             for j in xrange(len(xoff[i])):
                 annotate(comp[i][j],xy=(xoff[i][j],yoff[i][j]))

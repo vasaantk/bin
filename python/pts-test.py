@@ -6,7 +6,6 @@ import re
 from pylab import *
 import sys
 import numpy as np
-from functions import *
 import random
 
 
@@ -34,6 +33,18 @@ if len(usrFile) == 0:
     exit()
 
 
+# Adaptation of J. Mac's MATlAB weighted mean function
+def wmean(x,W,rms=False):
+    wmean = sum(multiply(x,W))/sum(W)      # element-by-element multiplication
+    if len(x) == 1:
+        wrms = 0
+    else:
+        x = [(x - wmean)**2 for x in x]
+        wrms = sqrt(sum(multiply(x,W))/sum(W))
+    if rms:
+        return wmean,wrms
+    else:
+        return wmean
 
 
 #=====================================================================
@@ -263,13 +274,13 @@ if 'comp' in usrFile:
                     xoffAdd.append(xoff[i])
                     yoffAdd.append(yoff[i])
                     peakAdd.append(peak[i])
-                    fluxAdd.append(flux[i])
+                    fluxAdd.append(flux[i]+1.0)       # Add 1 to ensure that components with flux<1 are not negative when log.
                     velsAdd.append(vels[i])
                     compAdd.append(comp[i])
                     xerrAdd.append(xerr[i])
                     yerrAdd.append(yerr[i])
             if xoffAdd != []:                         # Catch scrip in-case first choice is empty array
-                scatter( xoffAdd,yoffAdd,s=abs(scaleFactor*log(fluxAdd)),c=velsAdd,vmin=velMin,vmax=velMax)
+                scatter( xoffAdd,yoffAdd,s=scaleFactor*log(fluxAdd),c=velsAdd,vmin=velMin,vmax=velMax)
                 if 'err' in usrFile:
                     errorbar(xoffAdd,yoffAdd,xerrAdd,yerrAdd)
                 if 'atate' in usrFile:
@@ -333,8 +344,8 @@ if 'seq' in usrFile:
     print "Enter 'q' to quit."
     print ""
     for i in xrange(len(comp)):
-
-        scatter( xoff[i],yoff[i],s=abs(scaleFactor*log(flux[i])),c=vels[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
+        flux[i] = flux[i] + 1.0            # Add 1 to ensure that components with flux<1 are not negative when log.
+        scatter( xoff[i],yoff[i],s=scaleFactor*log(flux[i]),c=vels[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
         if 'err' in usrFile:
             errorbar(xoff[i],yoff[i],xerr=xerr[i],yerr=yerr[i])
         if 'atate' in usrFile:
@@ -378,7 +389,8 @@ if 'print' in usrFile:
 #
 if 'plot' in usrFile:
     for i in xrange(len(chan)):
-        scatter( xoff[i],yoff[i],s=abs(scaleFactor*log(flux[i])),c=homoVel[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
+        flux[i] = flux[i] + 1.0            # Add 1 to ensure that components with flux<1 are not negative when log.
+        scatter( xoff[i],yoff[i],s=scaleFactor*log(flux[i]),c=homoVel[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
         if 'err' in usrFile:
             errorbar(xoff[i],yoff[i],xerr=xerr[i],yerr=yerr[i])
         if 'atate' in usrFile:
