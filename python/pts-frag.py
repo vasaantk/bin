@@ -394,6 +394,8 @@ for pts in range(len(ptsFiles)): # Iterate through each of the input files.
                         #plot(chan[j],flux[j],marker="o")    #*** delete after Friday, 14 July 2017, 09:30 AM
                     else:          # ... second marker onwards corresponds to number of corners.
                         plot(vels[j],flux[j],marker=(pts+1,1,0))
+                    xaxis = 'velocity'
+                    yaxis = 'flux'
                     cbarFlag = False
                 else:
                     cbarFlag = True
@@ -407,6 +409,8 @@ for pts in range(len(ptsFiles)): # Iterate through each of the input files.
                         annotate(comp[j],xy=(xoff[j],yoff[j]))
                     if 'vatate' in usrFile:
                         annotate(float("{0:.1f}".format(vels[j])),xy=(xoff[j],yoff[j]))
+                    xaxis = 'x offset'
+                    yaxis = 'y offset'
     else:    # Closes "if allGoodFlag:"
         print "\n\t\tWARNING. Component ** %d ** not found in %s"%(userComp,ptsFiles[pts])
 
@@ -488,8 +492,8 @@ if 'plot' in usrFile and atLeastOnce:
     #titleName = titleName[:-5]    # Remove the trailing "**  " for the final title name
     gca().invert_xaxis()
     title(titleName + 'comp = '+str(userComp))
-    xlabel('velocity')
-    ylabel('y offset')
+    xlabel(xaxis)
+    ylabel(yaxis)
     if cbarFlag:
         cbar = colorbar()
         cbar.set_label('Velocity')
