@@ -7,6 +7,7 @@ from pylab import *
 import sys
 #import numpy as np
 import random
+from mpldatacursor import datacursor
 
 usrFile = sys.argv[1:]
 
@@ -454,4 +455,5 @@ if 'plot' in usrFile:
     ylabel('y offset')
     cbar = colorbar()
     cbar.set_label('Velocity')
+    datacursor(hover=True)
     show()
