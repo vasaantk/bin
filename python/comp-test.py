@@ -6,6 +6,7 @@ import re
 from pylab import *
 import sys
 import numpy as np
+from mpldatacursor import datacursor
 
 usrFile = sys.argv[1:]
 
@@ -16,7 +17,7 @@ if len(usrFile) == 0:
     print "# First argument must be *.COMP. Order for remaining options"
     print "# does not matter:"
     print ""
-    print "# plot* = options are: plot, seq and comp."
+    print "# plot* = options are: plot, seq, comp and spec."
     print "# atate = annotates the spots with their component."
     print "# vel   = allows user specified velocty range for the colourbar."
     print "# scale = scales the peak flux of the data by a constant factor."
@@ -217,6 +218,7 @@ if 'comp' in usrFile:
                 cbar = colorbar()
                 cbar.set_label('Velocity')
                 gca().invert_xaxis()
+                datacursor(hover=True)
                 show(block = False)
             response = raw_input(machineQuery)
             clf()
@@ -247,6 +249,7 @@ if 'comp' in usrFile:
     #     response = raw_input(machineQuery)
     #     clf()
     #     close()
+
 
 
 
@@ -298,6 +301,22 @@ if 'plot' in usrFile:
     ylabel('y offset')
     cbar = colorbar()
     cbar.set_label('Velocity')
+    datacursor(hover=True)
+    show()
+
+
+
+#=====================================================================
+#   Plots the spectrum.
+#
+if 'spec' in usrFile:
+    for j in xrange(len(chan)):
+        plot(vels[j],peak[j],marker="o",linewidth=0)
+    gca().invert_xaxis()
+    title(str(usrFile[0]))
+    xlabel('velocity')
+    ylabel('flux')
+    datacursor(hover=True)
     show()
 
 
