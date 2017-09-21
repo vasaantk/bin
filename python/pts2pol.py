@@ -72,7 +72,7 @@ def deg2dec(deg):
     mm = int((deg-int(deg))*60)
     ss = ((deg-int(deg))*60-mm)*60
     # return sign+string.zfill('hh',2)+':'+string.zfill('mm',2)+':'+'%8.5f' % ss
-    return string.zfill('mm',2)+'  '+'%8.6f' % ss
+    return string.zfill(mm,2)+'  '+'%8.6f' % ss
 
 # Adopted from "deg2ra Written by Enno Middelberg 2001"
 def deg2ra(deg):
@@ -85,7 +85,7 @@ def deg2ra(deg):
     mm = int((deg-15*hh)*4)
     ss = (4*deg-60*hh-mm)*60
     # return string.zfill('hh',2)+':'+string.zfill('mm',2)+':'+'%8.7f' % ss
-    return string.zfill('mm',2)+' '+'%8.7f' % ss
+    return string.zfill(mm,2)+' '+'%8.7f' % ss
 
 # Adopted from "ra2deg Written by Enno Middelberg 2001"
 def ra2deg(inp):
