@@ -1,10 +1,13 @@
 #! /usr/bin/env python
 
-# Written by Vasaant S/O Krishnan. Saturday, 23 September 2017.
+# Written by Vasaant S/O Krishnan. Tuesday, 19 September 2017.
 
-# pol2sort.py converts the maser spot information contained in
-# .COMP.PTS files to the table_final.txt format used for polarisation
-# calibration from step 17) of 'METH_MASER_PROCEDURE.HELP'.
+# pts2polpipe.py replicates pts2pol.py. The distinction is that the
+# former accepts inputs from stdin.
+
+# pts2pol.py converts the maser spot information contained in
+# .COMP.PTS files to the table_out.txt format used for polarisation
+# calibration from step 15) of 'METH_MASER_PROCEDURE.HELP'.
 
 # Note you must have a "polvars.inp" file in the pwd with the
 # following:
@@ -14,15 +17,14 @@
 # imsize   = 8192               # Image size during CLEAN      (int)
 # cellsize = 0.0001             # Cellsize used during CLEAN   (float)
 
-# Execute by:
-# -->$ cat user_file.COMP.PTS | pol2sort.py
+# Recommended usage is along the lines of:
+# for i in {1,4,6,7,8,9,10,11,12,14,15} ; do grep " $i " G024.78_EM117K.COMP.PTS | pts2polpipe.py >> table_out_$i.txt ; done
 
 import re
 import sys
 import string
 from pylab import *
 import ephem as ep
-from itertools import groupby
 
 #=====================================================================
 #   Define variables:
@@ -106,7 +108,6 @@ if not cellFlag:
 
 
 
-
 #=====================================================================
 #   Definations:
 #
@@ -185,21 +186,6 @@ if proceedFlag:
             bmaj.append(float(reqInfo.group(12)))  # Beam major axis
             bmin.append(float(reqInfo.group(13)))  # Beam minor axis
 
-
-    # Sort all elements according to increasing "chan" order:
-    vels = [x for (y,x) in sorted(zip(chan,vels),key=lambda pair: pair[0])]
-    xoff = [x for (y,x) in sorted(zip(chan,xoff),key=lambda pair: pair[0])]
-    xerr = [x for (y,x) in sorted(zip(chan,xerr),key=lambda pair: pair[0])]
-    yoff = [x for (y,x) in sorted(zip(chan,yoff),key=lambda pair: pair[0])]
-    yerr = [x for (y,x) in sorted(zip(chan,yerr),key=lambda pair: pair[0])]
-    comp = [x for (y,x) in sorted(zip(chan,comp),key=lambda pair: pair[0])]
-    flux = [x for (y,x) in sorted(zip(chan,flux),key=lambda pair: pair[0])]
-    peak = [x for (y,x) in sorted(zip(chan,peak),key=lambda pair: pair[0])]
-    prms = [x for (y,x) in sorted(zip(chan,prms),key=lambda pair: pair[0])]
-    bmaj = [x for (y,x) in sorted(zip(chan,bmaj),key=lambda pair: pair[0])]
-    bmin = [x for (y,x) in sorted(zip(chan,bmin),key=lambda pair: pair[0])]
-    chan = sorted(chan)
-
     # Obtain the Galactic name:
     ra    = re.sub(' ',':',ra)
     dec   = re.sub(' ',':',dec)
@@ -226,22 +212,10 @@ if proceedFlag:
     yoff = [deg2dec(dec +  i/3600.0)                    for i in yoff]
 
 
-    chanGroups = [list(j) for i, j in groupby(chan)]      # Group "chans" which have more than one maser spot
-    alphabet   = ['A','B','C','D','E','F','G','H','I','J','K','L','M',
-                  'N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
-    for chan in chanGroups:                               # For each group of "chan"
-        if len(chan) > 1:                                 # if there is more than one maser spot
-            for j in range(len(chan)):
-                chan[j] = str(chan[j])+alphabet[j]        # Append an alphabet to the channel name
-        else:
-            chan[0] = str(chan[0])
-    chan = [i for item in chanGroups for i in item]       # Flatten out "chanGroups" into a 1D list
-
-
-    # Header from table_final.txt:
-    print " NAME,  CHAN                ALPHA,                       DELTA,               X-position,       Y-position,      Velocity,      Peak intensity,       Integrated intensity          Average Polarization            Average Pol.Angle    "
-    print "                             (s)                          (sec)                  (pix)              (pix)          (km/s)          (JY/BEAM)                 (JANSKYS)                       (%)                        (degrees)        "
-    print "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
+    # Header from table_out.txt:
+    print " NAME,  CHAN  ALPHA,     DELTA,     X-position, Y-position, Velocity,  Peak intensity, Integrated intensity"
+    print "                (s)        (sec)      (pix)         (pix)     (km/s)     (JY/BEAM)           (JANSKYS)"
+    print "---------------------------------------------------------------------------------------------"
 
 
     for i in range(len(xoff)):
@@ -256,7 +230,5 @@ if proceedFlag:
         eflx = flux[i]*sqrt(fpk+fmaj+fmin)    # Why no 2*pi?!... Perhaps beacuse AIPS uses a variaion of the Condon equation?
 
         #                  Alpha          Delta         X-position      Y-position    Vel        Peak           Integrated
-        print "%6s   %-5s %13s +/- %9.7f %15s +/- %9.7f %8.3f +/- %5.4f %8.3f +/- %5.4f %8.3f %11.4e +/- %10.4e %11.4e +/- %10.4e\n"%(
+        print "%6s %5d %15s +/- %9.7f %15s +/- %9.7f %8.3f +/- %5.4f %8.3f +/- %5.4f %8.3f %11.4e +/- %10.4e %11.4e +/- %10.4e"%(
             name,chan[i],xoff[i],xerr[i],yoff[i],yerr[i],xpix[i],xxer[i],ypix[i],yxer[i],vels[i],peak[i],prms[i],flux[i],eflx)
-    print "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
-    print "The errors of the angles are in the file pol_ang.out"
