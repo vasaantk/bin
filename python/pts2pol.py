@@ -11,16 +11,6 @@ import ephem as ep
 
 
 
-
-# User defined variables:
-ra       = '18:36:12.556'     # RA and Dec from 'imh' in AIPS
-dec      = '-07:12:10.800'
-imsize   = 8192               # Image size during CLEAN
-cellsize = 0.0001             # Cellsize used during CLEAN
-
-
-
-
 usrFile = sys.argv[1:]
 if len(usrFile) == 0:
     print ""
@@ -28,12 +18,13 @@ if len(usrFile) == 0:
     print "# .COMP.PTS files to the table_out.txt format used for polarisation"
     print "# calibration from step 15) of 'METH_MASER_PROCEDURE.HELP'."
     print ""
+    print "# Note you must have a 'polvars.inp' file in the pwd with the following"
     print "# User defined variables:"
     print ""
-    print "  Right ascension:   %10s"%(ra)
-    print "      Declination:   %10s"%(dec)
-    print "           Imsize:   %d"%(imsize)
-    print "         Cellsize:   %f"%(cellsize)
+    print "  ra       = 18:36:12.556       # RA  from IMHEAD in AIPS      (hh:mm:ss.s...)"
+    print "  dec      = -07:12:10.800      # Dec from IMHEAD in AIPS      (dd:mm:ss.s...)"
+    print "  imsize   = 8192               # Image size during CLEAN      (int)          "
+    print "  cellsize = 0.0001             # Cellsize used during CLEAN   (float)        "
     print ""
     print "  --> pts2pol.py file_name.COMP.PTS"
     print ""
@@ -47,6 +38,88 @@ for i in usrFile:
     ptsFind = re.search('\S+.COMP.PTS',i)
     if ptsFind:
         ptsFile = i
+
+
+
+
+#=====================================================================
+#   Define variables:
+#
+chan = []      # chan
+vels = []      # velo
+flux = []      # flux
+peak = []      # peak
+prms = []      # peak rms
+xoff = []      # xoff
+xerr = []      # xerr
+yoff = []      # yoff
+yerr = []      # yerr
+comp = []      # component
+bmaj = []      # beam major axis
+bmin = []      # beam minor axis
+
+ints       = '\s+(\d+)'           # 'Channel' variable from *.COMP
+floats     = '\s+([+-]?\d+.\d+)'  # Any float variable from *.COMP
+manyFloats = 14*floats            # space+floats seq gets repeated this many times after chans
+
+raFlag   = False    # RA harvested from polvars.inp
+decFlag  = False    # declination
+imFlag   = False    # imsize
+cellFlag = False    # cellsize
+polvars  = []       # Array to store the harvested values
+
+
+
+
+#=====================================================================
+#   Grab user variables from polvars.inp
+#
+for line in open('polvars.inp','r'):
+    ra       = re.search(      'ra\s*=\s*(\S*)\s*',line)
+    dec      = re.search(     'dec\s*=\s*(\S*)\s*',line)
+    imsize   = re.search(  'imsize\s*=\s*(\S*)\s*',line)
+    cellsize = re.search('cellsize\s*=\s*(\S*)\s*',line)
+    if ra:
+        ra = str(ra.group(1))
+        if re.search('^\d\d:\d\d:\d\d.\d+$',ra):    # Check harvested RA format
+            polvars.append(ra)                      # Append RA so it is not "forgotten"
+            raFlag = True
+    if dec:
+        dec = str(dec.group(1))
+        if re.search('^[+-]?\d\d:\d\d:\d\d.\d+$',dec):    # Check harvested dec format
+            polvars.append(dec)
+            decFlag  = True
+    if imsize:
+        imsize = imsize.group(1)
+        if re.search('^\d+$',imsize) or re.search('^\d+.\d+$',imsize):    # Check harvested imsize format
+            imsize = int(float(imsize))
+            polvars.append(imsize)
+            imFlag = True
+    if cellsize:
+        cellsize = cellsize.group(1)
+        if re.search('^\d+.\d+$',cellsize):    # Check harvested cellsize format
+            cellsize = float(cellsize)
+            polvars.append(cellsize)
+            cellFlag = True
+close('polvars.inp')
+
+if raFlag == decFlag == imFlag == cellFlag == True:
+    proceedFlag = True
+    ra       = polvars[0]
+    dec      = polvars[1]
+    imsize   = polvars[2]
+    cellsize = polvars[3]
+else:
+    proceedFlag = False
+
+if not raFlag:
+    print "\n Check ra in polvars.inp\n"
+if not decFlag:
+    print "\n Check dec in polvars.inp\n"
+if not imFlag:
+    print "\n Check imsize in polvars.inp\n"
+if not cellFlag:
+    print "\n Check cellsize in polvars.inp\n"
 
 
 
@@ -108,97 +181,70 @@ def dec2deg(inp):
 
 
 
+if proceedFlag:
+    #=====================================================================
+    #   Harvest values from .COMP.PTS:
+    #
+    for line in open(ptsFile,'r'):
+        reqInfo = re.search(ints + floats + ints + manyFloats, line)
+        if reqInfo:
+            comp.append(  int(reqInfo.group(1)))
+            vels.append(float(reqInfo.group(2)))
+            chan.append(  int(reqInfo.group(3)))
+            flux.append(float(reqInfo.group(4)))   # Integrated intensity
+            peak.append(float(reqInfo.group(5)))   # Peak intensity
+            prms.append(float(reqInfo.group(7)))   # Peak rms
+            xoff.append(float(reqInfo.group(8)))
+            xerr.append(float(reqInfo.group(9)))
+            yoff.append(float(reqInfo.group(10)))
+            yerr.append(float(reqInfo.group(11)))
+            bmaj.append(float(reqInfo.group(12)))  # Beam major axis
+            bmin.append(float(reqInfo.group(13)))  # Beam minor axis
+    close(ptsFile)
+
+    # Obtain the Galactic name:
+    ra    = re.sub(' ',':',ra)
+    dec   = re.sub(' ',':',dec)
+    coord = ep.Galactic(ep.Equatorial(ra,dec))
+    name  = str(int(degrees(coord.lon)))
+    name  = 'G'+string.zfill(name,3)
+
+    # Compute the pixel offsets from x/y offsets:
+    xpix = xoff
+    ypix = yoff
+    xxer = xerr
+    yxer = yerr
+    cenx = int(imsize/2)
+    ceny = int(imsize/2 + 1)
+    xpix = [cenx - i/cellsize for i in xpix]
+    ypix = [ceny + i/cellsize for i in ypix]
+    xxer = [i/cellsize for i in xxer]
+    yxer = [i/cellsize for i in yxer]
+
+    # Convert offsets hms:
+    ra   =  ra2deg(ra)
+    dec  = dec2deg(dec)
+    xoff = [deg2ra( ra  + (i/cos(radians(dec)))/3600.0) for i in xoff]
+    yoff = [deg2dec(dec +  i/3600.0)                    for i in yoff]
 
 
-
-#=====================================================================
-#   Define variables:
-#
-chan = []      # chan
-vels = []      # velo
-flux = []      # flux
-peak = []      # peak
-prms = []      # peak rms
-xoff = []      # xoff
-xerr = []      # xerr
-yoff = []      # yoff
-yerr = []      # yerr
-comp = []      # component
-bmaj = []      # beam major axis
-bmin = []      # beam minor axis
-
-ints       = '\s+(\d+)'           # 'Channel' variable from *.COMP
-floats     = '\s+([+-]?\d+.\d+)'  # Any float variable from *.COMP
-manyFloats = 14*floats            # space+floats seq gets repeated this many times after chans
+    # Header from table_out.txt:
+    print " NAME,  CHAN  ALPHA,     DELTA,     X-position, Y-position, Velocity,  Peak intensity, Integrated intensity"
+    print "                (s)        (sec)      (pix)         (pix)     (km/s)     (JY/BEAM)           (JANSKYS)"
+    print "---------------------------------------------------------------------------------------------"
 
 
+    for i in range(len(xoff)):
+        emaj = bmaj[i]*prms[i]/peak[i]      # Compute err of beam major axis "Delta(W) = Delta(P) / P * W"
+        emin = bmin[i]*prms[i]/peak[i]      # from http://aips.nrao.edu/cgi-bin/ZXHLP2.PL?SAD
 
+        # Integrated flux = 2*pi*sigma_x*sigma_y*peak (Condon 1997)
+        # So we use the following error propagation algorithm:
+        fpk  = (prms[i]/peak[i])**2
+        fmaj = (   emaj/bmaj[i])**2
+        fmin = (   emin/bmin[i])**2
+        eflx = flux[i]*sqrt(fpk+fmaj+fmin)    # Why no 2*pi?!... Perhaps beacuse AIPS uses a variaion of the Condon equation?
 
-
-
-#=====================================================================
-#   Harvest values from .COMP.PTS:
-#
-for line in open(ptsFile,'r'):
-    reqInfo = re.search(ints + floats + ints + manyFloats, line)
-    if reqInfo:
-        comp.append(  int(reqInfo.group(1)))
-        vels.append(float(reqInfo.group(2)))
-        chan.append(  int(reqInfo.group(3)))
-        flux.append(float(reqInfo.group(4)))   # Integrated intensity
-        peak.append(float(reqInfo.group(5)))   # Peak intensity
-        prms.append(float(reqInfo.group(7)))   # Peak rms
-        xoff.append(float(reqInfo.group(8)))
-        xerr.append(float(reqInfo.group(9)))
-        yoff.append(float(reqInfo.group(10)))
-        yerr.append(float(reqInfo.group(11)))
-        bmaj.append(float(reqInfo.group(12)))  # Beam major axis
-        bmin.append(float(reqInfo.group(13)))  # Beam minor axis
-close(ptsFile)
-
-# Obtain the Galactic name:
-ra    = re.sub(' ',':',ra)
-dec   = re.sub(' ',':',dec)
-coord = ep.Galactic(ep.Equatorial(ra,dec))
-name  = str(int(degrees(coord.lon)))
-name  = 'G'+string.zfill(name,3)
-
-# Compute the pixel offsets from x/y offsets:
-xpix = xoff
-ypix = yoff
-xxer = xerr
-yxer = yerr
-cenx = int(imsize/2)
-ceny = int(imsize/2 + 1)
-xpix = [cenx - i/cellsize for i in xpix]
-ypix = [ceny + i/cellsize for i in ypix]
-xxer = [i/cellsize for i in xxer]
-yxer = [i/cellsize for i in yxer]
-
-# Convert offsets hms:
-ra   =  ra2deg(ra)
-dec  = dec2deg(dec)
-xoff = [deg2ra( ra  + (i/cos(radians(dec)))/3600.0) for i in xoff]
-yoff = [deg2dec(dec +  i/3600.0)                    for i in yoff]
-
-
-# Header from table_out.txt:
-print " NAME,  CHAN  ALPHA,     DELTA,     X-position, Y-position, Velocity,  Peak intensity, Integrated intensity"
-print "                (s)        (sec)      (pix)         (pix)     (km/s)     (JY/BEAM)           (JANSKYS)"
-print "---------------------------------------------------------------------------------------------"
-
-
-for i in range(len(xoff)):
-    emaj = bmaj[i]*prms[i]/peak[i]      # Compute err of beam major axis "Delta(W) = Delta(P) / P * W"
-    emin = bmin[i]*prms[i]/peak[i]      # from http://aips.nrao.edu/cgi-bin/ZXHLP2.PL?SAD
-
-    # Integrated flux = 2*pi*sigma_x*sigma_y*peak (Condon 1997)
-    # So we use the following error propagation algorithm:
-    fpk  = (prms[i]/peak[i])**2
-    fmaj = (   emaj/bmaj[i])**2
-    fmin = (   emin/bmin[i])**2
-    eflx = flux[i]*sqrt(fpk+fmaj+fmin)    # Why no 2*pi?!... Perhaps beacuse AIPS uses a variaion of the Condon equation?
-
-    #                  Alpha          Delta         X-position      Y-position    Vel        Peak           Integrated
-    print "%6s %5d %15s +/- %9.7f %15s +/- %9.7f %8.3f +/- %5.4f %8.3f +/- %5.4f %8.3f %11.4e +/- %10.4e %11.4e +/- %10.4e"%(
-        name,chan[i],xoff[i],xerr[i],yoff[i],yerr[i],xpix[i],xxer[i],ypix[i],yxer[i],vels[i],peak[i],prms[i],flux[i],eflx)
+        #                  Alpha          Delta         X-position      Y-position    Vel        Peak           Integrated
+        print "%6s %5d %15s +/- %9.7f %15s +/- %9.7f %8.3f +/- %5.4f %8.3f +/- %5.4f %8.3f %11.4e +/- %10.4e %11.4e +/- %10.4e"%(
+            name,chan[i],xoff[i],xerr[i],yoff[i],yerr[i],xpix[i],xxer[i],ypix[i],yxer[i],vels[i],peak[i],prms[i],flux[i],eflx)
