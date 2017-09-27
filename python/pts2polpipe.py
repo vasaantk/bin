@@ -14,7 +14,8 @@
 
 # ra       = 18:36:12.556       # RA  from IMHEAD in AIPS      (hh:mm:ss.s...)
 # dec      = -07:12:10.800      # Dec from IMHEAD in AIPS      (dd:mm:ss.s...)
-# imsize   = 8192               # Image size during CLEAN      (int)
+# cenx     = 256.14             # Pixel corresponding to RA  from IMHEAD in AIPS    (float)
+# ceny     = 256.81             # Pixel corresponding to Dec from IMHEAD in AIPS    (float)
 # cellsize = 0.0001             # Cellsize used during CLEAN   (float)
 
 # Recommended usage is along the lines of:
@@ -48,7 +49,8 @@ manyFloats = 14*floats            # space+floats seq gets repeated this many tim
 
 raFlag   = False    # RA harvested from polvars.inp
 decFlag  = False    # declination
-imFlag   = False    # imsize
+cenxFlag = False    # central x pixel
+cenyFlag = False    # central y pixel
 cellFlag = False    # cellsize
 polvars  = []       # Array to store the harvested values
 
@@ -61,7 +63,8 @@ polvars  = []       # Array to store the harvested values
 for line in open('polvars.inp','r'):
     ra       = re.search(      'ra\s*=\s*(\S*)\s*',line)
     dec      = re.search(     'dec\s*=\s*(\S*)\s*',line)
-    imsize   = re.search(  'imsize\s*=\s*(\S*)\s*',line)
+    cenx     = re.search(    'cenx\s*=\s*(\S*)\s*',line)
+    ceny     = re.search(    'ceny\s*=\s*(\S*)\s*',line)
     cellsize = re.search('cellsize\s*=\s*(\S*)\s*',line)
     if ra:
         ra = str(ra.group(1))
@@ -73,12 +76,18 @@ for line in open('polvars.inp','r'):
         if re.search('^[+-]?\d\d:\d\d:\d\d.\d+$',dec):    # Check harvested dec format
             polvars.append(dec)
             decFlag  = True
-    if imsize:
-        imsize = imsize.group(1)
-        if re.search('^\d+$',imsize) or re.search('^\d+.\d+$',imsize):    # Check harvested imsize format
-            imsize = int(float(imsize))
-            polvars.append(imsize)
-            imFlag = True
+    if cenx:
+        cenx = cenx.group(1)
+        if re.search('^\d+.\d+$',cenx):        # Check harvested cenx format
+            cenx = float(cenx)
+            polvars.append(cenx)
+            cenxFlag = True
+    if ceny:
+        ceny = ceny.group(1)
+        if re.search('^\d+.\d+$',ceny):        # Check harvested ceny format
+            ceny = float(ceny)
+            polvars.append(ceny)
+            cenyFlag = True
     if cellsize:
         cellsize = cellsize.group(1)
         if re.search('^\d+.\d+$',cellsize):    # Check harvested cellsize format
@@ -87,12 +96,13 @@ for line in open('polvars.inp','r'):
             cellFlag = True
 close('polvars.inp')
 
-if raFlag == decFlag == imFlag == cellFlag == True:
-    proceedFlag = True
+if raFlag == decFlag == cenxFlag == cenyFlag == cellFlag == True:
     ra       = polvars[0]
     dec      = polvars[1]
-    imsize   = polvars[2]
-    cellsize = polvars[3]
+    cenx     = polvars[2]
+    ceny     = polvars[3]
+    cellsize = polvars[4]
+    proceedFlag = True
 else:
     proceedFlag = False
 
@@ -100,8 +110,10 @@ if not raFlag:
     print "\n Check ra in polvars.inp\n"
 if not decFlag:
     print "\n Check dec in polvars.inp\n"
-if not imFlag:
-    print "\n Check imsize in polvars.inp\n"
+if not cenx:
+    print "\n Check cenx in polvars.inp\n"
+if not ceny:
+    print "\n Check ceny in polvars.inp\n"
 if not cellFlag:
     print "\n Check cellsize in polvars.inp\n"
 
@@ -198,8 +210,6 @@ if proceedFlag:
     ypix = yoff
     xxer = xerr
     yxer = yerr
-    cenx = int(imsize/2)
-    ceny = int(imsize/2 + 1)
     xpix = [cenx - i/cellsize for i in xpix]
     ypix = [ceny + i/cellsize for i in ypix]
     xxer = [i/cellsize for i in xxer]

@@ -10,11 +10,12 @@
 # Note you must have a "polvars.inp" file in the pwd with the
 # following:
 
-# imsize   = 8192               # Image size during CLEAN      (int)
+# cenx     = 256.14             # Pixel corresponding to RA  from IMHEAD in AIPS    (float)
+# ceny     = 256.81             # Pixel corresponding to Dec from IMHEAD in AIPS    (float)
 # cellsize = 0.0001             # Cellsize used during CLEAN   (float)
 
 # Recommended usage is along the lines of:
-# for i in {1,4,6,7,8,9,10,11,12,14,15} ; do grep " $i " G024.78_EM117K.COMP.PTS | sort -nrk 4,4 | head -n 1 | pipe2peak.py ; done | sort >> output_peaktable.dat
+# for i in {1,4,6,7,8,9,10,11,12,14,15} ; do grep " $i " G024.78_EM117K.COMP.PTS | sort -nrk 4,4 | head -n 1 | pol2peak.py ; done | sort >> output_peaktable.dat
 
 # The above unix command greps the entries from the .COMP.PTS on a
 # comp-by-comp basis. These are sorted by the peak flux (column 4) and
@@ -42,7 +43,8 @@ ints       = '\s+(\d+)'           # 'Channel' variable from *.COMP
 floats     = '\s+([+-]?\d+.\d+)'  # Any float variable from *.COMP
 manyFloats = 14*floats            # space+floats seq gets repeated this many times after chans
 
-imFlag   = False    # imsize
+cenxFlag = False    # central x pixel
+cenyFlag = False    # central y pixel
 cellFlag = False    # cellsize
 polvars  = []       # Array to store the harvested values
 
@@ -53,14 +55,21 @@ polvars  = []       # Array to store the harvested values
 #   Grab user variables from polvars.inp
 #
 for line in open('polvars.inp','r'):
-    imsize   = re.search(  'imsize\s*=\s*(\S*)\s*',line)
+    cenx     = re.search(    'cenx\s*=\s*(\S*)\s*',line)
+    ceny     = re.search(    'ceny\s*=\s*(\S*)\s*',line)
     cellsize = re.search('cellsize\s*=\s*(\S*)\s*',line)
-    if imsize:
-        imsize = imsize.group(1)
-        if re.search('^\d+$',imsize) or re.search('^\d+.\d+$',imsize):    # Check harvested imsize format
-            imsize = int(float(imsize))
-            polvars.append(imsize)
-            imFlag = True
+    if cenx:
+        cenx = cenx.group(1)
+        if re.search('^\d+.\d+$',cenx):        # Check harvested cenx format
+            cenx = float(cenx)
+            polvars.append(cenx)
+            cenxFlag = True
+    if ceny:
+        ceny = ceny.group(1)
+        if re.search('^\d+.\d+$',ceny):        # Check harvested ceny format
+            ceny = float(ceny)
+            polvars.append(ceny)
+            cenyFlag = True
     if cellsize:
         cellsize = cellsize.group(1)
         if re.search('^\d+.\d+$',cellsize):    # Check harvested cellsize format
@@ -69,15 +78,18 @@ for line in open('polvars.inp','r'):
             cellFlag = True
 close('polvars.inp')
 
-if imFlag == cellFlag == True:
+if cenxFlag == cenyFlag == cellFlag == True:
+    cenx     = polvars[0]
+    ceny     = polvars[1]
+    cellsize = polvars[2]
     proceedFlag = True
-    imsize   = polvars[0]
-    cellsize = polvars[1]
 else:
     proceedFlag = False
 
-if not imFlag:
-    print "\n Check imsize in polvars.inp\n"
+if not cenx:
+    print "\n Check cenx in polvars.inp\n"
+if not ceny:
+    print "\n Check ceny in polvars.inp\n"
 if not cellFlag:
     print "\n Check cellsize in polvars.inp\n"
 
@@ -100,8 +112,6 @@ if proceedFlag:
     # Compute the pixel offsets from x/y offsets:
     xpix = xoff
     ypix = yoff
-    cenx = int(imsize/2)
-    ceny = int(imsize/2 + 1)
     xpix = [cenx - i/cellsize for i in xpix]
     ypix = [ceny + i/cellsize for i in ypix]
 
