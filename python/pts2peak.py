@@ -1,11 +1,11 @@
 #! /usr/bin/env python
 
-# Written by Vasaant S/O Krishnan. Tuesday, 19 September 2017.
+# Written by Vasaant S/O Krishnan. Friday, 22 September 2017, 15:46 PM
 
-# pol2feat.py reads in entries from .COMP.PTS files line-by-line from
-# stdin. It then prints out the xpixel, ypixel, channel, velocity,
+# pts2peak.py reads in entries from .COMP.PTS files line-by-line from
+# stdin. It then prints out the channel, xpixel, ypixel, velocity,
 # peak and integrated flux densities. The output format is consistent
-# with "output_feature*.dat" from METH_MASER_PROCEDURE.HELP.
+# with "output_peaktable.dat" from METH_MASER_PROCEDURE.HELP.
 
 # Note you must have a "polvars.inp" file in the pwd with the
 # following:
@@ -15,18 +15,19 @@
 # cellsize = 0.0001             # Cellsize used during CLEAN   (float)
 
 # Recommended usage is along the lines of:
-# for i in {1,4,6,7,8,9,10,11,12,14,15} ; do grep " $i " G024.78_EM117K.COMP.PTS | pol2feat.py | sort -nk 3,3 >> output_feature_$i.txt ; done
+# for i in {1,4,6,7,8,9,10,11,12,14,15} ; do grep " $i " G024.78_EM117K.COMP.PTS | sort -nrk 4,4 | head -n 1 | pts2peak.py ; done | sort >> output_peaktable.dat
 
 # The above unix command greps the entries from the .COMP.PTS on a
-# comp-by-comp basis. pol2feat.py does the conversion before the
-# converted values for comps {1,4,6,7,8,9,10,11,12,14,15} are sorted
-# according to channel (k 3,3) and written to their individual files.
+# comp-by-comp basis. These are sorted by the peak flux (column 4) and
+# then we use head to grab the channel with the greatest flux for that
+# comp. pts2peak.py does the conversion before the converted values
+# for comps {1,4,6,7,8,9,10,11,12,14,15} are sorted according to
+# channel.
 
 import re
 import sys
 import string
 from pylab import *
-
 
 #=====================================================================
 #   Define variables:
@@ -46,6 +47,8 @@ cenxFlag = False    # central x pixel
 cenyFlag = False    # central y pixel
 cellFlag = False    # cellsize
 polvars  = []       # Array to store the harvested values
+
+
 
 
 #=====================================================================
@@ -91,7 +94,6 @@ if not cellFlag:
     print "\n Check cellsize in polvars.inp\n"
 
 
-
 if proceedFlag:
     #=====================================================================
     #   Harvest values from .COMP.PTS:
@@ -115,4 +117,4 @@ if proceedFlag:
 
 
     for i in range(len(xoff)):
-        print "%16.4f %15.4f %15.5f %15.5f %15.5f %15.5f"%(xpix[i],ypix[i],chan[i],vels[i],peak[i],flux[i])
+        print "%10d %13.5f %15.5f %15.6f %15.8f %15.9f"%(chan[i],xpix[i],ypix[i],vels[i],peak[i],flux[i])

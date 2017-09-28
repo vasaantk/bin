@@ -2,7 +2,7 @@
 
 # Written by Vasaant S/O Krishnan. Saturday, 23 September 2017.
 
-# pol2sort.py converts the maser spot information contained in
+# pts2final.py converts the maser spot information contained in
 # .COMP.PTS files to the table_final.txt format used for polarisation
 # calibration from step 17) of 'METH_MASER_PROCEDURE.HELP'.
 
@@ -17,7 +17,7 @@
 
 
 # Execute by:
-# -->$ cat user_file.COMP.PTS | pol2final.py >> table_final.txt
+# -->$ cat user_file.COMP.PTS | pts2final.py >> table_final.txt
 
 import re
 import sys
