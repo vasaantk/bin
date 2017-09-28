@@ -17,7 +17,7 @@
 
 
 # Execute by:
-# -->$ cat user_file.COMP.PTS | pol2sort.py
+# -->$ cat user_file.COMP.PTS | pol2final.py >> table_final.txt
 
 import re
 import sys
