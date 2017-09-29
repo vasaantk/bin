@@ -60,13 +60,13 @@ for line in open('polvars.inp','r'):
     cellsize = re.search('cellsize\s*=\s*(\S*)\s*',line)
     if cenx:
         cenx = cenx.group(1)
-        if re.search('^\d+.\d+$',cenx):        # Check harvested cenx format
+        if re.search('^[+-]?\d+.\d+$',cenx):   # Check harvested cenx format
             cenx = float(cenx)
             polvars.append(cenx)
             cenxFlag = True
     if ceny:
         ceny = ceny.group(1)
-        if re.search('^\d+.\d+$',ceny):        # Check harvested ceny format
+        if re.search('^[+-]?\d+.\d+$',ceny):   # Check harvested ceny format
             ceny = float(ceny)
             polvars.append(ceny)
             cenyFlag = True
