@@ -49,7 +49,8 @@ else:
 #
 if startScript:
     for line in open(mfFile,'r'):
-        reqInfo = re.search('\s+(\d+)\s+([+-]?\d+.\d+[eE][+-]?\d\d)\s+([+-]?\d+.\d+[eE][+-]?\d\d)\s+([+-]?\d+.\d+[eE][+-]?\d\d)',line)
+        reqInfo = re.search('\s+(\d+)\s+([+-]?\d+.\d+[eE][+-]?\d\d)\s+([+-]?\d+.\d+[eE][+-]?\d\d)',line)
+        # reqInfo = re.search('\s+(\d+)\s+([+-]?\d+.\d+[eE][+-]?\d\d)\s+([+-]?\d+.\d+[eE][+-]?\d\d)\s+([+-]?\d+.\d+[eE][+-]?\d\d)',line)
         if not reqInfo:
             print line,
         else:
@@ -61,11 +62,15 @@ if startScript:
                     currentChanPoss = int(float(reqPossInfo.group(1)))
                     # Compare the POSSM and MF channels. Need to offset by the "First plane in the image cube":
                     if currentChanPoss == currentChanMF+chanOffset:
-                        print "%5d %17.8E %16.7E %16.7E"%(
+                        print "%5d %17.8E %16.7E"%(
                             int(reqInfo.group(1)),
                             float(reqPossInfo.group(2)),
-                            float(reqInfo.group(3)),
-                            float(reqInfo.group(4)))
+                            float(reqInfo.group(3)))
+                        # print "%5d %17.8E %16.7E %16.7E"%(
+                        #     int(reqInfo.group(1)),
+                        #     float(reqPossInfo.group(2)),
+                        #     float(reqInfo.group(3)),
+                        #     float(reqInfo.group(4)))
             close(possm)
     close(mfFile)
 #=====================================================================
