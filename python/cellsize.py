@@ -10,9 +10,9 @@ toArcsec = 3600.0
 
 if len(usrInp) == 0:
     print ""
-    print "# cellsize.py takes the baseline length (e.g. xx) of the array in metres"
-    print "# and computes the cellsize range between 3 to 5 times smaller than the"
-    print "# maximum uv distance to be used for cleaning."
+    print "# cellsize.py takes the baseline length (e.g. xx) of the array in units"
+    print "# of wavelength and computes the cellsize range between 3 to 5 times"
+    print "# smaller than the maximum uv distance to be used for cleaning."
     print ""
     print "--> ./cellsize.py  xx"
     print ""
