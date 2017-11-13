@@ -4,12 +4,15 @@
 
 import sys
 from datetime import *
-import pytz
+import pytz              # http://pytz.sourceforge.net/
 from pytz import *
+# for tz in pytz.all_timezones:
+#     print tz
 
 usrInp = sys.argv[1:]
 
-commonZones = {'NY'  : 'America/New_York',
+commonZones = {'CPT' : 'Africa/Johannesburg',
+               'NY'  : 'America/New_York',
                'LA'  : 'America/Los_Angeles',
                'AET' : 'Australia/Hobart',
                'AWT' : 'Australia/Perth',
@@ -32,7 +35,6 @@ if len(usrInp) == 0:
     print "#  -->$ pytime.py   YYYY MM DD HHMM  [from]  [to]"
     print ""
     exit()
-
 
 year     = usrInp[0]
 month    = usrInp[1]
