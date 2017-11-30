@@ -64,7 +64,7 @@ if startScript:
                     if currentChanPoss == currentChanMF+chanOffset:
                         print "%5d %17.8E %16.7E"%(
                             int(reqInfo.group(1)),
-                            float(reqPossInfo.group(2)),
+                            float(reqPossInfo.group(2))*1e3,   # Convert from km/s to m/s to work with linpol.sm
                             float(reqInfo.group(3)))
                         # print "%5d %17.8E %16.7E %16.7E"%(
                         #     int(reqInfo.group(1)),
