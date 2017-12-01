@@ -10,15 +10,16 @@
 # -->$ per2err_pol.py
 
 import re
-import sys
 import numpy as np
 
 ra      =        '\s+\d\d\s+\d+\.\d+ \+/- \d+\.\d+\s+'
 dec     =   '\s+[+-]?\d\d\s+\d+\.\d+ \+/- \d+\.\d+\s+'
-spaDigs =        '\s*([+-]?\d+\.\d+) \+/- (\d+\.\d+)\s*'
+spaDigs =        '\s*([+-]?\d+\.\d+) \+/- (\d+\.\d+)\s*'              # "Space digits"
 floats  = '\s*(\d+\.\d+[eE][+-]?\d+) \+/- (\d+\.\d+[eE][+-]?\d+)\s*'
 
-with open("table_final.txt") as file:
+tabFin  = "table_final.txt"
+
+with open(tabFin) as file:
     for line in file:
         reqInfo = re.search('\s+\S+\s+(\S+)\s+'  # NAME, CHAN
                             + ra                 # ALPHA
