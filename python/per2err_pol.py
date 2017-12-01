@@ -10,7 +10,6 @@
 # -->$ per2err_pol.py
 
 import re
-import numpy as np
 
 ra      =        '\s+\d\d\s+\d+\.\d+ \+/- \d+\.\d+\s+'
 dec     =   '\s+[+-]?\d\d\s+\d+\.\d+ \+/- \d+\.\d+\s+'

@@ -10,7 +10,6 @@
 
 import re
 import sys
-import numpy as np
 
 usrFile = sys.argv[1:]
 
