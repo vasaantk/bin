@@ -5,8 +5,6 @@
 import re
 from pylab import *
 import sys
-import numpy as np
-import random
 from mpldatacursor import datacursor
 
 usrFile = sys.argv[1:]
@@ -65,17 +63,6 @@ def wMean(x,W,rms=False):
         return wmean,wrms
     else:
         return wmean
-
-
-#=====================================================================
-#   User requested reference component:
-#
-#*** vk: We don't need offsets. Wednesday, 19 April 2017, 14:52 PM
-# for i in usrFile:
-#     compRequest = re.search('ref='+'(\d+)',i)
-#     if compRequest:
-#         relativeComp  = int(compRequest.group(1))
-#         offsetRequest = True
 
 
 #=====================================================================
@@ -391,7 +378,6 @@ for pts in range(len(ptsFiles)): # Iterate through each of the input files.
                 if 'spec' in usrFile:
                     if pts == 0:   # First marker is a circle....
                         plot(vels[j],flux[j],marker="o")
-                        #plot(chan[j],flux[j],marker="o")    #*** delete after Friday, 14 July 2017, 09:30 AM
                     else:          # ... second marker onwards corresponds to number of corners.
                         plot(vels[j],flux[j],marker=(pts+1,1,0))
                     xaxis = 'velocity'
@@ -415,64 +401,6 @@ for pts in range(len(ptsFiles)): # Iterate through each of the input files.
                     yaxis = 'y offset'
     else:    # Closes "if allGoodFlag:"
         print "\n\t\tWARNING. Component ** %d ** not found in %s"%(userComp,ptsFiles[pts])
-
-
-
-    #=====================================================================
-    #   Determine weighted means:
-    #
-    #*** vk: We don't need weighted means. Wednesday, 19 April 2017, 14:51 PM
-    # vels = [wMean(vels[i],flux[i]) for i in xrange(len(comp))]
-    # xoff = [wMean(xoff[i],flux[i]) for i in xrange(len(comp))]
-    # xerr = [wMean(xerr[i],flux[i]) for i in xrange(len(comp))]
-    # yoff = [wMean(yoff[i],flux[i]) for i in xrange(len(comp))]
-    # yerr = [wMean(yerr[i],flux[i]) for i in xrange(len(comp))]
-    # # These do not need weighted means, using the element with greatest flux:
-    # comp = [comp[i][0] for i in xrange(len(comp))]
-    # chan = [chan[i][flux[i].index(max(flux[i]))] for i in xrange(len(chan))]
-    # peak = [peak[i][flux[i].index(max(flux[i]))]*scaleFactor for i in xrange(len(comp))]
-    # flux = [flux[i][flux[i].index(max(flux[i]))]*scaleFactor for i in xrange(len(comp))]
-
-
-    #=====================================================================
-    #   Component uniqueness test.
-    #
-    #*** vk: These will all be the same. Wednesday, 19 April 2017, 14:51 PM
-    # occuranceTest = True
-    # for i in xrange(len(comp)):
-    #     occuranceCount = comp.count(comp[i])
-    #     if occuranceCount != 1:
-    #         if occuranceTest:
-    #             print "\t\tWARNING. Component ** %d ** is not unique in %s"%(comp[i],ptsFiles[pts])
-    #             occuranceTest = False
-
-    #=====================================================================
-    #   Apply offset to obtain relative position.
-    #
-    #*** vk: We don't need offsets. Wednesday, 19 April 2017, 14:52 PM
-    # if offsetRequest:
-    #     compCountKeep = 0
-    #     for i in xrange(len(comp)):
-    #         if relativeComp == comp[i]:   # If component exists in the .PTS file
-    #             compCountKeep = compCountKeep + 1
-    #             # Determine position of component of relative spot in the array:
-    #             compPosArray  = [i for i,x in enumerate(comp) if x == relativeComp]
-    #             compPos       = compPosArray[0]
-    #             # Now compute relative x/y-offsets:
-    #             xZero = xoff[compPos]
-    #             yZero = yoff[compPos]
-    #             xoff  = [i-xZero for i in xoff]
-    #             yoff  = [i-yZero for i in yoff]
-
-
-    #=====================================================================
-    #   Each component is assigned a single homogenised vel for all spots,
-    #   instead of each spot having its own individual vel:
-    #
-    #*** vk: We don't need homogenised vels. Wednesday, 19 April 2017, 14:52 PM
-    # homoVel = vels
-
-
 
 
 

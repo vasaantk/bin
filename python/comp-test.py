@@ -5,7 +5,6 @@
 import re
 from pylab import *
 import sys
-import numpy as np
 from mpldatacursor import datacursor
 
 usrFile = sys.argv[1:]
@@ -224,34 +223,6 @@ if 'comp' in usrFile:
             clf()
             close()
 
-    # Replaced this block with if/else above on Wednesday, 25 May 2016, 12:22 PM.
-    # while response != 'q':
-    #     usrComp = int(response)
-    #     for i in xrange(len(comp)):               # Iterate through the list
-    #         if usrComp == int(comp[i][0]):
-    #             for j in xrange(len(xoff[i])):    # Iterate through sub-lists
-    #                 xoffAdd.append(xoff[i][j])
-    #                 yoffAdd.append(yoff[i][j])
-    #                 peakAdd.append(peak[i][j])
-    #                 velsAdd.append(vels[i][j])
-    #                 compAdd.append(comp[i][j])
-    #     if xoffAdd != []:                         # Catch scrip in-case first choice is empty array
-    #         scatter(xoffAdd,yoffAdd,s=peakAdd,c=velsAdd,vmin=velMin,vmax=velMax)
-    #         if 'atate' in usrFile:
-    #             for j in xrange(len(compAdd)):
-    #                 annotate(compAdd[j],xy=(xoffAdd[j],yoffAdd[j]))
-    #         xlabel('x offset')
-    #         ylabel('y offset')
-    #         cbar = colorbar()
-    #         cbar.set_label('Velocity')
-    #         gca().invert_xaxis()
-    #         show(block = False)
-    #     response = raw_input(machineQuery)
-    #     clf()
-    #     close()
-
-
-
 
 
 #=====================================================================
@@ -274,6 +245,7 @@ if 'seq' in usrFile:
         cbar = colorbar()
         cbar.set_label('Velocity')
         gca().invert_xaxis()
+        datacursor(hover=True)
         show(block = False)
 
         response = raw_input('Component '+str(comp[i][0])+':')
@@ -318,28 +290,3 @@ if 'spec' in usrFile:
     ylabel('flux')
     datacursor(hover=True)
     show()
-
-
-
-#=====================================================================
-#   The 'comp' version2.0 replaces this one:
-#
-
-# if 'comp' in usrFile:
-#     machineQuery = 'Component ID: '
-#     response     = raw_input(machineQuery)
-#     firstIter    = True
-#     while response != 'q':
-#         usrComp = int(response)
-#         for i in xrange(len(comp)):
-#             if usrComp == int(comp[i][0]):
-#                 scatter(xoff[i],yoff[i],s=peak[i],c=vels[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
-#                 if 'atate' in usrFile:
-#                     for j in xrange(len(xoff[i])):
-#                         annotate(comp[i][j],xy=(xoff[i][j],yoff[i][j]))
-#                 if firstIter:
-#                     colorbar()
-#                     gca().invert_xaxis()
-#                     firstIter = False
-#                 show(block = False)
-#         response = raw_input(machineQuery)

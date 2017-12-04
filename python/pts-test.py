@@ -5,9 +5,7 @@
 import re
 from pylab import *
 import sys
-import numpy as np
-import random
-
+from mpldatacursor import datacursor
 
 usrFile = sys.argv[1:]
 
@@ -196,15 +194,6 @@ flux = [flux[i][flux[i].index(max(flux[i]))] for i in xrange(len(comp))]
 
 
 #=====================================================================
-#   Find mean velocity of each comp:
-#   (previously used for comp-test.py. Not needed here)
-
-# for i in xrange(len(vels)):
-#     velAvg.append(float(sum(vels[i])/len(vels[i])))
-
-
-
-#=====================================================================
 #   Determine if user has requested for custom vel range:
 #
 for i in usrFile:
@@ -225,9 +214,6 @@ for i in usrFile:
 if defaultVels:              # Default vels are the min/max of the velAvg for each comp.
     velMin = min(vels)
     velMax = max(vels)
-    # Previously used for comp-test.py. Not needed here:
-    # velMin = min(velAvg)
-    # velMax = max(velAvg)
 
 
 
@@ -236,13 +222,6 @@ if defaultVels:              # Default vels are the min/max of the velAvg for ea
 #   instead of each spot having its own individual vel:
 #
 homoVel = vels
-# Previously used for comp-test.py. Not needed here:
-# for i in xrange(len(velAvg)):
-#     for j in vels[i]:
-#         homoVelTmp.append(velAvg[i])
-#     homoVel.append(homoVelTmp)
-#     homoVelTmp = []
-
 
 
 
@@ -295,45 +274,11 @@ if 'comp' in usrFile:
                 cbar = colorbar()
                 cbar.set_label('Velocity')
                 gca().invert_xaxis()
+                datacursor(hover=True)
                 show(block = False)
             response = raw_input(machineQuery)
             clf()
             close()
-
-    # Replaced this block with if/else above on Wednesday, 25 May 2016, 12:24 PM.
-    # while response != 'q':
-    #     usrComp = int(response)
-    #     for i in xrange(len(comp)):               # Iterate through the list
-    #         if usrComp == int(comp[i]):
-    #             xoffAdd.append(xoff[i])
-    #             yoffAdd.append(yoff[i])
-    #             peakAdd.append(peak[i])
-    #             fluxAdd.append(flux[i])
-    #             velsAdd.append(vels[i])
-    #             compAdd.append(comp[i])
-    #             xerrAdd.append(xerr[i])
-    #             yerrAdd.append(yerr[i])
-    #     if xoffAdd != []:                         # Catch scrip in-case first choice is empty array
-    #         scatter( xoffAdd,yoffAdd,s=fluxAdd,c=velsAdd,vmin=velMin,vmax=velMax)
-    #         if 'err' in usrFile:
-    #             errorbar(xoffAdd,yoffAdd,xerrAdd,yerrAdd)
-    #         if 'atate' in usrFile:
-    #             for i in xrange(len(compAdd)):
-    #                 annotate(compAdd[i],xy=(xoffAdd[i],yoffAdd[i]))
-    #         if 'vatate' in usrFile:
-    #             for i in xrange(len(compAdd)):
-    #                 annotate(float("{0:.1f}".format(velsAdd[i])),xy=(xoffAdd[i],yoffAdd[i]))
-
-    #         xlabel('x offset')
-    #         ylabel('y offset')
-    #         title(str(usrFile[0]))
-    #         cbar = colorbar()
-    #         cbar.set_label('Velocity')
-    #         gca().invert_xaxis()
-    #         show(block = False)
-    #     response = raw_input(machineQuery)
-    #     clf()
-    #     close()
 
 
 
@@ -359,6 +304,7 @@ if 'seq' in usrFile:
         cbar = colorbar()
         cbar.set_label('Velocity')
         gca().invert_xaxis()
+        datacursor(hover=True)
         show(block = False)
 
         response = raw_input('Component '+str(comp[i][0])+':')
@@ -404,4 +350,5 @@ if 'plot' in usrFile:
     ylabel('y offset')
     cbar = colorbar()
     cbar.set_label('Velocity')
+    datacursor(hover=True)
     show()

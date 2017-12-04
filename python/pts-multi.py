@@ -5,8 +5,6 @@
 import re
 from pylab import *
 import sys
-#import numpy as np
-import random
 from mpldatacursor import datacursor
 
 usrFile = sys.argv[1:]

@@ -18,11 +18,11 @@
 # for i in {1,4,6,7,8,9,10,11,12,14,15} ; do grep -E "^\s+ $i " G024.78_EM117K.COMP.PTS | sort -nrk 4,4 | head -n 1 | pts2peak.py ; done | sort -n >> output_peaktable.dat
 
 # The above unix command greps the entries from the .COMP.PTS on a
-# comp-by-comp basis. These are sorted by the peak flux (column 4) and
-# then we use head to grab the channel with the greatest flux for that
-# comp. pts2peak.py does the conversion before the converted values
-# for comps {1,4,6,7,8,9,10,11,12,14,15} are sorted according to
-# channel.
+# comp-by-comp basis from the 'for' loop. These are sorted by the peak
+# flux (column 4) and then we use 'head' to grab the channel with the
+# greatest flux for that comp. pts2peak.py does the conversion before
+# the converted values for comps {1,4,6,7,8,9,10,11,12,14,15} are
+# sorted according to channel.
 
 import re
 import sys
