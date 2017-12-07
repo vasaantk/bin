@@ -4,73 +4,98 @@
 # Run without arguments for instructions.
 
 import re
-from pylab import *
 import sys
-import numpy as np
-from scipy import *
-from scipy import constants as sc
+from pylab import *
 
 usrFile = sys.argv[1:]
 
 if len(usrFile) == 0:
+    print "# velpol-fix.py converts the freqency from the output of ISPEC to"
+    print "# velocity by comparing the frequency from the output from POSSM for"
+    print "# the source."
     print ""
-    print "# This script served the exact function as its predecessor vel-fix.py."
-    print "# The frames from POSSM are matched with the channels from ISPEC when"
-    print "# executing step 18) of METH_MASER_PROCEDURE.HELP."
-    exit()
-else:
-    mfFile = usrFile[0]
+    print "  -->$ velpol-fix.py poss.txt ispec.txt"
+    startScript = False
+elif len(usrFile) >= 2:    # Check user inputs
+    possm = usrFile[0]
+    ispec = usrFile[1]
     startScript = True
-
-
-
-#=====================================================================
-#   Check user inputs:
-#
-if len(usrFile) >= 2:
-    possm  = usrFile[0]
-    mfFile = usrFile[1]
-
-    for i in usrFile:
-        usrOffset = re.search('offset=([+-]?\d+)',i)
-        if usrOffset:
-            chanOffset = int(usrOffset.group(1))
-        else:
-            chanOffset = 0
 else:
     print "Check your input files."
     startScript = False
-#=====================================================================
 
 
 
-#=====================================================================
-#   Harvest values:
-#
+ichan = []    # Channels from ispec
+ipeak = []    # "avg over area" from ispec
+ifreq = []    # Frequencies from ispec
+
+pvels = []    # Possm velocities
+pfreq = []    # Possm frequencies
+
+km_To_metres = 1e3
+
+
+
 if startScript:
-    for line in open(mfFile,'r'):
-        reqInfo = re.search('\s+(\d+)\s+([+-]?\d+.\d+[eE][+-]?\d\d)\s+([+-]?\d+.\d+[eE][+-]?\d\d)',line)
-        # reqInfo = re.search('\s+(\d+)\s+([+-]?\d+.\d+[eE][+-]?\d\d)\s+([+-]?\d+.\d+[eE][+-]?\d\d)\s+([+-]?\d+.\d+[eE][+-]?\d\d)',line)
-        if not reqInfo:
-            print line,
-        else:
-            # If data exists, grab the channel:
-            currentChanMF = int(float(reqInfo.group(1)))
-            for line in open(possm,'r'):
-                reqPossInfo = re.search('\s+(\d+)\s+\d+\s+\S+\s+\d+.\d+\s+([+-]?\d+.\d+)\s+\d+.\d+\s+\s+\d+.\d+\s+',line)
-                if reqPossInfo:
-                    currentChanPoss = int(float(reqPossInfo.group(1)))
-                    # Compare the POSSM and MF channels. Need to offset by the "First plane in the image cube":
-                    if currentChanPoss == currentChanMF+chanOffset:
-                        print "%5d %17.8E %16.7E"%(
-                            int(reqInfo.group(1)),
-                            float(reqPossInfo.group(2))*1e3,   # Convert from km/s to m/s to work with linpol.sm
-                            float(reqInfo.group(3)))
-                        # print "%5d %17.8E %16.7E %16.7E"%(
-                        #     int(reqInfo.group(1)),
-                        #     float(reqPossInfo.group(2)),
-                        #     float(reqInfo.group(3)),
-                        #     float(reqInfo.group(4)))
-            close(possm)
-    close(mfFile)
-#=====================================================================
+    #=====================================================================
+    #   Harvest values:
+    #
+    for line in open(ispec,'r'):
+        reqInfo = re.search(  '\s+(\d+)'                           # (1) Channel
+                            + '\s+([+-]?\d+\.\d+)[eE][+-]?\d\d'    # (2) Freq. (Note that I exclude harvesting the exponent)
+                            + '\s+([+-]?\d+\.\d+[eE][+-]?\d\d)'    # (3) "avg over area" is the header in ispec
+                            , line)
+        if reqInfo:
+            # Grab the freq (without the exponent), remove the decimal and make it an integer:
+            currentFreqMF = int(str(reqInfo.group(2)).replace(".",""))
+            ichan.append(int(reqInfo.group(1)))
+            ifreq.append(currentFreqMF)
+            ipeak.append(float(reqInfo.group(3)))
+    close(ispec)
+
+    for line in open(possm,'r'):
+        reqPossInfo = re.search(  '\s+(\d+)'                       # (1) Channel
+                                + '\s+\d+'                         #     IF
+                                + '\s+\S+'                         #     Stokes
+                                + '\s+(\d+.\d+)'                   # (2) Freq
+                                + '\s+([+-]?\d+\.\d+)'             # (3) Vel
+                                + '\s+\d+\.\d+'                    #     Real(Jy)
+                                + '\s+\d+\.\d+'                    #     Imag(Jy)
+                                ,  line)
+        if reqPossInfo:
+            # Grab the freq, remove the decimal and make it an integer:
+            currentFreqPoss = int(str(reqPossInfo.group(2)).replace(".",""))
+            pfreq.append(currentFreqPoss)
+            pvels.append(reqPossInfo.group(3))
+    close(possm)
+
+
+
+    #=====================================================================
+    #   Determine velocities
+    #
+    velmask = [i for i, item in enumerate(pfreq) if item in ifreq]     # Positions of corresponding vels
+    fixvels = [pvels[i] for i in velmask]                              # Values    of corresponding vels
+
+
+
+    #=====================================================================
+    #   Print
+    #
+    with open(ispec,'r') as file:
+        printFix = True
+        for line in file:
+            # Need to define "reqInfo" again
+            reqInfo = re.search(  '\s+(\d+)'                           # (1) Channel
+                                + '\s+([+-]?\d+\.\d+)[eE][+-]?\d\d'    # (2) Freq. (Note that I exclude harvesting the exponent)
+                                + '\s+([+-]?\d+\.\d+[eE][+-]?\d\d)'    # (3) "avg over area" is the header in ispec
+                                , line)
+            if not reqInfo:               # Header & footer
+                print line,
+            elif reqInfo and printFix:    # Ensure that velocities are correctly sandwiched between header & footer
+                for j in xrange(len(fixvels)):
+                    print  "%5d %17.8E %16.7E"%(        ichan[j],
+                                                float(fixvels[j])*km_To_metres,
+                                                        ipeak[j])
+                printFix = False          # Toggle off
