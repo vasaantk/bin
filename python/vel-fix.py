@@ -53,7 +53,7 @@ if len(usrFile) >= 2:
     for i in usrFile:
         usrOffset = re.search('offset=([+-]?\d+)',i)
         if usrOffset:
-            chanOffset = int(usrOffset.group(1))
+            chanOffset = int(usrOffset.group(1)) - 1    # See "*** Description" below
         else:
             chanOffset = 0
 else:
@@ -113,3 +113,27 @@ if startScript:
             close(possm)
     close(mfFile)
 #=====================================================================
+
+
+
+#=====================================================================
+#   *** Description
+#
+# We need to -1 to account for counting offset bet. first frame in .MF
+# and POSSM. For example:
+
+# If we IMAGR b/echan 1002/1004. Then the channels are:
+# 1002
+# 1003
+# 1004
+# The MF output will be channel 1, 2, 3.
+
+# To ensure MF corresponds to IMAGR (and equivalently POSSM) i.e.
+# 1 ==> 1002
+# 2 ==> 1003
+# 3 ==> 1004
+
+# We need to do (on the "if currentChanPoss == currentChanMF+chanOffset:" line):
+# 1 + 1001 ==> 1002
+# 2 + 1001 ==> 1003
+# 3 + 1001 ==> 1004
