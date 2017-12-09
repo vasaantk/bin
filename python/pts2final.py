@@ -18,6 +18,16 @@
 # Execute by:
 # -->$ cat user_file.COMP.PTS | pts2final.py >> table_final.txt
 
+# DISCLAIMER. If you have created sub-cubes for each feature (like
+# several imsize 512x512) instead of one large cube (imsize
+# 8192x8192), you will require different (cenx, ceny) for each
+# individual feature in polvars.inp. The consequnce of not having
+# individual polvars.inp is that the X-position (pix), Y-position
+# (pix) columns in the output will be wrong - all other columns will
+# be OK. So if you don't need X-position (pix), Y-position (pix),
+# pts2final.py will work for you. As of Saturday, 09 December 2017
+# there is no fix to this issue.
+
 import re
 import sys
 import string
@@ -197,7 +207,6 @@ if proceedFlag:
             bmaj.append(float(reqInfo.group(12)))  # Beam major axis
             bmin.append(float(reqInfo.group(13)))  # Beam minor axis
 
-
     # Sort all elements according to increasing "chan" order:
     vels = [x for (y,x) in sorted(zip(chan,vels),key=lambda pair: pair[0])]
     xoff = [x for (y,x) in sorted(zip(chan,xoff),key=lambda pair: pair[0])]
@@ -235,7 +244,6 @@ if proceedFlag:
     xoff = [deg2ra( ra  + (i/cos(radians(dec)))/3600.0) for i in xoff]
     yoff = [deg2dec(dec +  i/3600.0)                    for i in yoff]
 
-
     chanGroups = [list(j) for i, j in groupby(chan)]      # Group "chans" which have more than one maser spot
     alphabet   = ['A','B','C','D','E','F','G','H','I','J','K','L','M',
                   'N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
@@ -246,7 +254,6 @@ if proceedFlag:
         else:
             chan[0] = str(chan[0])
     chan = [i for item in chanGroups for i in item]       # Flatten out "chanGroups" into a 1D list
-
 
     # Header from table_final.txt:
     print " NAME,  CHAN                ALPHA,                       DELTA,               X-position,       Y-position,      Velocity,      Peak intensity,       Integrated intensity          Average Polarization            Average Pol.Angle    "

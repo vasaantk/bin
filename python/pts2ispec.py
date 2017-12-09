@@ -5,7 +5,7 @@
 # pts2ispec.py reads in entries from .COMP.PTS files line-by-line from
 # stdin. It computes the pixel position of the centroid for each maser
 # spot and creates a 3x3 box around that centroid, in units of
-# pixels. This script loosly mimics "spectra_extractor.e" in
+# pixels. This script mimics the role of "spectra_extractor.e" in
 # METH_MASER_PROCEDURE.HELP.
 
 # Note you must have a "polvars.inp" file in the pwd with the
@@ -18,15 +18,29 @@
 # Recommended usage is along the lines of:
 # for i in {1,4,6,7,8,9,10,11,12,14,15} ; do grep -E "^\s+ $i " G024.78_EM117K.COMP.PTS | sort -nrk 4,4 | head -n 1 | pts2ispec.py ; done
 
-# or
+# The above unix command greps the entries from the .COMP.PTS file on
+# a comp-by-comp basis using the 'for' loop. The comps are sorted by
+# the peak flux (column 4) and then we use 'head -n 1' to grab the
+# channel with the highest flux for that comp. pts2ispec.py does the
+# conversion before the ispec parameters to be used in a runfil are
+# output.
 
-# for i in {401,404,406,407,408,409,410} ; do cp polvars/polvars_$i.inp polvars.inp ; grep -E "^\s+ $i " CMPS_EM117K.COMP.PTS | sort -nrk 4,4 | head -n 1 | pts2ispec.py ; rm polvars.inp ; done
+# If you have created sub-cubes for each feature (like several imsize
+# 512x512) instead of one large cube (imsize 8192x8192), you will
+# require different (cenx, ceny) for each individual feature in
+# polvars.inp. You can accomplish this by creating:
 
-# The above unix command greps the entries from the .COMP.PTS on a
-# comp-by-comp basis from the 'for' loop. These are sorted by the peak
-# flux (column 4) and then we use 'head' to grab the channel with the
-# greatest flux for that comp. pts2ispec.py does the conversion before
-# the ispec parameters are output.
+# polvars_1.inp
+# polvars_4.inp
+#      ...
+#      ...
+#      ...
+# polvars_15.inp
+
+# in a directory (e.g. "polvars") and implement the relavent
+# polvars.inp using the following:
+
+# for i in {1,4,6,7,8,9,10,11,12,14,15} ; do cp polvars/polvars_$i.inp polvars.inp ; grep -E "^\s+ $i " G024.78_EM117K.COMP.PTS | sort -nrk 4,4 | head -n 1 | pts2ispec.py ; rm polvars.inp ; done
 
 import re
 import sys
@@ -98,10 +112,14 @@ if not cellFlag:
     print "\n Check cellsize in polvars.inp\n"
 
 
+
+
+
+#=====================================================================
+#   Harvest values from .COMP.PTS:
+#
 if proceedFlag:
-    #=====================================================================
-    #   Harvest values from .COMP.PTS:
-    #
+    print "task 'ispec' ; default"
     for line in sys.stdin:
         reqInfo = re.search(ints + floats + ints + manyFloats, line)
         if reqInfo:
@@ -121,12 +139,12 @@ if proceedFlag:
 
     for i in range(len(xoff)):
         print "inname '%d' ; inseq %5d ; indisk %5d"%(name[i],1,1)   # Mapname, sequence, disk
-        print "blc %8.2f %8.2f    0"%(xblc[i],yblc[i])            # blc
-        print "trc %8.2f %8.2f    0"%(xtrc[i],ytrc[i])            # trc
-        print "doprint = -3"                                         # suppresses page headers and most other header information
+        print "blc %8.2f %8.2f    0"%(xblc[i],yblc[i])
+        print "trc %8.2f %8.2f    0"%(xtrc[i],ytrc[i])
+        print "doprint = -3"                                         # Suppresses page headers and most other header information
         print "dotv    = -1"                                         # No tv
         print "inclass  'ICL001'"                                    # Stokes I
-        print "outprint 'PWD:%s.I"%(str(name[i]))
+        print "outprint 'PWD:%s.I"%( str(name[i]))
         print "go ; wait"
         print "inclass  'POLI'"                                      # POLI
         print "outprint 'PWD:%s.PI"%(str(name[i]))
@@ -135,6 +153,6 @@ if proceedFlag:
         print "outprint 'PWD:%s.PA"%(str(name[i]))
         print "go ; wait"
         print "inclass  'VCL001'"                                    # Stokes V
-        print "outprint 'PWD:%s.V"%(str(name[i]))
+        print "outprint 'PWD:%s.V"%( str(name[i]))
         print "go ispec ; wait"
     print ""
