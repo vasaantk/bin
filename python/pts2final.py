@@ -15,7 +15,6 @@
 # ceny     = 256.81             # Pixel corresponding to Dec from IMHEAD in AIPS    (float)
 # cellsize = 0.0001             # Cellsize used during CLEAN   (float)
 
-
 # Execute by:
 # -->$ cat user_file.COMP.PTS | pts2final.py >> table_final.txt
 

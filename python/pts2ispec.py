@@ -18,6 +18,10 @@
 # Recommended usage is along the lines of:
 # for i in {1,4,6,7,8,9,10,11,12,14,15} ; do grep -E "^\s+ $i " G024.78_EM117K.COMP.PTS | sort -nrk 4,4 | head -n 1 | pts2ispec.py ; done
 
+# or
+
+# for i in {401,404,406,407,408,409,410} ; do cp polvars/polvars_$i.inp polvars.inp ; grep -E "^\s+ $i " CMPS_EM117K.COMP.PTS | sort -nrk 4,4 | head -n 1 | pts2ispec.py ; rm polvars.inp ; done
+
 # The above unix command greps the entries from the .COMP.PTS on a
 # comp-by-comp basis from the 'for' loop. These are sorted by the peak
 # flux (column 4) and then we use 'head' to grab the channel with the
@@ -132,5 +136,5 @@ if proceedFlag:
         print "go ; wait"
         print "inclass  'VCL001'"                                    # Stokes V
         print "outprint 'PWD:%s.V"%(str(name[i]))
-        print "go ; wait"
+        print "go ispec ; wait"
     print ""
