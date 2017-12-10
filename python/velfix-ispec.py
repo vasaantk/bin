@@ -10,11 +10,11 @@ from pylab import *
 usrFile = sys.argv[1:]
 
 if len(usrFile) == 0:
-    print "# velpol-fix.py converts the freqency from the output of ISPEC to"
+    print "# velfix-ispec.py converts the freqency from the output of ISPEC to"
     print "# velocity by comparing the frequency from the output from POSSM for"
     print "# the source."
     print ""
-    print "  -->$ velpol-fix.py poss.txt ispec.txt"
+    print "  -->$ velfix-ispec.py poss.txt ispec.txt"
     startScript = False
 elif len(usrFile) >= 2:    # Check user inputs
     possm = usrFile[0]
@@ -93,7 +93,7 @@ if startScript:
                                 , line)
             if not reqInfo:               # Header & footer
                 print line,
-            elif reqInfo and printFix:    # Ensure that velocities are correctly sandwiched between header & footer
+            elif reqInfo and printFix:    # Toggle to ensure that velocities are correctly sandwiched between header & footer
                 for j in xrange(len(fixvels)):
                     print  "%5d %17.8E %16.7E"%(        ichan[j],
                                                 float(fixvels[j])*km_To_metres,

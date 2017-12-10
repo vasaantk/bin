@@ -4,8 +4,12 @@
 
 # pts2feat.py reads in entries from .COMP.PTS files line-by-line from
 # stdin. It then prints out the xpixel, ypixel, channel, velocity,
-# peak and integrated flux densities. The output format is consistent
-# with "output_feature*.dat" from METH_MASER_PROCEDURE.HELP.
+# peak and integrated flux densities. The calculated pixel centroid is
+# within errors of the measured values from JMFIT. The script error
+# scales inversely with flux: complete agreement with strong >~few Jy
+# emission to ~1 pix with <1 Jy emission. The output format is
+# consistent with "output_feature*.dat" from
+# METH_MASER_PROCEDURE.HELP.
 
 # Note you must have a "polvars.inp" file in the pwd with the
 # following:

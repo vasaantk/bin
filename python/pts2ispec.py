@@ -5,8 +5,11 @@
 # pts2ispec.py reads in entries from .COMP.PTS files line-by-line from
 # stdin. It computes the pixel position of the centroid for each maser
 # spot and creates a 3x3 box around that centroid, in units of
-# pixels. This script mimics the role of "spectra_extractor.e" in
-# METH_MASER_PROCEDURE.HELP.
+# pixels. The calculated pixel centroid is within errors of the
+# measured values from JMFIT. The script error scales inversely with
+# flux: complete agreement with strong >~few Jy emission to ~1 pix
+# with <1 Jy emission. This script mimics the role of
+# "spectra_extractor.e" in METH_MASER_PROCEDURE.HELP.
 
 # Note you must have a "polvars.inp" file in the pwd with the
 # following:
@@ -16,7 +19,7 @@
 # cellsize = 0.0001             # Cellsize used during CLEAN   (float)
 
 # Recommended usage is along the lines of:
-# for i in {1,4,6,7,8,9,10,11,12,14,15} ; do grep -E "^\s+ $i " G024.78_EM117K.COMP.PTS | sort -nrk 4,4 | head -n 1 | pts2ispec.py ; done
+# for i in {1,4,6,7,8,9,10} ; do grep -E "^\s+ $i " G024.78_EM117K.COMP.PTS | sort -nrk 4,4 | head -n 1 | pts2ispec.py ; done
 
 # The above unix command greps the entries from the .COMP.PTS file on
 # a comp-by-comp basis using the 'for' loop. The comps are sorted by
@@ -35,12 +38,12 @@
 #      ...
 #      ...
 #      ...
-# polvars_15.inp
+# polvars_10.inp
 
 # in a directory (e.g. "polvars") and implement the relavent
 # polvars.inp using the following:
 
-# for i in {1,4,6,7,8,9,10,11,12,14,15} ; do cp polvars/polvars_$i.inp polvars.inp ; grep -E "^\s+ $i " G024.78_EM117K.COMP.PTS | sort -nrk 4,4 | head -n 1 | pts2ispec.py ; rm polvars.inp ; done
+# for i in {1,4,6,7,8,9,10} ; do cp polvars/polvars_$i.inp polvars.inp ; grep -E "^\s+ $i " G024.78_EM117K.COMP.PTS | sort -nrk 4,4 | head -n 1 | pts2ispec.py ; rm polvars.inp ; done
 
 import re
 import sys
@@ -119,7 +122,6 @@ if not cellFlag:
 #   Harvest values from .COMP.PTS:
 #
 if proceedFlag:
-    print "task 'ispec' ; default"
     for line in sys.stdin:
         reqInfo = re.search(ints + floats + ints + manyFloats, line)
         if reqInfo:
@@ -144,15 +146,15 @@ if proceedFlag:
         print "doprint = -3"                                         # Suppresses page headers and most other header information
         print "dotv    = -1"                                         # No tv
         print "inclass  'ICL001'"                                    # Stokes I
-        print "outprint 'PWD:%s.I"%( str(name[i]))
+        print "outprint 'PWD:%s_I.DATA"%( str(name[i]))
         print "go ; wait"
         print "inclass  'POLI'"                                      # POLI
-        print "outprint 'PWD:%s.PI"%(str(name[i]))
+        print "outprint 'PWD:%s_POLI.DATA"%(str(name[i]))
         print "go ; wait"
         print "inclass  'POLA'"                                      # POLA
-        print "outprint 'PWD:%s.PA"%(str(name[i]))
+        print "outprint 'PWD:%s_POLA.DATA"%(str(name[i]))
         print "go ; wait"
         print "inclass  'VCL001'"                                    # Stokes V
-        print "outprint 'PWD:%s.V"%( str(name[i]))
+        print "outprint 'PWD:%s_V.DATA"%( str(name[i]))
         print "go ispec ; wait"
     print ""

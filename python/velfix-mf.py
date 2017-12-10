@@ -27,7 +27,7 @@ if len(usrFile) == 0:
     print "The 'offset' option is used if only a subset of the channels are"
     print "CLEANed. E.g. if bchan/echan in IMAGR is 500/1000, then offset=500."
     print ""
-    print "--> vel-fix.py userfile.possm userfile.MF [offset=0]"
+    print "--> velfix-mf.py userfile.possm userfile.MF [offset=0]"
     print ""
     exit()
 else:

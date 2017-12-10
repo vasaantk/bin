@@ -4,7 +4,11 @@
 
 # pts2final.py converts the maser spot information contained in
 # .COMP.PTS files to the table_final.txt format used for polarisation
-# calibration from step 17) of 'METH_MASER_PROCEDURE.HELP'.
+# calibration from step 17) of 'METH_MASER_PROCEDURE.HELP'. The
+# calculated pixel centroid is within errors of the measured values
+# from JMFIT. The script error scales inversely with flux: complete
+# agreement with strong >~few Jy emission to ~1 pix with <1 Jy
+# emission.
 
 # Note you must have a "polvars.inp" file in the pwd with the
 # following:
