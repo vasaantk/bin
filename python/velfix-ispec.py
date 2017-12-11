@@ -27,8 +27,9 @@ else:
 
 
 ichan = []    # Channels from ispec
-ipeak = []    # "avg over area" from ispec
 ifreq = []    # Frequencies from ispec
+ipeak = []    # "avg over area" from ispec
+speak = []    # Smoothed freq from ispec
 
 pvels = []    # Possm velocities
 pfreq = []    # Possm frequencies
@@ -42,16 +43,33 @@ if startScript:
     #   Harvest values:
     #
     for line in open(ispec,'r'):
-        reqInfo = re.search(  '\s+(\d+)'                           # (1) Channel
-                            + '\s+([+-]?\d+\.\d+)[eE][+-]?\d\d'    # (2) Freq. (Note that I exclude harvesting the exponent)
-                            + '\s+([+-]?\d+\.\d+[eE][+-]?\d\d)'    # (3) "avg over area" is the header in ispec
-                            , line)
+        reqInfo    = re.search(  '\s+(\d+)'                           # (1) Channel
+                               + '\s+([+-]?\d+\.\d+)[eE][+-]?\d\d'    # (2) Freq. (Note that I exclude harvesting the exponent)
+                               + '\s+([+-]?\d+\.\d+[eE][+-]?\d\d)$'   # (3) "avg over area" is the header in ispec
+                               , line)
+
+        reqSmoInfo = re.search(  '\s+(\d+)'                           # (1) Channel
+                               + '\s+([+-]?\d+\.\d+)[eE][+-]?\d\d'    # (2) Freq. (Note that I exclude harvesting the exponent)
+                               + '\s+([+-]?\d+\.\d+[eE][+-]?\d\d)'    # (3) "avg over area" is the header in ispec
+                               + '\s+([+-]?\d+\.\d+[eE][+-]?\d\d)$'   # (4) freq smoothed
+                               , line)
+
         if reqInfo:
             # Grab the freq (without the exponent), remove the decimal and make it an integer:
             currentFreqMF = int(str(reqInfo.group(2)).replace(".",""))
             ichan.append(int(reqInfo.group(1)))
             ifreq.append(currentFreqMF)
             ipeak.append(float(reqInfo.group(3)))
+            smoothApplied = False
+
+        if reqSmoInfo:
+            # Grab the freq (without the exponent), remove the decimal and make it an integer:
+            currentFreqMF = int(str(reqSmoInfo.group(2)).replace(".",""))
+            ichan.append(int(reqSmoInfo.group(1)))
+            ifreq.append(currentFreqMF)
+            ipeak.append(float(reqSmoInfo.group(3)))
+            speak.append(float(reqSmoInfo.group(4)))
+            smoothApplied = True
     close(ispec)
 
     for line in open(possm,'r'):
@@ -86,16 +104,31 @@ if startScript:
     with open(ispec,'r') as file:
         printFix = True
         for line in file:
-            # Need to define "reqInfo" again
-            reqInfo = re.search(  '\s+(\d+)'                           # (1) Channel
-                                + '\s+([+-]?\d+\.\d+)[eE][+-]?\d\d'    # (2) Freq. (Note that I exclude harvesting the exponent)
-                                + '\s+([+-]?\d+\.\d+[eE][+-]?\d\d)'    # (3) "avg over area" is the header in ispec
-                                , line)
-            if not reqInfo:               # Header & footer
-                print line,
-            elif reqInfo and printFix:    # Toggle to ensure that velocities are correctly sandwiched between header & footer
-                for j in xrange(len(fixvels)):
-                    print  "%5d %17.8E %16.7E"%(        ichan[j],
-                                                float(fixvels[j])*km_To_metres,
-                                                        ipeak[j])
-                printFix = False          # Toggle off
+            if smoothApplied:
+                reqInfo = re.search(  '\s+(\d+)'                           # (1) Channel
+                                    + '\s+([+-]?\d+\.\d+)[eE][+-]?\d\d'    # (2) Freq. (Note that I exclude harvesting the exponent)
+                                    + '\s+([+-]?\d+\.\d+[eE][+-]?\d\d)'    # (3) "avg over area" is the header in ispec
+                                    + '\s+([+-]?\d+\.\d+[eE][+-]?\d\d)$'   # (4) freq smoothed
+                                    , line)
+                if not reqInfo:               # Header & footer
+                    print line,
+                elif reqInfo and printFix:    # Toggle to ensure that velocities are correctly sandwiched between header & footer
+                    for j in xrange(len(fixvels)):
+                        print  "%5d %17.8E %16.7E %16.7E"%(        ichan[j],
+                                                           float(fixvels[j])*km_To_metres,
+                                                                   ipeak[j],
+                                                                   speak[j])
+                    printFix = False          # Toggle off
+            else:
+                reqInfo = re.search(  '\s+(\d+)'                           # (1) Channel
+                                    + '\s+([+-]?\d+\.\d+)[eE][+-]?\d\d'    # (2) Freq. (Note that I exclude harvesting the exponent)
+                                    + '\s+([+-]?\d+\.\d+[eE][+-]?\d\d)$'   # (3) "avg over area" is the header in ispec
+                                    , line)
+                if not reqInfo:               # Header & footer
+                    print line,
+                elif reqInfo and printFix:    # Toggle to ensure that velocities are correctly sandwiched between header & footer
+                    for j in xrange(len(fixvels)):
+                        print  "%5d %17.8E %16.7E"%(        ichan[j],
+                                                    float(fixvels[j])*km_To_metres,
+                                                            ipeak[j])
+                    printFix = False          # Toggle off
