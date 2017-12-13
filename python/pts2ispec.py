@@ -40,10 +40,9 @@
 #      ...
 # polvars_10.inp
 
-# in a directory (e.g. "polvars") and implement the relavent
-# polvars.inp using the following:
+# and implement the relavent polvars.inp using the following:
 
-# for i in {1,4,6,7,8,9,10} ; do cp polvars/polvars_$i.inp polvars.inp ; grep -E "^\s+ $i " G024.78_EM117K.COMP.PTS | sort -nrk 4,4 | head -n 1 | pts2ispec.py ; rm polvars.inp ; done
+# for i in {1,4,6,7,8,9,10} ; do cp polvars_$i.inp polvars.inp ; grep -E "^\s+ $i " G024.78_EM117K.COMP.PTS | sort -nrk 4,4 | head -n 1 | pts2ispec.py ; rm polvars.inp ; done
 
 import re
 import sys

@@ -29,7 +29,7 @@
 # individual polvars.inp is that the X-position (pix), Y-position
 # (pix) columns in the output will be wrong - all other columns will
 # be OK. So if you don't need X-position (pix), Y-position (pix),
-# pts2final.py will work for you. As of Saturday, 09 December 2017
+# pts2final.py will work for you. As of Wednesday, 13 December 2017
 # there is no fix to this issue.
 
 import re
