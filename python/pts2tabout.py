@@ -2,7 +2,7 @@
 
 # Written by Vasaant S/O Krishnan. Tuesday, 19 September 2017.
 
-# pts2polpipe.py replicates pts2pol.py. The distinction is that the
+# pts2tabout.py replicates pts2pol.py. The distinction is that the
 # former accepts inputs from stdin.
 
 # pts2pol.py converts the maser spot information contained in
@@ -23,10 +23,10 @@
 # cellsize = 0.0001             # Cellsize used during CLEAN   (float)
 
 # Recommended usage is along the lines of:
-# for i in {1,4,6,7,8,9,10} ; do grep " $i " G024.78_EM117K.COMP.PTS | pts2polpipe.py >> table_out_$i.txt ; done
+# for i in {1,4,6,7,8,9,10} ; do grep " $i " G024.78_EM117K.COMP.PTS | pts2tabout.py >> table_out_$i.txt ; done
 
 # The above unix command greps the entries from the .COMP.PTS on a
-# comp-by-comp basis. pts2polpipe.py does the conversion before the
+# comp-by-comp basis. pts2tabout.py does the conversion before the
 # converted values for comps {1,4,6,7,8,9,10} are written to their
 # individual files.
 
@@ -44,7 +44,7 @@
 
 # and implement the relavent polvars.inp using the following:
 
-# for i in {1,4,6,7,8,9,10} ; do cp polvars_$i.inp polvars.inp ; grep " $i " G024.78_EM117K.COMP.PTS | pts2polpipe.py >> table_out_$i.txt ; rm polvars.inp ; done
+# for i in {1,4,6,7,8,9,10} ; do cp polvars_$i.inp polvars.inp ; grep " $i " G024.78_EM117K.COMP.PTS | pts2tabout.py >> table_out_$i.txt ; rm polvars.inp ; done
 
 
 import re
