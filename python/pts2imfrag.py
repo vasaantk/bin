@@ -7,16 +7,16 @@
 # "features = {}" variable to use in imagrFrag.py.
 
 # Recommended usage is along the lines of:
-# for i in {1,2,3,5,6,10,11} ; do grep -E "^\s+ $i " G024.78_EM117K.COMP.PTS | sort -nrk 4,4 | head -n 1 | pts2imfrag.py 1500 175 ; done
+# for i in {1,4,6,7,8,9,10} ; do grep -E "^\s+ $i " G024.78_EM117K.COMP.PTS | sort -nrk 5,5 | head -n 1 | pts2imfrag.py 1500 175 ; done
 
 # The above unix command greps the entries from the .COMP.PTS on a
 # comp-by-comp basis from the 'for' loop. These are sorted by the peak
-# flux (column 4) and then we use 'head' to grab the channel with the
+# flux (column 5) and then we use 'head' to grab the channel with the
 # greatest flux for that comp. In "pts2imfrag.py 1500 175", 1500 is
 # the bchan relative to channel 1 of the .COMP.PTS. 175 is the number
 # of channels to clean. Think of it as:
-# "bchan = (head -n 1) + 1500 - 175"
-# "echan = (head -n 1) + 1500 + 175"
+# "bchan = peak channel (from "head -n 1") + 1500 - 175"
+# "echan = peak channel (from "head -n 1") + 1500 + 175"
 
 import re
 import sys
