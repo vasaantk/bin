@@ -4,11 +4,9 @@
 
 # pts2ispec.py reads in entries from .COMP.PTS files line-by-line from
 # stdin. It computes the pixel position of the centroid for each maser
-# spot and creates a 3x3 box around that centroid, in units of
-# pixels. The calculated pixel centroid is within errors of the
-# measured values from JMFIT. The script error scales inversely with
-# flux: complete agreement with strong >~few Jy emission to ~1 pix
-# with <1 Jy emission. This script mimics the role of
+# spot and creates a box around that centroid. The calculated pixel
+# centroid is within errors of the measured values from JMFIT (see the
+# table at the very end). This script mimics the role of
 # "spectra_extractor.e" in METH_MASER_PROCEDURE.HELP.
 
 # Note you must have a "polvars.inp" file in the pwd with the
@@ -128,7 +126,7 @@ if proceedFlag:
             xoff.append(float(reqInfo.group(8)))
             yoff.append(float(reqInfo.group(10)))
 
-    # Compute the pixel offsets from x/y offsets and create a 3x3 box:
+    # Compute the pixel offsets from x/y offsets and create a box:
     xpix = xoff
     ypix = yoff
 
@@ -137,6 +135,14 @@ if proceedFlag:
 
     xtrc = [(cenx - i/cellsize) + 1 for i in xpix]    # x+1
     ytrc = [(ceny + i/cellsize) + 1 for i in ypix]    # y+1
+
+    # Note: The above algorithim which I have used to create the box
+    # is the standard to create a 3x3 box around the pixel
+    # centroid. In the context of pts2ispec.py, Gabriele says of
+    # creating such a box in his EXPLAIN_05.txt that:
+
+    # "... is not important and actually does not reflect the real area
+    #  of the box :)"
 
     for i in range(len(xoff)):
         print "inname '%d' ; inseq %5d ; indisk %5d"%(name[i],1,1)   # Mapname, sequence, disk
@@ -157,3 +163,43 @@ if proceedFlag:
         print "outprint 'PWD:%s_V.DATA"%( str(name[i]))
         print "go ispec ; wait"
     print ""
+
+
+
+
+
+
+#=====================================================================
+#   pts2ispec vs. JMFIT
+#
+
+# "AIPS CH" is the peak channel from executing IMEAN on the cube
+# "PTS CH"  is the peak channel from column 4 of .COMP.PTS
+# "JM err (pix)" column gives the error in the centroid measurement from JMFIT
+
+# | CMP |            | pts2ispec | PTS CH |   JMFIT | AIPS CH | pts2ispec-JMFIT (pix) | JM err (pix) |
+# |-----+------------+-----------+--------+---------+---------+-----------------------+--------------|
+# | 401 | X-position |    255.99 |    167 | 255.989 |     165 |                  1e-3 |       0.0121 |
+# |     | Y-position |    257.33 |        | 257.315 |         |                  0.02 |       0.0148 |
+# |     |            |           |        |         |         |                       |              |
+# | 404 | X-position |    256.03 |    180 | 256.027 |     180 |                  3e-3 |       0.0217 |
+# |     | Y-position |    256.98 |        | 256.984 |         |                 -4e-3 |       0.0264 |
+# |     |            |           |        |         |         |                       |              |
+# | 406 | X-position |    256.89 |    171 | 256.886 |     171 |                  4e-3 |       0.0873 |
+# |     | Y-position |    257.54 |        | 257.540 |         |                  0.00 |       0.0922 |
+# |     |            |           |        |         |         |                       |              |
+# | 407 | X-position |    255.45 |    166 | 256.737 |     172 |                 -1.29 |       0.0881 |
+# |     | Y-position |    256.94 |        | 257.679 |         |                 -0.74 |       0.0921 |
+# |     |            |           |        |         |         |                       |              |
+# | 408 | X-position |    255.74 |    178 | 255.757 |     178 |                 -0.02 |       0.0407 |
+# |     | Y-position |    256.97 |        | 256.967 |         |                  3e-3 |       0.0424 |
+# |     |            |           |        |         |         |                       |              |
+# | 409 | X-position |    255.99 |    177 | 255.987 |     177 |                  3e-3 |       0.0378 |
+# |     | Y-position |    256.99 |        | 256.983 |         |                  7e-3 |       0.0468 |
+# |     |            |           |        |         |         |                       |              |
+# | 410 | X-position |    255.96 |    168 | 255.958 |     168 |                  2e-3 |       0.0742 |
+# |     | Y-position |    256.96 |        | 256.964 |         |                 -4e-3 |       0.0901 |
+# #+TBLFM: $7=$3-$5;f2
+
+# See Friday, 12 January 2018, 09:34 AM in "00_Notes_em117k.txt" for
+# full details.
