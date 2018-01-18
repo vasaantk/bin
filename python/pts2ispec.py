@@ -152,13 +152,13 @@ if proceedFlag:
         print "dotv    = -1"                                         # No tv
         print "inclass  'ICL001'"                                    # Stokes I
         print "outprint 'PWD:CMP%s_I.DATA"%( str(name[i]))
-        print "go ; wait"
+        print "go ispec ; wait"
         print "inclass  'POLI'"                                      # POLI
         print "outprint 'PWD:CMP%s_POLI.DATA"%(str(name[i]))
-        print "go ; wait"
+        print "go ispec ; wait"
         print "inclass  'POLA'"                                      # POLA
         print "outprint 'PWD:CMP%s_POLA.DATA"%(str(name[i]))
-        print "go ; wait"
+        print "go ispec ; wait"
         print "inclass  'VCL001'"                                    # Stokes V
         print "outprint 'PWD:CMP%s_V.DATA"%( str(name[i]))
         print "go ispec ; wait"
