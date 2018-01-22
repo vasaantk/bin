@@ -6,9 +6,7 @@
 # .COMP.PTS files to the table_final.txt format used for polarisation
 # calibration from step 17) of 'METH_MASER_PROCEDURE.HELP'. The
 # calculated pixel centroid is within errors of the measured values
-# from JMFIT. The script error scales inversely with flux: complete
-# agreement with strong >~few Jy emission to ~1 pix with <1 Jy
-# emission.
+# from JMFIT.
 
 # Note you must have a "polvars.inp" file in the pwd with the
 # following:
@@ -80,12 +78,12 @@ for line in open('polvars.inp','r'):
     cellsize = re.search('cellsize\s*=\s*(\S*)\s*',line)
     if ra:
         ra = str(ra.group(1))
-        if re.search('^\d\d:\d\d:\d\d.\d+$',ra):    # Check harvested RA format
+        if re.search('^\d+:\d+:\d+.\d+$',ra):    # Check harvested RA format
             polvars.append(ra)                      # Append RA so it is not "forgotten"
             raFlag = True
     if dec:
         dec = str(dec.group(1))
-        if re.search('^[+-]?\d\d:\d\d:\d\d.\d+$',dec):    # Check harvested dec format
+        if re.search('^[+-]?\d+:\d+:\d+.\d+$',dec):    # Check harvested dec format
             polvars.append(dec)
             decFlag  = True
     if cenx:
