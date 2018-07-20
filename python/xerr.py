@@ -4,7 +4,8 @@
 
 # xerr.py reads in table_final.txt and the output of Gabriele Surcis'
 # err_pol_angle.sm (e.g. polagnerr.out) and produces an input table
-# for "X_weight.sm".
+# for "X_weight.sm". Ensure that all values are polangerr.out are in
+# decimal format.
 
 # -->$ xerr.py polagnerr.out
 
