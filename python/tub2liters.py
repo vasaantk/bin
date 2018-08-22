@@ -10,7 +10,7 @@ usrInp   = sys.argv[1:]
 
 if len(usrInp) == 0:
     print ""
-    print "# Convert the height (cm) of water in a ellipsoidal tub to litres"
+    print "# Convert the height (xx cm) of water in a ellipsoidal tub to litres"
     print "# using the trapezoidal rule."
     print ""
     print "--> ./tub2litres.py xx"
@@ -79,4 +79,4 @@ while currLvl < waterLvl:
     currVol += step * pi*xTmpMin*xTmpMaj       # Current cumulative volume in cubic cm
     currLvl += step                            # Increase the water height to the next level....
 
-print "%.2f Litres"%(currVol*cubeToLtr)
+print "  %.2f cm --> %.2f Litres"%(waterLvl, currVol*cubeToLtr)
