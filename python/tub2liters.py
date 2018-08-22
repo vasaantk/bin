@@ -13,7 +13,7 @@ if len(usrInp) == 0:
     print "# Convert the height (cm) of water in a ellipsoidal tub to litres"
     print "# using the trapezoidal rule."
     print ""
-    print "--> ./tub2litres.py  xx"
+    print "--> ./tub2litres.py xx"
     print ""
     exit()
 
@@ -24,8 +24,8 @@ if len(usrInp) == 0:
 baseMajor = 46     # Major axis of base
 baseMinor = 33     # Minor axis of base
 
-rimMajor  = 62     # Major axis of base
-rimMinor  = 45     # Minor axis of base
+rimMajor  = 62     # Major axis of rim
+rimMinor  = 45     # Minor axis of rim
 
 tubHeight = 28     # Perpendicular height
 
@@ -71,7 +71,7 @@ gradMin, ceptMin = modMin[0]
 while currLvl < waterLvl:
 
     yTmpMaj  = currLvl                         # Current height of water level
-    yTmpMin  = currLvl                         # Current height of water level
+    yTmpMin  = currLvl                         #
 
     xTmpMaj  = (yTmpMaj-ceptMaj)/gradMaj       # Determine the new x major axis
     xTmpMin  = (yTmpMin-ceptMin)/gradMin       # Determine the new x minor axis
