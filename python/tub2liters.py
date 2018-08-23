@@ -70,11 +70,10 @@ gradMin, ceptMin = modMin[0]
 #    Trapezoidal rule
 while currLvl < waterLvl:
 
-    yTmpMaj  = currLvl                         # Current height of water level
-    yTmpMin  = currLvl                         #
+    yTmp     = currLvl                         # Current height of water level
 
-    xTmpMaj  = (yTmpMaj-ceptMaj)/gradMaj       # Determine the new x major axis
-    xTmpMin  = (yTmpMin-ceptMin)/gradMin       # Determine the new x minor axis
+    xTmpMaj  = (yTmp-ceptMaj)/gradMaj          # Determine the new x major axis
+    xTmpMin  = (yTmp-ceptMin)/gradMin          # Determine the new x minor axis
 
     currVol += step * pi*xTmpMin*xTmpMaj       # Current cumulative volume in cubic cm
     currLvl += step                            # Increase the water height to the next level....
