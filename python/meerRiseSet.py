@@ -23,10 +23,14 @@ import sys
 
 #======================================================================
 #    Setup some variables
+
+ant    = katpoint.Antenna('m000, -30.71292524, 21.44380306, 1035')     # the MeerKAT reference point
+ant.ref_observer.horizon = '20:00:00'                                  # horizon set to 20 degrees
+
 priFlag  = True           # Flag to allow first 'target' as primary calibrator.
 
-cat.antenna = ant
 cat = katpoint.Catalogue()
+cat.antenna = ant
 
 usrInp   = sys.argv[1:]
 plotFlag = False
@@ -34,11 +38,6 @@ if '-p' in usrInp:
     plotFlag = True
 
 
-
-#======================================================================
-#    Antenna parameters
-ant    = katpoint.Antenna('m000, -30.71292524, 21.44380306, 1035')     # the MeerKAT reference point
-ant.ref_observer.horizon = '20:00:00'                                  # horizon set to 20 degrees
 
 for line in sys.stdin:    # Harvest source info from the input catalogue
     if line[0] != '#':
@@ -77,6 +76,11 @@ for tar in cat.targets:
 
     print "%10s%20s%20s%20s   %s"%(str(tar.name), str(rise_time), str(transit_time), str(set_time), tags)
 print ""
+
+
+
+if priFlag:     # Manually assign primary target incase no 'target' sources in cat.targets
+    priTarg = tar
 
 
 
