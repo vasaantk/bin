@@ -60,7 +60,7 @@ for i in usrInp:
         usrTime  = i.replace(' ',':')
         timeFlag = True
 
-if (not dateFlag or not timeFlag) and len(usrInp) >= 1:
+if (not dateFlag or not timeFlag) and len(usrInp) >= 2:
     print "Error in input time. Reverting to current UTC time"
     print ""
 
