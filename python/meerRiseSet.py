@@ -127,7 +127,7 @@ labels = list()
 for target in cat.targets:
     elev = katpoint.rad2deg(target.azel(t)[1])
     timestamps = Time(t, format='unix')
-    myplot,= plt.plot_date(timestamps.datetime, elev, fmt = '.', linewidth = 0, label=target.name)
+    myplot,= plt.plot_date(timestamps.datetime, elev, fmt = '.', linewidth = 0, label=target.name + ' ' + str([i for i in target.tags if i != 'radec']).replace("[","").replace("]","").replace("'",""))
     lines.append(myplot)
     labels.append(target.name)
     lst_rise = lst[np.where(elev>20)[0][ 0]]
