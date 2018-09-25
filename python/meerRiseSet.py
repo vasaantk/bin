@@ -33,6 +33,16 @@ import sys
 
 
 #======================================================================
+#    Convert decimal to time
+def dec2time(decimalTime):
+    hours   = int( decimalTime)
+    minutes = int((decimalTime*  60) % 60)
+    seconds =    ( decimalTime*3600) % 60
+    return str(hours).zfill(2)+':'+str(minutes).zfill(2)
+
+
+
+#======================================================================
 #    Setup some variables
 refAnt = katpoint.Antenna('m000, -30.71292524, 21.44380306, 1035')    # the MeerKAT reference point
 refAnt.ref_observer.horizon = '20:00:00'                              # horizon set to 20 degrees
@@ -150,7 +160,7 @@ minorLocator = MultipleLocator(0.25)
 ax2.xaxis.set_minor_locator(minorLocator)
 new_ticks = plt.xticks(
     np.linspace(0,1,24),
-    np.round(lst[np.linspace(1, len(lst), num=24, dtype = int)-1], 2),
+    [dec2time(i) for i in lst[np.linspace(1, len(lst), num=24, dtype= int)-1]],
     rotation= 'vertical')
 plt.xlabel('Local Sidereal Time (hours)')
 
