@@ -126,22 +126,27 @@ if priFlag:     # Manually assign primary target if no 'target' found in cat.tar
 
 #======================================================================
 #    Plot parameters
-t    = startTimeStamp.secs + np.arange(0, 24. * 60. * 60., 360.)
-lst  = katpoint.rad2deg(priTarg.antenna.local_sidereal_time(t)) / 15
+t     = startTimeStamp.secs + np.arange(0, 24. * 60. * 60., 360.)
+tstmp = Time(t, format= 'unix')
+lst   = katpoint.rad2deg(priTarg.antenna.local_sidereal_time(t)) / 15
 fig, ax1 = plt.subplots()
 
 plt.subplots_adjust(right=0.8)
 lines  = list()
 labels = list()
 
+sun = katpoint.Target('Sun, special')
+print "Solar separation (deg):"
+
 for target in cat.targets:
     elev = katpoint.rad2deg(target.azel(t)[1])
-    timestamps = Time(t, format='unix')
-    myplot,= plt.plot_date(timestamps.datetime, elev, fmt = '.', linewidth = 0, label=target.name + ' ' + str([i for i in target.tags if i != 'radec']).replace("[","").replace("]","").replace("'",""))
+    tags = str([i for i in target.tags if i != 'radec']).replace("[","").replace("]","").replace("'","")
+    myplot,= plt.plot_date(tstmp.datetime, elev, fmt = '.', linewidth = 0, label=target.name + ' ' + tags)
     lines.append(myplot)
     labels.append(target.name)
     lst_rise = lst[np.where(elev>20)[0][ 0]]
     lst_set  = lst[np.where(elev>20)[0][-1]]
+    print "%20s %5.1f"%(target.name, np.degrees(sun.separation(target, timestamp= t[int(len(t)/2)], antenna= refAnt)))
     # print "%15s is above 20 degrees between LST %05.02f and %05.02f"%(target.name, lst_rise, lst_set)
 
 ax1.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
@@ -160,7 +165,7 @@ minorLocator = MultipleLocator(0.25)
 ax2.xaxis.set_minor_locator(minorLocator)
 new_ticks = plt.xticks(
     np.linspace(0,1,24),
-    [dec2time(i) for i in lst[np.linspace(1, len(lst), num=24, dtype= int)-1]],
+    [dec2time(i) for i in lst[np.linspace(1, len(lst), num= 24, dtype= int)-1]],
     rotation= 'vertical')
 plt.xlabel('Local Sidereal Time (hours)')
 
