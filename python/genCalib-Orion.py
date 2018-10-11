@@ -4,13 +4,16 @@
 # observation catalogues.ipynb" from her email on 17 September 2018.
 # Here I've modified it to determine the gaincal and bpcal for Bill's
 # Orion sources from email 01 October 2018.
-
+#
 # Written by Vasaant S/O Krishnan on Wednesday, 10 October 2018
-
+#
 # Usage:
-#        -->$ cat OrionCent | genCalib-Orion.py -w
+#        -->$ cat target.csv | genCalib-Orion.py -w
 #
 # -w = (w)rite output .csv format for katsdpcatalogues
+#
+# Where target.csv has format:
+#       Abell 33, radec target, 00:27:07.0, -19:30:24
 
 
 
@@ -31,7 +34,7 @@ refAnt = katpoint.Antenna('m000, -30.71292524, 21.44380306, 1035')    # the Meer
 refAnt.ref_observer.horizon = '20:00:00'                              # horizon set to 20 degrees
 
 cat_path  = '/home/vasaantk/Applications/katsdp/katsdpcatalogues/'
-prop_id   = 'SC!-20180924-FC-01'
+prop_id   = 'SCI-20180924-FC-01'
 PI        = 'Fernando Camilo'
 PI_email  = 'fernando@ska.ac.za'
 ska_email = 'sharmila@ska.ac.za'
@@ -65,7 +68,6 @@ if not writeOutput:
 else:
     for title in header:
         print title
-    print ""
 
 for line in sys.stdin:
     primary_target = katpoint.Target(line)
@@ -103,4 +105,3 @@ for line in sys.stdin:
 
         for source in catalogue.targets:
             print source.description
-        print ""
