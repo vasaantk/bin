@@ -2,10 +2,8 @@
 
 # IMPORTANT: All times are in UTC.
 #
-# katRiseSet.py is based on Lindsay's
-# "Scheduling_catalogue_tester.ipynb" to compute source rise, transit
-# and set times. The input "source_catalogue.csv" is of the format in
-# katsdpcatalogue files.
+# yamlRiseSet.py is exactly katRiseSet.py, except it accepts .yaml
+# catalogues.
 #
 # If no date and time is given, current UTC time is used.
 # Acceptable time formats:
@@ -15,11 +13,11 @@
 #            2018-09-29 14:23
 #
 # Usage:
-#        -->$ cat source_catalogue.csv | katRiseSet.py -p 2018-09-29 14:23:45.3240
+#        -->$ cat source_catalogue.yaml | yamlRiseSet.py -p 2018-09-29 14:23:45.3240
 #
 # -p = plot the trajectories
 
-# Written by Vasaant S/O Krishnan on Saturday, 22 September 2018
+# Written by Vasaant S/O Krishnan on Thursday, 08 November 2018
 
 import katpoint
 import numpy as np
@@ -87,9 +85,28 @@ startEphemTime     = startTimeStamp.to_ephem_date()
 cat = katpoint.Catalogue()
 cat.antenna = refAnt
 
+yamlName = '- name='
+yamlCoor = ' radec='
+yamlTags = ' tags='
+yamlModl = ' model='
+tempCoor = ' radec, '
+
 for line in sys.stdin:    # Harvest source info from the input catalogue
-    if line[0] != '#':
-        cat.add(line)
+    srcAttr = []
+    for item in line.split(','):
+        if yamlName in item:
+            srcAttr.append(item.replace(yamlName, ''))
+        if yamlCoor in item:
+            srcAttr.append(item.replace(' ', ', ').replace(','+yamlCoor, tempCoor))
+        if yamlTags in item:
+            srcAttr.append(item.replace(yamlTags, ' '))
+        if yamlModl in item:
+            srcAttr.append(item.replace(yamlModl, ', '))
+    if srcAttr != []:
+        if len(srcAttr) == 3:
+            cat.add("".join([srcAttr[0], ', ', srcAttr[1].replace(tempCoor, ' radec '+srcAttr[2]+', ')]).replace('\n',''))
+        if len(srcAttr) == 4:
+            cat.add("".join([srcAttr[0], ', ', srcAttr[1].replace(tempCoor, ' radec '+srcAttr[2]+', '), srcAttr[3]]).replace('\n',''))
 
 # Setup table header
 print "%10s%20s%20s%20s"%('Target','Next Rise (UTC)', 'Next Transit', 'Next Set')
