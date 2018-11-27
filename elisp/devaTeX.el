@@ -81,7 +81,5 @@
    "org.gnome.evince.Window" "SyncSource"
    'auctex-evince-inverse-sync)))
 
-
-
 (provide 'devaTeX)
 ;;; devaTeX.el ends here
