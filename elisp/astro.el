@@ -88,8 +88,8 @@
         (setq HH (floor (/ ANGLE 15)))
         (setq MM (floor (* (- ANGLE (* 15 HH)) 4)))
         (setq SS (* (- (* 4 ANGLE) (* 60 HH) MM) 60))
-        (insert (message "%02d %02d %.5f" HH MM SS)))
-    (insert (message "%f is more than 360 degrees" ANGLE))))
+        (message "%02d %02d %.5f" HH MM SS))
+    (message "%f is more than 360 degrees" ANGLE)))
 
 (defun deg2dec (ANGLE)
   "Convert an angle from degrees to right ascension."
@@ -108,9 +108,9 @@
         (setq MM (floor (* (- DEG HH) 60)))
         (setq SS (* (- (* (- DEG HH) 60) MM) 60))
         (if (> NEG 0)
-            (insert (message "%02d %02d %.5f" HH MM SS))
-          (insert (message "-%02d %02d %.5f" HH MM SS))))
-    (insert (message "abs(%f) is more than 180 degrees." ANGLE))))
+            (message "%02d %02d %.5f" HH MM SS)
+          (message "-%02d %02d %.5f" HH MM SS)))
+    (message "abs(%f) is more than 180 degrees." ANGLE)))
 
 (defun ra2deg (HRS MIN SEC)
   "Convert an angle from right ascension to degrees"
