@@ -128,7 +128,7 @@ if priFlag:     # Manually assign primary target if no 'target' found in cat.tar
 #    Plot parameters
 t     = startTimeStamp.secs + np.arange(0, 24. * 60. * 60., 360.)
 tstmp = Time(t, format= 'unix')
-lst   = katpoint.rad2deg(priTarg.antenna.local_sidereal_time(t)) / 15
+lst   = katpoint.rad2deg(priTarg.antenna.local_sidereal_time(t))/15
 fig, ax1 = plt.subplots()
 
 plt.subplots_adjust(right=0.8)
@@ -155,6 +155,8 @@ ax1.xaxis.set_major_locator(mdates.HourLocator(byhour=range(24),interval=1))
 labels = ax1.get_xticklabels()
 plt.setp(labels, rotation= 'vertical', fontsize=10)
 plt.ylim(20,90)
+locs, labs = plt.xticks()
+plt.xlim(locs[1], locs[-2])          # Set limits to ensure that twiny aligns LST and UTC correctly
 plt.grid()
 plt.legend()
 plt.ylabel('Elevation (deg)')
