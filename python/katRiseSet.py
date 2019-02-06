@@ -126,7 +126,7 @@ if priFlag:     # Manually assign primary target if no 'target' found in cat.tar
 
 #======================================================================
 #    Plot parameters
-t     = startTimeStamp.secs + np.arange(0, 24. * 60. * 60., 360.)
+t     = startTimeStamp.secs + np.arange(0, 24.*60.*60., 360.)
 tstmp = Time(t, format= 'unix')
 lst   = katpoint.rad2deg(priTarg.antenna.local_sidereal_time(t))/15
 fig, ax1 = plt.subplots()
@@ -142,6 +142,7 @@ for target in cat.targets:
     elev = katpoint.rad2deg(target.azel(t)[1])
     tags = str([i for i in target.tags if i != 'radec']).replace("[","").replace("]","").replace("'","")
     myplot,= plt.plot_date(tstmp.datetime, elev, fmt = '.', linewidth = 0, label=target.name + ' ' + tags)
+    plt.xlim(tstmp.datetime[0], tstmp.datetime[-1])    # Set limits to ensure that twiny aligns LST and UTC correctly
     lines.append(myplot)
     labels.append(target.name)
     lst_rise = lst[np.where(elev>20)[0][ 0]]
@@ -154,19 +155,18 @@ ax1.xaxis.set_major_locator(mdates.HourLocator(byhour=range(24),interval=1))
 
 labels = ax1.get_xticklabels()
 plt.setp(labels, rotation= 'vertical', fontsize=10)
-plt.ylim(20,90)
-locs, labs = plt.xticks()
-plt.xlim(locs[1], locs[-2])          # Set limits to ensure that twiny aligns LST and UTC correctly
+plt.ylim(20, 90)
 plt.grid()
 plt.legend()
 plt.ylabel('Elevation (deg)')
 plt.xlabel('UTC time starting from %s'%startTimeStamp.to_string())
+
 ax2 = ax1.twiny()
 ax2.xaxis.set_major_locator(MaxNLocator(24))
 minorLocator = MultipleLocator(0.25)
 ax2.xaxis.set_minor_locator(minorLocator)
 new_ticks = plt.xticks(
-    np.linspace(0,1,24),
+    np.linspace(0, 1, 24),
     [dec2time(i) for i in lst[np.linspace(1, len(lst), num= 24, dtype= int)-1]],
     rotation= 'vertical')
 plt.xlabel('Local Sidereal Time (hours)')
