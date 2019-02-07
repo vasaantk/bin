@@ -142,13 +142,13 @@ for target in cat.targets:
     elev = katpoint.rad2deg(target.azel(t)[1])
     tags = str([i for i in target.tags if i != 'radec']).replace("[","").replace("]","").replace("'","")
     myplot,= plt.plot_date(tstmp.datetime, elev, fmt = '.', linewidth = 0, label=target.name + ' ' + tags)
-    plt.xlim(tstmp.datetime[0], tstmp.datetime[-1])    # Set limits to ensure that twiny aligns LST and UTC correctly
     lines.append(myplot)
     labels.append(target.name)
     lst_rise = lst[np.where(elev>20)[0][ 0]]
     lst_set  = lst[np.where(elev>20)[0][-1]]
     print "%20s %5.1f"%(target.name, np.degrees(sun.separation(target, timestamp= t[int(len(t)/2)], antenna= refAnt)))
     # print "%15s is above 20 degrees between LST %05.02f and %05.02f"%(target.name, lst_rise, lst_set)
+plt.xlim(tstmp.datetime[0], tstmp.datetime[-1])    # Set limits to ensure that twiny aligns LST and UTC correctly
 
 ax1.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
 ax1.xaxis.set_major_locator(mdates.HourLocator(byhour=range(24),interval=1))
