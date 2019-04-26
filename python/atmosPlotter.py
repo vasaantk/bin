@@ -1,8 +1,12 @@
 #! /usr/bin/env python
 
-# Vasaant Krishnan. This script has been harvested from definitions_bessel_current.py on 7th November 2013
+# Vasaant Krishnan.
 
-# It plots the data found in the output from Mark Reid's fit_geoblocks.f script (ATMOS.FITS).
+# This script has been harvested from definitions_bessel_current.py on
+# 7th November 2013
+
+# It plots the data found in the output from Mark Reid's
+# fit_geoblocks.f script (ATMOS.FITS).
 
 # Script works: ./atmosPlotter.py ATMOS.FITS
 # add 'save' to output a .ps file instead of showing the plot
@@ -17,7 +21,6 @@
 from matplotlib import *
 from pylab import *
 import sys
-
 
 fileName = sys.argv[1:]
 

@@ -18,15 +18,19 @@ enterLoop = True
 
 if userFiles == []:
     enterLoop = False
-    print ""
-    print "# atmosEdit.py reads in ATMOS.FITS from either fits_geoblocks.f or from AIPS task and produces another ATMOS.FITS format output."
-    print "# This output consists of random values for: zenith, clock, dzenith and dclock delays."
-    print "# The purpose of this was to test the effect of random zenith delays on QSO position determination in the v255 experiments."
-    print "# Command-line options are"
-    print "#--> orig          Prints out the original ATMOS.FITS values"
-    print "#--> gauss=        Sets GAUSS_SIGMA to user-defined integer value (default 5)"
-    print "#--> dzen          Includes random dZenith contribution. Otherwise, dzenith is assumed to be 0.0"
-    print ""
+    print("")
+    print("# atmosEdit.py reads in ATMOS.FITS from either fits_geoblocks.f or")
+    print("# from AIPS task and produces another ATMOS.FITS format output. This")
+    print("# output consists of random values for: zenith, clock, dzenith and")
+    print("# dclock delays. The purpose of this was to test the effect of random")
+    print("# zenith delays on QSO position determination in the v255 experiments.")
+    print("#")
+    print("# Command-line options are")
+    print("# --> orig   Prints out the original ATMOS.FITS values")
+    print("# --> gauss= Sets GAUSS_SIGMA to user-defined integer value (default 5)")
+    print("# --> dzen   Includes random dZenith contribution. Otherwise, dzenith")
+    print("#            is assumed to be 0.0")
+    print("")
 
 for i in userFiles:
     if re.match('orig',i):
@@ -58,7 +62,7 @@ if setUserGauss:
 # Values from original ATMOS.FITS file harvested here
 if enterLoop:
     # This is just a no. at the very first line of ATMOS.FITS output from fit_geoblocks.f which tells AIPS how many lines in the ATMOS.FITS file.
-    print "   15"
+    print("   15")
 
     for line in open(userFiles[0],'r'):
         requiredInformation = re.search("(\s+\d\s+\d\s+\d+\s+\d+\s+\d+.\d+)\s+(-?\d+.\d+)\s+(-?\d+.\d+?)\s+(-?\d+.\d+)\s+(-?\d+.\d+)",line)
@@ -81,8 +85,8 @@ if enterLoop:
             dZenithSpaceDiff = space_compare(randomDZenith)
 
             if printOrig:
-                print str(universalTime) + SPACES + str(zenithDelay) + space_compare(float(zenithDelay)) + str(clockDelay) + space_compare(float(clockDelay)) + str(dZenithDelay) + space_compare(float(dZenithDelay)) + str(dClockDelay)
+                print(str(universalTime) + SPACES + str(zenithDelay) + space_compare(float(zenithDelay)) + str(clockDelay) + space_compare(float(clockDelay)) + str(dZenithDelay) + space_compare(float(dZenithDelay)) + str(dClockDelay))
             elif setRandDZen:
-                print str(universalTime) + SPACES + str("%.3f"%randomZenith) + zenithSpaceDiff + str("%.3f"%randomClock) + clockSpaceDiff +  str("%.3f"%randomDZenith) + dZenithSpaceDiff + str("%.3f"%randomDClock)
+                print(str(universalTime) + SPACES + str("%.3f"%randomZenith) + zenithSpaceDiff + str("%.3f"%randomClock) + clockSpaceDiff +  str("%.3f"%randomDZenith) + dZenithSpaceDiff + str("%.3f"%randomDClock))
             else:
-                print str(universalTime) + SPACES + str("%.3f"%randomZenith) + zenithSpaceDiff + str("%.3f"%randomClock) + clockSpaceDiff +  str(dZenithDelay) + SPACES + str("%.3f"%randomDClock)
+                print(str(universalTime) + SPACES + str("%.3f"%randomZenith) + zenithSpaceDiff + str("%.3f"%randomClock) + clockSpaceDiff +  str(dZenithDelay) + SPACES + str("%.3f"%randomDClock))
