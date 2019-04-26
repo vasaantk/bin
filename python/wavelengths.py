@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#! /usr/bin/env python
 
 print "This script can convert wavelengths to frequencies or vice versa."
 speedlight = raw_input("Would you like an (1)exact value of the speed of light, or the (2)rounded value?\n" )
@@ -29,7 +29,7 @@ def bands(wavelength):
     elif wavelength <= 0.000000000001:
         return "Gamma Rays"
     else:
-        return "Not within a range generally observed" 
+        return "Not within a range generally observed"
 
 
 def wavelength():
@@ -56,7 +56,7 @@ choice_options = {
 choice = 0
 while choice not in choice_options:
     print "do you have (1) a wavelength, or (2) a frequency?"
-    choice = int(raw_input()) 
+    choice = int(raw_input())
 
 
 choice_options[choice]()

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#! /usr/bin/env python
 
 # Written by Vasaant S/O Krishnan. Monday, 17 October 2016.
 

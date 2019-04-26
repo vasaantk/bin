@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#! /usr/bin/python
 # ra2deg
 # Program to convert an RA of the form hh mm ss.ssssssss
 # into a float

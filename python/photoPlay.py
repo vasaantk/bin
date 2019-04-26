@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#! /usr/bin/env python
 # Vasaant Krishnan.
 # This is a script to extract pixel information from an image and display that information graphically.
 # Command-line arguments take following options:

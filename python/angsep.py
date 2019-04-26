@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#! /usr/bin/env python
 # angsep.py
 # Program to calculate the angular separation between two points
 # whose coordinates are given in RA and Dec

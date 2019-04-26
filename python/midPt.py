@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#! /usr/bin/env python
 
 # Written by Vasaant S/O Krishnan in 2015. Run without arguments for instrunctions."
 

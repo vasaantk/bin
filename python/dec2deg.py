@@ -1,7 +1,7 @@
-#!/usr/bin/python
+#! /usr/bin/python
 # dec2deg
 # Program to convert a Dec of the form hh mm ss.ssssssss
-# into a float 
+# into a float
 
 print" dec2deg Written by Enno Middelberg 2001\n"
 
