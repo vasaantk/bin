@@ -9,13 +9,13 @@ usrInp   = sys.argv[1:]
 toArcsec = 3600.0
 
 if len(usrInp) == 0:
-    print("")
-    print("# cellsize.py takes the baseline length (e.g. xx) of the array in units")
-    print("# of wavelength and computes the cellsize range between 3 to 5 times")
-    print("# smaller than the maximum uv distance to be used for cleaning.")
-    print("")
-    print("--> ./cellsize.py  xx")
-    print("")
+    print ""
+    print "# cellsize.py takes the baseline length (e.g. xx) of the array in units"
+    print "# of wavelength and computes the cellsize range between 3 to 5 times"
+    print "# smaller than the maximum uv distance to be used for cleaning."
+    print ""
+    print "--> ./cellsize.py  xx"
+    print ""
     exit()
 
 else:
@@ -28,5 +28,5 @@ else:
     upperLim        = beamInArcsec/3.0
 
     if uvdist < 0:
-        print("\n Negative? Sure.... \n")
-    print("    %10.6f    %10.6f"%(lowerLim, upperLim))
+        print "\n Negative? Sure.... \n"
+    print "    %10.6f    %10.6f"%(lowerLim, upperLim)
