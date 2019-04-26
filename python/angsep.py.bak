@@ -3,7 +3,7 @@
 # Program to calculate the angular separation between two points
 # whose coordinates are given in RA and Dec
 
-print("\n angsep Written by Enno Middelberg 2001")
+print "\n angsep Written by Enno Middelberg 2001"
 
 import math
 import string
@@ -12,12 +12,12 @@ import sys
 inp=sys.argv[0:]
 del inp[0]
 if len(inp)==0:
-    print(" Program to convert an the angular separation between")
-    print(" two points in the sky")
-    print(" Type 'angsep.py RA1 Dec1 RA2 Dec2' to calculate the")
-    print(" angular separation. All coordinates must be of the")
-    print(" form hh:mm:ss(.ssssssss) or hh mm ss(.ssssssss)")
-    print(" (Don't mix!).\n")
+    print" Program to convert an the angular separation between"
+    print" two points in the sky"
+    print" Type 'angsep.py RA1 Dec1 RA2 Dec2' to calculate the"
+    print" angular separation. All coordinates must be of the"
+    print" form hh:mm:ss(.ssssssss) or hh mm ss(.ssssssss)"
+    print" (Don't mix!).\n"
     sys.exit()
 
 # Find and replace any ":" and "=" from inputs
@@ -56,10 +56,10 @@ elif len(inp)==12:
     ra2 =inp[6:9]
     dec2=inp[9:12]
 else:
-    print(" Too few or too many parameters.")
+    print" Too few or too many parameters."
     sys.exit()
 
-print(ra1, dec1, ra2, dec2)
+print ra1, dec1, ra2, dec2
 
 # Calculate angular separation of declinations
 # Convert them into degrees and calulate the difference
@@ -119,30 +119,30 @@ deg_corrected=math.cos(dec1rad)*deg
 hh   =int(deg/15)
 mm   =int((deg-15*hh)*4)
 ss   =(4*deg-60*hh-mm)*60
-print("\n Delta RA:  "+string.zfill(repr(hh),2)+':'+string.zfill(repr(mm),2)+':'+'%10.8f, hms format' % ss)
+print "\n Delta RA:  "+string.zfill(`hh`,2)+':'+string.zfill(`mm`,2)+':'+'%10.8f, hms format' % ss
 
 hh   =int(deg)
 mm   =int((deg-int(deg))*60)
 ss   =((deg-int(deg))*60-mm)*60
-print(" Delta RA:  "+string.zfill(repr(hh),2)+':'+string.zfill(repr(mm),2)+':'+'%10.8f, dms format' % ss)
+print " Delta RA:  "+string.zfill(`hh`,2)+':'+string.zfill(`mm`,2)+':'+'%10.8f, dms format' % ss
 
 # Delta RA corrected for declination (dms format)
 deg_corrected=math.cos(dec1rad)*deg
 hh   =int(deg_corrected)
 mm   =int((deg_corrected-int(deg_corrected))*60)
 ss   =((deg_corrected-int(deg_corrected))*60-mm)*60
-print(" Delta RA:  "+string.zfill(repr(hh),2)+':'+string.zfill(repr(mm),2)+':'+'%10.8f, dms format, corrected with cos(declination 1)' % ss)
+print " Delta RA:  "+string.zfill(`hh`,2)+':'+string.zfill(`mm`,2)+':'+'%10.8f, dms format, corrected with cos(declination 1)' % ss
 
 # Delta DEC
 deg = abs((dec1rad-dec2rad)*180/math.pi)
 hh   =int(deg)
 mm   =int((deg-int(deg))*60)
 ss   =((deg-int(deg))*60-mm)*60
-print(" Delta DEC: "+string.zfill(repr(hh),2)+':'+string.zfill(repr(mm),2)+':'+'%10.8f (dms format)' % ss)
+print " Delta DEC: "+string.zfill(`hh`,2)+':'+string.zfill(`mm`,2)+':'+'%10.8f (dms format)' % ss
 
 # use Pythargoras approximation if rad < 1 arcsec
 if rad<0.000004848:
-    print("\n Angular separation < ~1 arcsec, using Pythagorean approximation.")
+    print "\n Angular separation < ~1 arcsec, using Pythagorean approximation."
     rad=math.sqrt((math.cos(dec1rad)*(ra1rad-ra2rad))**2+(dec1rad-dec2rad)**2)
 
 # Angular separation
@@ -151,6 +151,6 @@ hh=int(deg)
 mm=int((deg-int(deg))*60)
 ss=((deg-int(deg))*60-mm)*60
 
-print("\n Angular Separation: "+string.zfill(repr(hh),2)+":"+string.zfill(repr(mm),2)+":"+'%10.8f (dms format)' % ss)
-print(" Angular Separation: " + str(deg) + " degrees")
-print("\n Accuracy currently not better than 3 microarcsec!\n")
+print "\n Angular Separation: "+string.zfill(`hh`,2)+":"+string.zfill(`mm`,2)+":"+'%10.8f (dms format)' % ss
+print " Angular Separation: " + str(deg) + " degrees"
+print "\n Accuracy currently not better than 3 microarcsec!\n"
