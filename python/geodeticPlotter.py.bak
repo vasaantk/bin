@@ -105,11 +105,11 @@ for item in nameList:
         rmsDelResArray.append(element**2)
         rmsDelRes = sqrt(mean(rmsDelResArray))
     if firstBaseline:
-        print("")
-        print("The mean residual delay of baseline ("+str(graphTitle)+") = %.3f nsec"%(rmsDelRes))
+        print ""
+        print "The mean residual delay of baseline ("+str(graphTitle)+") = %.3f nsec"%(rmsDelRes)
         firstBaseline = False
     else:
-        print("                                    ("+str(graphTitle)+") = %.3f     "%(rmsDelRes))
+        print "                                    ("+str(graphTitle)+") = %.3f     "%(rmsDelRes)
 
     # These blocs of code determine the greatest of 3 values to use as max and min of the y-axes, only if there is data in the .dat file which is being read
     if requiredInformation:

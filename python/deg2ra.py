@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#! /usr/bin/python
 # deg2ra
 # Program to convert a number into the format
 # hh mm ss.ssssssss

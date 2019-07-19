@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#! /usr/bin/python
 
 from scipy import *
 import scipy.constants as sc

@@ -9,7 +9,7 @@
 #
 # If no date and time is given, current UTC time is used.
 # Acceptable time formats:
-
+#
 #            2018-09-29 14:23:45.3240
 #            2018/09/29 14:23:45.3240
 #            2018-09-29 14:23

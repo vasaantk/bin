@@ -7,16 +7,16 @@ import sys
 usrFile = sys.argv[1:]
 
 if len(usrFile) == 0:
-    print("")
-    print("# Script to read in file of the CODA format and plot a multivariate")
-    print("# distribution with contours.")
-    print("# An index.txt and chain.txt file must be provided and the script")
-    print("# will automatically identify them for internal use. Options are:")
-    print("")
-    print("# samp = Sample chain.txt data at this frequency (computational consideration).")
-    print("")
-    print(" -->$ coda-cont.py CODAindex.txt CODAchain.txt samp=xx")
-    print("")
+    print ""
+    print "# Script to read in file of the CODA format and plot a multivariate"
+    print "# distribution with contours."
+    print "# An index.txt and chain.txt file must be provided and the script"
+    print "# will automatically identify them for internal use. Options are:"
+    print ""
+    print "# samp = Sample chain.txt data at this frequency (computational consideration)."
+    print ""
+    print " -->$ coda-cont.py CODAindex.txt CODAchain.txt samp=xx"
+    print ""
     exit()
 
 import re
@@ -66,8 +66,8 @@ if len(codaFiles) == 2:    # Assuming 1 index and 1 chain file
                 chainFile = j
                 chainFileFnd = True
 else:
-    print("Insfficient files of CODA*.txt format.")
-    print("Check your input files.")
+    print "Insfficient files of CODA*.txt format."
+    print "Check your input files."
 #=====================================================================
 
 
@@ -100,17 +100,17 @@ if indexFileFnd and chainFileFnd:
     chainLen   = max(indexCodes[maxElement])              # The largest value (expected amt. of data)
 
     if   len(indexCodes)  < 2:
-        print("Insufficient variables in %s for contour plot."%(indexFile))
+        print "Insufficient variables in %s for contour plot."%(indexFile)
         contVarsOk = False
     elif len(indexCodes) == 2:
-        varOne = list(indexCodes.keys())[0]
-        varTwo = list(indexCodes.keys())[1]
+        varOne = indexCodes.keys()[0]
+        varTwo = indexCodes.keys()[1]
         contOne = indexCodes[varOne]
         contTwo = indexCodes[varTwo]
         contVarsOk = True
     else:
         if varOne == '' or varTwo == '':
-            print("Manually select variables for contour plot.")
+            print "Manually select variables for contour plot."
             contVarsOk = False
         else:
             contOne = indexCodes[varOne]
@@ -139,9 +139,9 @@ if indexFileFnd and chainFileFnd:
     #    no. of data.
     #
     if len(chainData) != chainLen:
-        print("    Warning! ")
-        print("    %10d lines expected  from %s."%(chainLen,indexFile))
-        print("    %10d lines harvested from %s."%(len(chainData),chainFile))
+        print "    Warning! "
+        print "    %10d lines expected  from %s."%(chainLen,indexFile)
+        print "    %10d lines harvested from %s."%(len(chainData),chainFile)
     #=====================================================================
 
 
@@ -156,8 +156,8 @@ if indexFileFnd and chainFileFnd:
 
         # Ensure same amount of data from both variables
         if (contOne[0]-contOne[1]) != (contTwo[0]-contTwo[1]):
-            print("    %10d lines harvested from %s."%(len(dataOne),varOne))
-            print("    %10d lines harvested from %s."%(len(dataTwo),varTwo))
+            print "    %10d lines harvested from %s."%(len(dataOne),varOne)
+            print "    %10d lines harvested from %s."%(len(dataTwo),varTwo)
         else:
             # This section to get data to the ~100s for computational consideration...
             if len(dataOne) >= 1000:

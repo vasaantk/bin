@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#! /usr/bin/env python
 # Run script with out arguments for instructions
 # Vasaant Krishnan.
 import re

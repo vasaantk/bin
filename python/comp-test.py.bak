@@ -10,19 +10,19 @@ from mpldatacursor import datacursor
 usrFile = sys.argv[1:]
 
 if len(usrFile) == 0:
-    print("")
-    print("# comp-test.py takes input from *.COMP files to study the")
-    print("# component allocation from Luca Moscadelli's compo.f.")
-    print("# First argument must be *.COMP. Order for remaining options")
-    print("# does not matter:")
-    print("")
-    print("# plot* = options are: plot, seq, comp and spec.")
-    print("# atate = annotates the spots with their component.")
-    print("# vel   = allows user specified velocty range for the colourbar.")
-    print("# scale = scales the peak flux of the data by a constant factor.")
-    print("")
-    print("--> ./comp-test.py file_name.COMP plot* vel=xx.x,yy.y atate scale=xx")
-    print("")
+    print ""
+    print "# comp-test.py takes input from *.COMP files to study the"
+    print "# component allocation from Luca Moscadelli's compo.f."
+    print "# First argument must be *.COMP. Order for remaining options"
+    print "# does not matter:"
+    print ""
+    print "# plot* = options are: plot, seq, comp and spec."
+    print "# atate = annotates the spots with their component."
+    print "# vel   = allows user specified velocty range for the colourbar."
+    print "# scale = scales the peak flux of the data by a constant factor."
+    print ""
+    print "--> ./comp-test.py file_name.COMP plot* vel=xx.x,yy.y atate scale=xx"
+    print ""
     exit()
 
 
@@ -117,7 +117,7 @@ comp.append(mTmp)
 #=====================================================================
 #   Based on 'chan' array, determine the positions of the '\n's:
 #
-for i in range(len(chan)):
+for i in xrange(len(chan)):
     if chan[i] != []:
         compMask.append(int(i))
 
@@ -138,7 +138,7 @@ comp = [comp[i] for i in compMask]
 #=====================================================================
 #   Find mean velocity of each comp:
 #
-for i in range(len(vels)):
+for i in xrange(len(vels)):
     velAvg.append(float(sum(vels[i])/len(vels[i])))
 
 
@@ -159,7 +159,7 @@ for i in usrFile:
             velMax = velTwo
             velMin = velOne
         elif velOne == velTwo:
-            print("User velocities are identical. Reverting to default.")
+            print "User velocities are identical. Reverting to default."
             defaultVels = True
 if defaultVels:              # Default vels are the min/max of the velAvg for each comp.
     velMin = min(velAvg)
@@ -171,7 +171,7 @@ if defaultVels:              # Default vels are the min/max of the velAvg for ea
 #   Each component is assigned a single homogenised vel for all spots,
 #   instead of each spot having its own individual vel:
 #
-for i in range(len(velAvg)):
+for i in xrange(len(velAvg)):
     for j in vels[i]:
         homoVelTmp.append(velAvg[i])
     homoVel.append(homoVelTmp)
@@ -189,18 +189,18 @@ if 'comp' in usrFile:
     velsAdd = []
     compAdd = []
 
-    print("Enter 'q' to quit.")
-    print("")
+    print "Enter 'q' to quit."
+    print ""
     machineQuery = 'Component ID: '
-    response     = input(machineQuery)
+    response     = raw_input(machineQuery)
     while response != 'q':
         if response == '' or float(response) < 0:
-            response = input(machineQuery)
+            response = raw_input(machineQuery)
         else:
             usrComp = int(response)
-            for i in range(len(comp)):                 # Iterate through the list
+            for i in xrange(len(comp)):                 # Iterate through the list
                 if usrComp == int(comp[i][0]):
-                    for j in range(len(xoff[i])):      # Iterate through sub-lists
+                    for j in xrange(len(xoff[i])):      # Iterate through sub-lists
                         xoffAdd.append(xoff[i][j])
                         yoffAdd.append(yoff[i][j])
                         peakAdd.append(peak[i][j]+1.0)  # Add 1 to ensure that components with flux<1 are not negative when log.
@@ -209,7 +209,7 @@ if 'comp' in usrFile:
             if xoffAdd != []:                           # Catch scrip in-case first choice is empty array
                 scatter(xoffAdd,yoffAdd,s=scaleFactor*log(peakAdd),c=velsAdd,vmin=velMin,vmax=velMax)
                 if 'atate' in usrFile:
-                    for j in range(len(compAdd)):
+                    for j in xrange(len(compAdd)):
                         annotate(compAdd[j],xy=(xoffAdd[j],yoffAdd[j]))
                 title(str(usrFile[0]))
                 xlabel('x offset')
@@ -219,7 +219,7 @@ if 'comp' in usrFile:
                 gca().invert_xaxis()
                 datacursor(hover=True)
                 show(block = False)
-            response = input(machineQuery)
+            response = raw_input(machineQuery)
             clf()
             close()
 
@@ -229,15 +229,15 @@ if 'comp' in usrFile:
 #   Plots entire sequence of compoments:
 #
 if 'seq' in usrFile:
-    print("Enter 'q' to quit.")
-    print("")
-    for i in range(len(comp)):
+    print "Enter 'q' to quit."
+    print ""
+    for i in xrange(len(comp)):
         velMin = min(vels[i])
         velMax = max(vels[i])
         peak[i] = [j + 1.0 for j in peak[i]]            # Add 1 to ensure that components with flux<1 are not negative when log.
         scatter(xoff[i],yoff[i],s=scaleFactor*log(peak[i]),c=vels[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax)
         if 'atate' in usrFile:
-            for j in range(len(xoff[i])):
+            for j in xrange(len(xoff[i])):
                 annotate(comp[i][j],xy=(xoff[i][j],yoff[i][j]))
         title(str(usrFile[0]))
         xlabel('x offset')
@@ -248,7 +248,7 @@ if 'seq' in usrFile:
         datacursor(hover=True)
         show(block = False)
 
-        response = input('Component '+str(comp[i][0])+':')
+        response = raw_input('Component '+str(comp[i][0])+':')
         if response == 'q':
             exit()
         else:
@@ -261,11 +261,11 @@ if 'seq' in usrFile:
 #   Plots spot map of maser emission:
 #
 if 'plot' in usrFile:
-    for i in range(len(chan)):
+    for i in xrange(len(chan)):
         peak[i] = [j + 1.0 for j in peak[i]]            # Add 1 to ensure that components with flux<1 are not negative when log.
         scatter(xoff[i],yoff[i],s=scaleFactor*log(peak[i]),c=homoVel[i],cmap=matplotlib.cm.jet,vmin=velMin,vmax=velMax,marker='^')
         if 'atate' in usrFile:
-            for j in range(len(xoff[i])):
+            for j in xrange(len(xoff[i])):
                 annotate(comp[i][j],xy=(xoff[i][j],yoff[i][j]))
     gca().invert_xaxis()
     title(str(usrFile[0]))
@@ -282,7 +282,7 @@ if 'plot' in usrFile:
 #   Plots the spectrum.
 #
 if 'spec' in usrFile:
-    for j in range(len(chan)):
+    for j in xrange(len(chan)):
         plot(vels[j],peak[j],marker="o",linewidth=0)
     gca().invert_xaxis()
     title(str(usrFile[0]))
