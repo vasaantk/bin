@@ -4,12 +4,10 @@
 
 import sys
 from datetime import *
-import pytz              # http://pytz.sourceforge.net/
-from pytz import *
+from pytz import *     # http://pytz.sourceforge.net/
+import re
 # for tz in pytz.all_timezones:
 #     print tz
-
-usrInp = sys.argv[1:]
 
 commonZones = {'CPT' : 'Africa/Johannesburg',
                'NY'  : 'America/New_York',
@@ -22,29 +20,59 @@ commonZones = {'CPT' : 'Africa/Johannesburg',
                'NZ'  : 'Pacific/Auckland',
                'SGT' : 'Singapore',
                'UTC' : 'UTC'}
-zoneKey     = commonZones.keys()
+zoneKey = commonZones.keys()
 
+usrInp = sys.argv[1:]
 if len(usrInp) == 0:
     print ""
     print "#  pytime.py converts the day and time [from] one zone [to]"
-    print "#  another. The current available zones are:"
+    print "#  another. If no date/time is given, the current time is used."
+    print "#  Available time zones are:"
     print "#"
     for i in sorted(zoneKey):
         print "#  %8s  (%s)"%(i, commonZones[i])
     print "#"
-    print "#  -->$ pytime.py   YYYY MM DD HHMM  [from]  [to]"
+    print "#  -->$ pytime.py   YYYY-MM-DD HH:MM  [from]-[to]"
+    print "#  -->$ pytime.py   [from]-[to]"
     print ""
     exit()
 
-year     = usrInp[0]
-month    = usrInp[1]
-day      = usrInp[2]
-time     = usrInp[3]
-fromZone = usrInp[4].upper()
-toZone   = usrInp[5].upper()
-userTime = datetime.strptime(year+month+day+time,'%Y%m%d%H%M')
+#=====================================================================
+#   Code begins here
+#
+timePrintFmt = '%Y-%m-%d  %a  %H:%M'       # Time output format
+dateFlag = False
+timeFlag = False
+zoneFlag = False
 
-timePrintFmt  = '%Y-%m-%d  %a  %H:%M'
+usrInp = [i.replace(':',' ').replace('-',' ').replace('/',' ') for i in usrInp]
+
+for i in usrInp:
+    rawDate = re.match('(\d\d\d\d \d\d \d\d)', i)
+    rawTime = re.match('(\d\d \d\d)[ \d\d.\d+]*', i)
+    rawZone = re.match('(\D+) (\D+)', i)
+
+    if rawDate:
+        dateFlag = True
+        usrDate  = rawDate.group(1).split(' ')
+        year     = usrDate[0]
+        month    = usrDate[1]
+        day      = usrDate[2]
+    if rawTime:
+        timeFlag = True
+        time  = rawTime.group(1).replace(' ','')
+    if rawZone:
+        zoneFlag = True
+        fromZone = rawZone.group(1).upper()
+        toZone   = rawZone.group(2).upper()
+
+if not zoneFlag:
+    sys.exit("Check your time zones.")
+
+if dateFlag and timeFlag:
+    userTime = datetime.strptime(year+month+day+time,'%Y%m%d%H%M')
+else:
+    userTime = datetime.now()
 
 if fromZone in zoneKey and toZone in zoneKey:
     startZone = timezone(commonZones[fromZone])
@@ -53,7 +81,5 @@ if fromZone in zoneKey and toZone in zoneKey:
     assignTimeZone = startZone.localize(userTime)
     reqTime        = assignTimeZone.astimezone(reqZone)
 
-    print ""
     print " %s  %s"%(userTime.strftime(timePrintFmt),startZone)
     print " %s  %s"%( reqTime.strftime(timePrintFmt),reqZone)
-    print ""
