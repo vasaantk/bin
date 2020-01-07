@@ -8,6 +8,10 @@
 ;;; Code:
 ;;
 
+(defun baseline (antenna)
+"Determine the number of baselines of an interferometer."
+(/ (- (* antenna antenna ) antenna) 2.0))
+
 (defun date ()
   (backward-kill-sexp)
   (insert (shell-command-to-string "echo -n $(date +%A,%t%d%t%B%t%Y,%t%H:%M%t%p)")))
