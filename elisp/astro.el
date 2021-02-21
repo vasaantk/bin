@@ -7,6 +7,40 @@
 ;;;========================================================
 ;;; Code:
 ;;
+(defun doco ()
+  "Open the current file or `dired' marked files in Google Chrome browser.
+Work in Windows, macOS, linux.
+URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
+Version 2019-11-10"
+  (interactive)
+  (let* (
+         ($file-list
+          (if (string-equal major-mode "dired-mode")
+              (dired-get-marked-files)
+            (list (buffer-file-name))))
+         ($do-it-p (if (<= (length $file-list) 5)
+                       t
+                     (y-or-n-p "Open more than 5 files? "))))
+    (when $do-it-p
+      (cond
+       ((string-equal system-type "darwin")
+        (mapc
+         (lambda ($fpath)
+           (shell-command
+            (format "open -a /Applications/Google\\ Chrome.app \"%s\"" $fpath)))
+         $file-list))
+       ((string-equal system-type "windows-nt")
+        ;; "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" 2019-11-09
+        (let ((process-connection-type nil))
+          (mapc
+           (lambda ($fpath)
+             (start-process "" nil "powershell" "start-process" "chrome" $fpath ))
+           $file-list)))
+       ((string-equal system-type "gnu/linux")
+        (mapc
+         (lambda ($fpath)
+           (shell-command (format "google-chrome-stable \"%s\"" $fpath)))
+         $file-list))))))
 
 (defun baseline (antenna)
 "Determine the number of baselines of an interferometer."
@@ -14,11 +48,11 @@
 
 (defun date ()
   (backward-kill-sexp)
-  (insert (shell-command-to-string "echo -n $(date +%A,%t%d%t%B%t%Y,%t%H:%M%t%p)")))
+  (insert (shell-command-to-string "echo %date% %time:~0,5%")))
 
 (defun time ()
   (backward-kill-sexp)
-  (insert (shell-command-to-string "echo -n $(date +%H:%M%t%p)")))
+  (insert (shell-command-to-string "echo %time:~0,5%")))
 
 (defun deg2rad (ANGLE)
 "Convert an angle from degrees to radians."
