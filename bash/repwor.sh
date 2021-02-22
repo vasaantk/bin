@@ -19,11 +19,12 @@ findrep(){
     done
 }
 
-if [ -d $USR_DIR ]; then
+if [[ -d $USR_DIR ]]; then
     for INP_FILE in $(find $USR_DIR -type f -name "*.htm")
     do
         findrep $INP_FILE
     done
 else
-    findrep $USR_DIR
+    find_file=$(find . -type f -name "$USR_DIR")
+    findrep "$find_file"
 fi
