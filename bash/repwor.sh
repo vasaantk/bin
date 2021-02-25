@@ -9,10 +9,10 @@ USR_DIR=$1
 findrep(){
     local funcarg=$1
     local second=false
-    for word in $(cat $funcarg)
+    for word in $(links -dump $funcarg)
     do
         first=$(echo "$word" | tr -s " ")
-        if [ "$first" == "$second" ] ; then
+        if [[ "$first" == "$second" ]] ; then
             echo $funcarg '===>' $first $second
         fi
         second=$first
