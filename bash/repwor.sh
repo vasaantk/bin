@@ -1,9 +1,5 @@
 #! /bin/bash
 
-# repwor.sh accepts either a dir or a single file as an argument. For
-# each file (in the dir), it searches for double-words (e.g. " target
-# target ").
-
 USR_DIR=$1
 
 findrep(){
@@ -20,12 +16,21 @@ findrep(){
     done
 }
 
-if [[ -d $USR_DIR ]]; then
-    for INP_FILE in $(find $USR_DIR -type f -name "*.htm")
-    do
-        findrep $INP_FILE
-    done
+if [[ -z "$USR_DIR" ]]; then
+    echo '# Accepts either a dir or a single file as an argument. For each html'
+    echo '# file (in the dir), it searches for double-words (e.g. " mop mop ").'
+    echo '#'
+    echo '# Usage:'
+    echo '#     -->$ repwor.sh usr_dir'
+    echo '#     -->$ repwor.sh usr_file'
 else
-    find_file=$(find . -type f -name "$USR_DIR")
-    findrep "$find_file"
+    if [[ -d $USR_DIR ]]; then
+        for INP_FILE in $(find $USR_DIR -type f -name "*.htm")
+        do
+            findrep $INP_FILE
+        done
+    else
+        find_file=$(find . -type f -name "$USR_DIR")
+        findrep "$find_file"
+    fi
 fi
