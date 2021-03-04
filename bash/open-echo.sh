@@ -16,4 +16,4 @@ do
         done
     fi
 done
-Echoview\ 12.0.$echoVer*/WIN64_RELEASE/Echoview.exe
+Echoview\ 12.0.$echoVer*/WIN64_RELEASE/Echoview.exe & disown
