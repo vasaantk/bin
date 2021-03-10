@@ -18,13 +18,11 @@ do
 done
 
 # Check if the help file exists
-cd Echoview\ 12.0.$echoVer*/WIN64_RELEASE/
+cd /mnt/c/Echoview\ 12/Echoview\ 12.0.$echoVer*/WIN64_RELEASE/
 if [ -f "Echoview.chm" ]; then
-    echo "HelpOK"
 else
     cp /mnt/c/SVN/Echoview12/Documentation/Help_file/\!SSL\!/Echoview_help_file_layouts/Echoview.chm .
-    echo "CpHelp"
 fi
 
 # Execute the program
-Echoview\ 12.0.$echoVer*/WIN64_RELEASE/Echoview.exe & disown
+Echoview.exe & disown
