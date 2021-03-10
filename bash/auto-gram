@@ -1,0 +1,16 @@
+#! /bin/bash
+
+inp_name=$1
+
+if [[ -z "$inp_name" ]]; then
+    echo '# Accepts a file name and searches the current dir for the file. If it'
+    echo '# finds the file, it runs gramma on the file.'
+    echo '#'
+    echo '# Usage:'
+    echo '#     -->$ auto-gram.sh input.txt'
+else
+    find_file=$(find . -type f -name "$inp_name")
+    lynx --dump $find_file >> /tmp/tmpgram.htm
+    gramma check /tmp/tmpgram.htm
+    rm /tmp/tmpgram.htm
+fi
