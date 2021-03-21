@@ -10,7 +10,8 @@ if [[ -z "$inp_name" ]]; then
     echo '#     -->$ auto-gram.sh input.txt'
 else
     find_file=$(find . -type f -name "$inp_name")
-    lynx --dump $find_file >> /tmp/tmpgram.htm
+    # lynx --dump $find_file >> /tmp/tmpgram.htm
+    links -dump $find_file >> /tmp/tmpgram.htm
     gramma check /tmp/tmpgram.htm
     rm /tmp/tmpgram.htm
 fi
