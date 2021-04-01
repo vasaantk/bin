@@ -19,8 +19,11 @@ done
 
 # Check if the help file exists
 cd /mnt/c/Echoview\ 12/Echoview\ 12.0.$echoVer*/WIN64_RELEASE/
-if [ ! -f "Echoview.chm" ]; then
-    cp /mnt/c/SVN/Echoview12/Documentation/Help_file/\!SSL\!/Echoview_help_file_layouts/Echoview.chm .
+newfile=/mnt/c/SVN/Echoview12/Documentation/Help_file/\!SSL\!/Echoview_help_file_layouts/Echoview.chm
+if [[ ! -f "Echoview.chm" ]]; then
+    cp "$newfile" .
+elif [[ "$newfile" -nt Echoview.chm ]]; then
+    cp "$newfile" .
 fi
 
 # Execute the program
