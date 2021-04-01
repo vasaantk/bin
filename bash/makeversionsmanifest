@@ -1,0 +1,8 @@
+#! /bin/bash
+
+# Check if the latest build of the help file is in the local svn repo
+# "\\fserve.verdant.com.au\Echoview_private\Utilities\UpdateEv\InstallerStaging\MakeVersionsManifest.exe"
+helpdir="/mnt/c/SVN/Echoview12/Documentation/Help_file/!SSL!/Echoview_help_file_layouts/"
+/mnt/c/Users/VasaantK/OneDrive\ -\ Echoview\ Software/Echolo/MakeVersionsManifest.exe $(wslpath -w "$helpdir")
+cat $helpdir/versions.manifest
+rm $helpdir/versions.manifest
