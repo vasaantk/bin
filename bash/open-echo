@@ -23,6 +23,7 @@ newfile=/mnt/c/SVN/Echoview12/Documentation/Help_file/\!SSL\!/Echoview_help_file
 if [[ ! -f "Echoview.chm" ]]; then
     cp "$newfile" .
 elif [[ "$newfile" -nt Echoview.chm ]]; then
+    rm Echoview.chm
     cp "$newfile" .
 fi
 
