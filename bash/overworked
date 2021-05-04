@@ -1,0 +1,40 @@
+#! /bin/bash
+
+# overworked.sh determines how many more HH:MM I have to left work
+# after lunch, based on how many HH MM I've already worked in the
+# morning.
+#
+# Usage:
+#    -->$ overworked.sh 5 43
+
+HH=$1
+MM=$2
+WORK=7.6  # Work hours in a day
+
+# Function to do floating point arithmatic
+decimate () {
+    echo "$1" | bc -l
+}
+
+# Check that minutes is less than 60
+DEC_MIN=$(decimate $MM/60.0)
+if (( $(decimate "$DEC_MIN >= 1") )) ; then
+    echo "Invalid minutes:" $MM "> 60"
+    exit
+fi
+
+USED_TIME=$(decimate "$HH+$DEC_MIN")  # Convert worked minutes to decimal
+REM_TIME=$(decimate "$WORK-$USED_TIME")  # How much time is left
+
+if (( $(decimate "$REM_TIME > 0") )) ; then
+    POINT=$(echo $REM_TIME | awk -v s=. '{print index($q,s)}')  # Find index of decimal point in $REM_TIME
+    INDEX=$(($POINT-1))
+    HH2=${REM_TIME:0:$INDEX}
+    if ! (( $HH2 )); then  # The case when $HH is 7
+        HH2=0
+    fi
+    MM2=$(printf %.f $(decimate "60*($REM_TIME-$HH2)"))  # Round to nearest int
+    echo $(printf "%02d" $HH2):$(printf "%02d" $MM2)
+else
+    echo "You're overworked!"
+fi
