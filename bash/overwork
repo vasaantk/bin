@@ -1,12 +1,5 @@
 #! /bin/bash
 
-# overworked.sh determines how many more HH:MM I have to left work
-# after lunch, based on how many HH MM I've already worked in the
-# morning.
-#
-# Usage:
-#    -->$ overworked.sh 5 43
-
 HH=$1
 MM=$2
 WORK=7.6  # Work hours in a day
@@ -15,6 +8,15 @@ WORK=7.6  # Work hours in a day
 decimate () {
     echo "$1" | bc -l
 }
+
+if [[ -z "$HH" ]] || [[ -z "$MM" ]] ; then
+    echo "# overwork determines how many more HH:MM I have to left work after"
+    echo "# lunch, based on how many HH MM I've already worked in the morning."
+    echo "#"
+    echo "# Usage:"
+    echo "#    -->$ overwork 5 43"
+    exit
+fi
 
 # Check that minutes is less than 60
 DEC_MIN=$(decimate $MM/60.0)
@@ -30,7 +32,7 @@ if (( $(decimate "$REM_TIME > 0") )) ; then
     POINT=$(echo $REM_TIME | awk -v s=. '{print index($q,s)}')  # Find index of decimal point in $REM_TIME
     INDEX=$(($POINT-1))
     HH2=${REM_TIME:0:$INDEX}
-    if ! (( $HH2 )); then  # The case when $HH is 7
+    if ! (( $HH2 )) ; then  # The case when $HH is 7
         HH2=0
     fi
     MM2=$(printf %.f $(decimate "60*($REM_TIME-$HH2)"))  # Round to nearest int
