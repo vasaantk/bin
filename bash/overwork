@@ -21,7 +21,7 @@ fi
 # Check that minutes is less than 60
 DEC_MIN=$(decimate $MM/60.0)
 if (( $(decimate "$DEC_MIN >= 1") )) ; then
-    echo "Invalid minutes:" $MM "> 60"
+    echo "Invalid minutes:" $MM ">= 60"
     exit
 fi
 
