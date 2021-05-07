@@ -1,0 +1,15 @@
+#! /bin/bash
+
+# In theory, this ought to be a very nice script to automaticallly
+# copy the latest Echoview build from '\\fserve\echoview_private\' to
+# the local dir. However, the copying process is very slow.
+
+# sudo mkdir /mnt/p
+# sudo mount -t drvfs '\\fserve\echoview_private' /mnt/p
+
+echo_new=$(ls -td /mnt/p/Version\ 12.0/Builds/* | head -1)
+if [[ ! -d "$echo_new" ]]; then
+    cp -rf "$echo_new" /mnt/c/Echoview\ 12/.
+fi
+echo_ver=$(basename "$echo_new")
+echo "$echo_ver" available.
