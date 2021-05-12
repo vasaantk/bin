@@ -5,6 +5,15 @@
 
 jira=$1
 
+if [[ -z "$jira" ]]; then
+    echo "# jirae creates an org file with the task number in the directory that"
+    echo "# is monitored by org."
+    echo "#"
+    echo "# Example:"
+    echo "#     -->$ jirae 28889"
+    exit
+fi
+
 if ! [[ -z "$jira" ]]; then
     jira_path=/mnt/c/Users/VasaantK/OneDrive\ -\ Echoview\ Software/Evernote/Jirae
     jira_file="$jira_path/"\#$jira.org
