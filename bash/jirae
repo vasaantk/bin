@@ -1,0 +1,27 @@
+#! /bin/bash
+
+# jirae creates an org file with the task number in the directory that
+# is monitored by org.
+
+jira=$1
+
+if ! [[ -z "$jira" ]]; then
+    jira_path=/mnt/c/Users/VasaantK/OneDrive\ -\ Echoview\ Software/Evernote/Jirae
+    jira_file="$jira_path/"\#$jira.org
+
+    if ! [[ -f "$jira_file" ]]; then
+        touch "$jira_file"
+
+        echo "-*- mode: org -*-" >> "$jira_file"
+        echo "" >> "$jira_file"
+        echo "#+STARTUP: hideall" >> "$jira_file"
+        echo "#+STARTUP: indent" >> "$jira_file"
+        echo "#+TAGS: PHRASE(p) BUG(b)" >> "$jira_file"
+        echo "" >> "$jira_file"
+        echo "* #$jira" >> "$jira_file"
+    else
+        echo "Task exists"
+    fi
+else
+    echo "Invalid input"
+fi

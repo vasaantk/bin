@@ -1,0 +1,37 @@
+#! /bin/bash
+
+# linker takes two file names enters into a defined directory and
+# searches for the files, priting out the relative path of the second
+# w.r.t the first.
+
+infile=$1
+outfile=$2
+homey=/mnt/c/SVN/Echoview12/Documentation/Help_file
+cd "$homey"
+
+inpath=$(find . -type f -name "$infile")
+if [[ -z "$inpath" ]]; then
+    echo Not found: "$infile"
+fi
+
+outpath=$(find . -type f -name "$outfile")
+if [[ -z "$outpath" ]]; then
+    echo Not found: "$outfile"
+fi
+
+if ! [[ -z "$inpath" ]] && ! [[ -z "$outpath" ]]; then
+    indir=$(dirname "$inpath")
+    i=0
+    cd "$indir"
+    # echo $homey
+    # pwd
+    while ! [[ "$indir" == "$homey" ]]
+    do
+        cd ../
+        indir=$(pwd)
+        numcd=$i
+        ((i++))
+    done
+    relpath=$(printf '../%.0s' $(seq 1 $numcd))
+    echo "$relpath""${outpath:2}"
+fi
