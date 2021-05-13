@@ -19,45 +19,61 @@ if [[ -z "$ormod" ]] && [[ -z "$jira" ]]; then
     exit
 fi
 
-if ! [[ -f \#$2.org ]]; then
+
+######################################################################
+#    Check if the task exists as a file
+orgfile=\#$2.org
+if ! [[ -f "$orgfile" ]]; then
     echo No ticket
     exit
 fi
 
-vanilla="* #$jira"
-todo="* TODO #$jira"
-inprog="* IN-PROGRESS #$jira"
-wait="* WAITING #$jira"
-done="* DONE #$jira"
 
-if ! [[ -z $(grep "$vanilla" -m 1 \#$2.org) ]] ; then
-    currMod="$vanilla"
-fi
-if ! [[ -z $(grep "$todo" -m 1 \#$2.org) ]] ; then
-    currMod="$todo"
-fi
-if ! [[ -z $(grep "$inprog" -m 1 \#$2.org) ]] ; then
-    currMod="$inprog"
-fi
-if ! [[ -z $(grep "$wait" -m 1 \#$2.org) ]] ; then
-    currMod="$wait"
-fi
-if ! [[ -z $(grep "$done" -m 1 \#$2.org) ]] ; then
-    currMod="$done"
-fi
+######################################################################
+#    Setup the different kinds of possible modes
 
-if [[ -z "$currMod" ]]; then
-    echo "No mode found in" \#$2.org
-    exit
-fi
-echo Change: "$currMod"
-
+# Possible user inputs
 u=" "
 td="TODO"
 ip="IN-PROGRESS"
 wa="WAITING"
 d="DONE"
 
+# Possible headings
+vanilla="* $u #$jira"
+todo="* $td #$jira"
+inprog="* $ip #$jira"
+wait="* $wa #$jira"
+done="* $d #$jira"
+
+
+######################################################################
+#    Determine the existing mode
+if ! [[ -z $(grep "$vanilla" -m 1 "$orgfile") ]] ; then
+    currMod="$vanilla"
+fi
+if ! [[ -z $(grep "$todo" -m 1 "$orgfile") ]] ; then
+    currMod="$todo"
+fi
+if ! [[ -z $(grep "$inprog" -m 1 "$orgfile") ]] ; then
+    currMod="$inprog"
+fi
+if ! [[ -z $(grep "$wait" -m 1 "$orgfile") ]] ; then
+    currMod="$wait"
+fi
+if ! [[ -z $(grep "$done" -m 1 "$orgfile") ]] ; then
+    currMod="$done"
+fi
+
+if [[ -z "$currMod" ]]; then
+    echo "No mode found in" "$orgfile"
+    exit
+fi
+echo " Change: ""$currMod"
+
+
+######################################################################
+#    Possible mode choices
 if [[ $ormod == "u" ]]; then
     newmod="$vanilla"
 fi
@@ -79,14 +95,16 @@ if [[ -z "$newmod" ]]; then
     echo "u td ip wa d"
     exit
 fi
-echo "    to:" "$newmod"
+echo "     to:" "$newmod"
 
 
-read -p "Change mode? y/[n]: " usrinp
+######################################################################
+#    Confirm change
+read -p " y/[n] " usrinp
 if [[ -z "$usrinp" ]]; then
     exit
 fi
 if [[ "$usrinp" == "y" ]]; then
-    sed -i "s|$currMod|$newmod|" \#$2.org
-    echo "Mode changed."
+    sed -i "s|$currMod|$newmod|" "$orgfile"
+    echo " Mode changed."
 fi
