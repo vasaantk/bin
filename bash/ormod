@@ -40,7 +40,7 @@ wa="WAITING"
 d="DONE"
 
 # Possible headings
-vanilla="* $u #$jira"
+vanilla="*$u#$jira"
 todo="* $td #$jira"
 inprog="* $ip #$jira"
 wait="* $wa #$jira"
