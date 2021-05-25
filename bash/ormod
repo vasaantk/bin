@@ -100,11 +100,13 @@ echo "     to:" "$newmod"
 
 ######################################################################
 #    Confirm change
-read -p " y/[n] " usrinp
-if [[ -z "$usrinp" ]]; then
-    exit
-fi
+read -n 1 -p "  y/[n]: " usrinp
+
 if [[ "$usrinp" == "y" ]]; then
     sed -i "s|$currMod|$newmod|" "$orgfile"
+    echo ""
     echo " Mode changed."
+else
+    echo ""
+    echo " No changes."
 fi
