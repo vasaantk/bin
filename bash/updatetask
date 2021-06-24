@@ -1,0 +1,48 @@
+#! /usr/bin/bash
+
+# Vasaant Krishnan Wed 23/06/2021
+
+usrFile=$1
+ticketNum=$2
+
+if [[ -z "$usrFile" ]] || [[ -z "$ticketNum" ]]; then
+    echo "# updatetask is a wrapper for update-task.py to implement the"
+    echo "# file changes automatically. Use with caution."
+    echo "# It passes the task number to update-task.py, which in turn"
+    echo "# updates changes the state from Reqd to Vfied."
+    echo "# "
+    echo "# Usage:"
+    echo "#     -->$ updatetask Using_the_Code_Operator.htm 28889"
+    exit
+fi
+
+homey="/mnt/c/SVN/Echoview12/Documentation/Help_file/"
+
+filePath=$(find $homey -type f -name "$usrFile")
+fileDir=$(dirname "$filePath")
+
+tmpFile="$fileDir"/tmp.htm
+
+python3 /mnt/c/Users/VasaantK/OneDrive\ -\ Echoview\ Software/bin/python/update-task.py $filePath $ticketNum >> "$tmpFile"
+
+# Check if update-task.py executed without error
+if [[ $? -eq 0 ]]; then
+
+    # Open the files in the web browser to compare them
+    explorer.exe $(wslpath -w  "$filePath")
+    explorer.exe $(wslpath -w  "$tmpFile")
+
+    # The user has to explicitly ask the file to be overwriten
+    read -n 1 -p "Update file  y/[n]: " usrinp
+    if [[ "$usrinp" == "y" ]]; then
+        mv "$tmpFile" "$filePath"
+        echo ""
+        echo " File changed."
+    else
+        rm "$tmpFile"
+        echo " No changes."
+    fi
+else
+    rm "$tmpFile"
+    basename "$filePath"
+fi

@@ -7,9 +7,9 @@
 # sudo mkdir /mnt/p
 # sudo mount -t drvfs '\\fserve\echoview_private' /mnt/p
 
-echo_new=$(ls -td /mnt/p/Version\ 12.0/Builds/* | head -1)
+echo_new=$(ls -td /mnt/p/Version\ 13.0/Builds/* | head -1)
 echo_ver=$(basename "$echo_new")
-dest_dir=/mnt/c/Echoview\ 12/
+dest_dir=/mnt/c/Echoview\ 13/
 if [[ ! -d "$dest_dir$echo_ver" ]]; then
     cp -rf "$echo_new" "$dest_dir"
     echo "$dest_dir$echo_ver"
