@@ -1,0 +1,11 @@
+#! /bin/bash
+
+homey="/mnt/c/Users/VasaantK/OneDrive - Echoview Software/Evernote/"
+cd "$homey"Jirae/
+
+grep -l DONE *.org | while read line
+do
+    if [[ -z $(grep IN-PROGRESS "$line") ]] && [[ -z $(grep WAITING "$line") ]]; then
+        mv "$line" "$homey"Database/.
+    fi
+done
