@@ -7,5 +7,6 @@ grep -l DONE *.org | while read line
 do
     if [[ -z $(grep IN-PROGRESS "$line") ]] && [[ -z $(grep WAITING "$line") ]]; then
         mv "$line" "$homey"Database/.
+        echo "Moved" "$line"
     fi
 done

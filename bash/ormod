@@ -2,7 +2,6 @@
 
 ormod=$1
 jira=$2
-cd /mnt/c/Users/VasaantK/OneDrive\ -\ Echoview\ Software/Evernote/Jirae
 
 if [[ -z "$ormod" ]] && [[ -z "$jira" ]]; then
     echo "# ormod changes the mode (like chmod) of org file in the defined"
@@ -22,6 +21,7 @@ fi
 
 ######################################################################
 #    Check if the task exists as a file
+cd /mnt/c/Users/VasaantK/OneDrive\ -\ Echoview\ Software/Evernote/Jirae
 orgfile=\#$2.org
 if ! [[ -f "$orgfile" ]]; then
     echo No ticket
