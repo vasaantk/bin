@@ -21,12 +21,28 @@ fi
 
 ######################################################################
 #    Check if the task exists as a file
-cd /mnt/c/Users/VasaantK/OneDrive\ -\ Echoview\ Software/Evernote/Jirae
+jiradir=/mnt/c/Users/VasaantK/OneDrive\ -\ Echoview\ Software/Evernote/Jirae
+datadir=/mnt/c/Users/VasaantK/OneDrive\ -\ Echoview\ Software/Evernote/Database
 orgfile=\#$2.org
-if ! [[ -f "$orgfile" ]]; then
+
+if [[ -f "$jiradir/$orgfile" ]] && [[ -f "$datadir/$orgfile" ]]; then
+    echo "Same ticket"
+    echo "$jiradir"
+    echo "$datadir"
+    exit
+elif ! [[ -f "$jiradir/$orgfile" ]] && ! [[ -f "$datadir/$orgfile" ]]; then
     echo No ticket
     exit
 fi
+
+
+######################################################################
+#    Change into the working directory
+if [[ -f "$datadir/$orgfile" ]]; then
+    mv "$datadir/$orgfile" "$jiradir/$orgfile"
+    echo Transferred "$orgfile"
+fi
+cd "$jiradir"
 
 
 ######################################################################

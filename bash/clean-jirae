@@ -1,5 +1,11 @@
 #! /bin/bash
 
+# clean-jirae checks the Evernote/Jirae dir for the existence of
+# tickets that are in the DONE state. If there are no outstanding
+# IN-PROGRESS or WAITING tasks in the ticket, it gets filed away in
+# the Evernote/Database dir. This helps to keep org-mode from
+# processing tickets that are completed.
+
 homey="/mnt/c/Users/VasaantK/OneDrive - Echoview Software/Evernote/"
 cd "$homey"Jirae/
 
