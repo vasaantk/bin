@@ -30,6 +30,9 @@ if ! [[ -z "$jira" ]]; then
         echo "#+STARTUP: indent" >> "$jira_file"
         echo "#+TAGS: PHRASE(p) BUG(b)" >> "$jira_file"
         echo "" >> "$jira_file"
+        echo "#+BEGIN: clocktable :fileskip0 t :scope file" >> "$jira_file"
+        echo "#+END:" >> "$jira_file"
+        echo "" >> "$jira_file"
         echo "* #$jira" >> "$jira_file"
     else
         echo "Task exists"
