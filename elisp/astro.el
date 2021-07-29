@@ -7,6 +7,11 @@
 ;;;========================================================
 ;;; Code:
 ;;
+(defun clocker()
+  (backward-kill-sexp)
+  (insert "#+BEGIN: clocktable :fileskip0 t :scope file\n")
+  (insert "#+END:"))
+
 (defun doco ()
   "Open the current file or `dired' marked files in Google Chrome browser.
 Work in Windows, macOS, linux.
