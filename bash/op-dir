@@ -1,0 +1,8 @@
+#! bin/bash
+
+# Get windows to open a dir of a file in Windows using wsl
+
+usr_inp=$1
+filedir=$(dirname $(find . -type f -name "$usr_inp"))
+
+explorer.exe $(wslpath -w "$filedir")
