@@ -28,4 +28,4 @@ elif [[ "$newfile" -nt Echoview.chm ]]; then
 fi
 
 # Execute the program
-Echoview.exe & disown
+explorer.exe Echoview.chm,
