@@ -2,11 +2,11 @@
 
 infile=$1
 outfile=$2
-homey=/mnt/c/SVN/Echoview12/Documentation/Help_file
+homey=/mnt/c/SVN/Echoview13/Help_file
 
 if [[ -z "$infile" ]] && [[ -z "$outfile" ]]; then
     echo "# linker takes two file names enters into a defined directory and"
-    echo "# searches for the files, priting out the relative path of the second"
+    echo "# searches for the files, printing out the relative path of the second"
     echo "# w.r.t the first."
     echo "#"
     echo "# Example:"
