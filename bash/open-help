@@ -19,13 +19,9 @@ done
 
 # Check if the help file exists
 cd /mnt/c/Echoview\ 13/Echoview\ 13.0.$echoVer*/WIN64_RELEASE/
-newfile=/mnt/c/SVN/Echoview12/Documentation/Help_file/\!SSL\!/Echoview_help_file_layouts/Echoview.chm
-if [[ ! -f "Echoview.chm" ]]; then
-    cp "$newfile" .
-elif [[ "$newfile" -nt Echoview.chm ]]; then
-    rm Echoview.chm
-    cp "$newfile" .
-fi
 
-# Execute the program
-explorer.exe Echoview.chm,
+if [[ -z "$(ls Echoview_*.chm)" ]]; then
+    echo "Help file does not exist"
+else
+    explorer.exe "$(ls Echoview_*.chm)"
+fi

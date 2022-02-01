@@ -2,7 +2,7 @@
 
 infile=$1
 outfile=$2
-homey=/mnt/c/SVN/Echoview13/Help_file
+homey=/mnt/c/SVN/Echoview13/Documentation/Help_file/contents
 
 if [[ -z "$infile" ]] && [[ -z "$outfile" ]]; then
     echo "# linker takes two file names enters into a defined directory and"

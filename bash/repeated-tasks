@@ -1,0 +1,35 @@
+#! /bin/bash
+
+usrhtm=$@
+htm_path=/mnt/c/SVN/Echoview13/Documentation/Help_file/contents
+
+if [[ -z "$usrhtm" ]]; then
+    echo "# repeated-tasks takes the file name from the command line"
+    echo "# and searches in"
+    echo "# ""$htm_path"
+    echo "# for the file."
+    echo "#"
+    echo "# It then greps for '([0-9]*)' in the file, above the '<h1'"
+    echo "# tag and prints out the file an task numbers if there are"
+    echo "# repeats."
+    echo "#"
+    echo "# Usage"
+    echo "#    -->$ repeated-tasks \*.htm"
+    echo "#    -->$ repeated-tasks \*properties\*.htm"
+    echo "#    -->$ repeated-tasks  Echogram_keyboard_shortcuts.htm"
+    exit
+fi
+
+multitasks(){
+    foundfile=$1
+    stopstring="<h1"
+    stopline=$(grep -n -m 1 "$stopstring" "$foundfile" | cut -d : -f 1)
+    repeats=$(head -n "$stopline" "$foundfile" | grep -oE "\([0-9]*\)" | sort | tr -d '()' | uniq -d)
+    if ! [[ -z "$repeats" ]]; then
+        echo "$foundfile"
+        echo "$repeats"
+    fi
+}
+
+export -f multitasks
+find "$htm_path" -type f -name "$usrhtm" -exec bash -c 'multitasks "$0"' {} \;

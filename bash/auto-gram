@@ -12,6 +12,8 @@ else
     find_file=$(find . -type f -name "$inp_name")
     # lynx --dump $find_file | tr -s ' '  >> /tmp/tmpgram.htm
     links -dump $find_file | tr -s ' ' >> /tmp/tmpgram.htm
+    # cat "$find_file" | sed 's/<[^>]*>//g' >> /tmp/tmpgram.htm
+
     gramma check /tmp/tmpgram.htm
     rm /tmp/tmpgram.htm
 fi

@@ -1,0 +1,35 @@
+#! /bin/bash
+
+grepme=$1
+paph="/mnt/c/SVN/Echoview13/Documentation/Help_file/contents"
+extension="*.htm"
+ignorebefore="<body>"
+
+if [[ -z "$grepme" ]]; then
+
+    printf "
+    grepme searches for a user-provided string after the %s
+    string in each %s file in %s.
+
+    Usage:
+        --> grepme userstring\n" "$ignorebefore" "$extension" "$paph" | fmt
+    exit
+fi
+
+echo "Processing..."
+find "$paph" -type f -name "$extension" -print0 | while read -d $'\0' htms
+do
+    bodypost=$(grep -m 1 -n "$ignorebefore" "$htms" | cut -f 1 -d :)
+    if [[ -z "$bodypost" ]]; then
+        echo "No " "$ignorebefore" "in " "$htms"
+    else
+        filelen=$(cat "$htms" | wc -l)
+        tailthis=$(echo "$filelen-$bodypost" | bc)
+        strfound=$(tail -n "$tailthis" "$htms" | grep -n "$grepme")
+        if ! [[ -z "$strfound" ]]; then
+            echo "$strfound" "in" "$htms"
+            echo ""
+        fi
+    fi
+done
+echo "completed"

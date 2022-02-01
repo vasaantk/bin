@@ -12,5 +12,7 @@ echo_ver=$(basename "$echo_new")
 dest_dir=/mnt/c/Echoview\ 13/
 if [[ ! -d "$dest_dir$echo_ver" ]]; then
     cp -rf "$echo_new" "$dest_dir"
+    getdeps="$dest_dir$echo_ver"/WIN64_RELEASE/_GetRunTimeDependencies.bat
+    explorer.exe "$(wslpath -w "$getdeps")"
     echo "$dest_dir$echo_ver"
 fi

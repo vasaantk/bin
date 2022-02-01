@@ -1,0 +1,50 @@
+#! /bin/bash
+
+usrhtm=$@
+htm_path=/mnt/c/SVN/Echoview13/Documentation/Help_file/contents
+
+if [[ -z "$usrhtm" ]]; then
+    echo "# parens-mismatch takes the file name from the command line"
+    echo "# and searches in"
+    echo "# ""$htm_path"
+    echo "# for the file."
+    echo "#"
+    echo "# It then greps for '(' and ')' in the file above the '<h1' tag"
+    echo "# and prints out a message if they are mismatched."
+    echo "#"
+    echo "# Usage"
+    echo "#    -->$ parens-mismatch \*.htm"
+    echo "#    -->$ parens-mismatch \*properties\*.htm"
+    echo "#    -->$ parens-mismatch  Echogram_keyboard_shortcuts.htm"
+    exit
+fi
+
+
+getparens(){
+    local stopstring="<h1"
+
+    foundfile=$1
+    filename=$(basename "$foundfile")
+
+    stopline=$(grep -n -m 1 "$stopstring" "$foundfile" | cut -d : -f 1)
+    numOpenParen=$(countparen "$stopline" "$foundfile" \()
+    numCloseParen=$(countparen "$stopline" "$foundfile" \))
+    if (( numOpenParen != numCloseParen )); then
+        echo "  Mismatch in... " "$filename"
+        echo "  $foundfile"
+    fi
+}
+
+
+countparen(){
+    stopline=$1
+    htmfile=$2
+    stringtype=$3
+    parencount=$(head -n "$stopline" "$htmfile" | grep -o "$stringtype" | wc -l)
+    echo "$parencount"
+}
+
+
+export -f getparens
+export -f countparen
+find "$htm_path" -type f -name "$usrhtm" -exec bash -c 'getparens "$0"' {} \;
