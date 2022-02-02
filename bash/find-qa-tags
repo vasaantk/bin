@@ -1,0 +1,64 @@
+#! /bin/bash
+
+usrhtm=$@
+htm_path=/mnt/c/SVN/Echoview13/Documentation/Help_file/contents
+
+if [[ -z "$usrhtm" ]] ; then
+    echo "# find-qa-tags thakes the file name from the command line and searches"
+    echo "# for QA tags in the file."
+    echo "#"
+    echo "# Usage"
+    echo "#    -->$ find-qa-tags \*.htm"
+    echo "#    -->$ find-qa-tags \*properties\*.htm"
+    echo "#    -->$ find-qa-tags  Echogram_keyboard_shortcuts.htm"
+fi
+
+main(){
+
+    local foundfile=$1
+    local stopstring="<h1"
+    local grepstring="data-condition=\"Others"
+
+    checkfortag "$stopstring" "$foundfile"
+
+    if [[ $? -eq 0 ]] ; then
+        tailme=$(catfromline "$foundfile" "$stopStringLine")
+        findqatags "$tailme" "$grepstring" "$foundfile"
+    else
+        echo "$stopstring" " not in " "$foundfile"
+    fi
+}
+
+checkfortag(){
+    local stopstring=$1
+    local foundfile=$2
+    stopStringLine=$(grep -n -m 1 "$stopstring" "$foundfile")
+}
+
+catfromline(){
+    local catfile=$1
+    local catFromLineString=$2
+    filelen=$(cat "$catfile" | wc -l)
+    catfromline=$(echo "$catFromLineString" | cut -f 1 -d :)
+    tailme=$(echo "$filelen" - "$catfromline" + 1 | bc)
+    echo "$tailme"
+}
+
+findqatags(){
+    local tailme=$1
+    local grepstring=$2
+    local findqatagFile=$3
+    foundqatags=$(tail -n "$tailme" "$findqatagFile" | grep -no "$grepstring")
+    if [[ $? -eq 0 ]] ; then
+        echo "$findqatagFile"
+        echo "$foundqatags"
+        echo ""
+    fi
+}
+
+export -f main
+export -f checkfortag
+export -f catfromline
+export -f findqatags
+
+find "$htm_path" -type f -name "$usrhtm" -exec bash -c 'main "$0"' {} \;
