@@ -15,7 +15,6 @@ if [[ -z "$usrhtm" ]] ; then
 fi
 
 main(){
-
     local foundfile_main=$1
     local stopstring_main="<h1"
     local grepstring_main="data-condition=\"Others"
