@@ -4,7 +4,8 @@ usrhtm=$@
 htm_path=/mnt/c/SVN/Echoview13/Documentation/Help_file/contents
 
 if [[ -z "$usrhtm" ]] ; then
-    echo "# find-qa-tags thakes the file name from the command line and searches"
+    echo "# find-qa-tags takes the file name from the command line and searches"
+    echo "# in ""$htm_path"
     echo "# for QA tags in the file."
     echo "#"
     echo "# Usage"
