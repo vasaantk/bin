@@ -16,40 +16,40 @@ fi
 
 main(){
 
-    local foundfile=$1
-    local stopstring="<h1"
-    local grepstring="data-condition=\"Others"
+    local foundfile_main=$1
+    local stopstring_main="<h1"
+    local grepstring_main="data-condition=\"Others"
 
-    checkfortag "$stopstring" "$foundfile"
+    checkfortag "$stopstring_main" "$foundfile_main"
 
     if [[ $? -eq 0 ]] ; then
-        tailme=$(catfromline "$foundfile" "$stopStringLine")
-        findqatags "$tailme" "$grepstring" "$foundfile"
+        tailme_main=$(catfromline "$foundfile_main" "$stopStringLine")
+        findqatags "$tailme_main" "$grepstring_main" "$foundfile_main"
     else
-        echo "$stopstring" " not in " "$foundfile"
+        echo "$stopstring_main" " not in " "$foundfile_main"
     fi
 }
 
 checkfortag(){
-    local stopstring=$1
-    local foundfile=$2
-    stopStringLine=$(grep -n -m 1 "$stopstring" "$foundfile")
+    local stopstring_cft=$1
+    local foundfile_cft=$2
+    stopStringLine=$(grep -n -m 1 "$stopstring_cft" "$foundfile_cft")
 }
 
 catfromline(){
     local catfile=$1
     local catFromLineString=$2
     filelen=$(cat "$catfile" | wc -l)
-    catfromline=$(echo "$catFromLineString" | cut -f 1 -d :)
-    tailme=$(echo "$filelen" - "$catfromline" + 1 | bc)
-    echo "$tailme"
+    catfromline_cfl=$(echo "$catFromLineString" | cut -f 1 -d :)
+    tailme_cfl=$(echo "$filelen" - "$catfromline_cfl" + 1 | bc)
+    echo "$tailme_cfl"
 }
 
 findqatags(){
-    local tailme=$1
-    local grepstring=$2
+    local tailme_fqt=$1
+    local grepstring_fqt=$2
     local findqatagFile=$3
-    foundqatags=$(tail -n "$tailme" "$findqatagFile" | grep -no "$grepstring")
+    foundqatags=$(tail -n "$tailme_fqt" "$findqatagFile" | grep -no "$grepstring_fqt")
     if [[ $? -eq 0 ]] ; then
         echo "$findqatagFile"
         echo "$foundqatags"
