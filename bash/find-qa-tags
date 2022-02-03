@@ -15,50 +15,143 @@ if [[ -z "$usrhtm" ]] ; then
 fi
 
 main(){
+
+    # Input file
     local foundfile_main=$1
+
+    # Find the first occurrance of this string, which is after the QA
+    # task list.
     local stopstring_main="<h1"
+
+    # Search for occurances of this string after the stopstring_main
+    # line.
     local grepstring_main="data-condition=\"Others"
 
-    checkfortag "$stopstring_main" "$foundfile_main"
+    # grep for stopstring_main in foundfile_main (via checkfortag).
+    #
+    # stopStringLine is the output from checkfortag, which is the
+    # whole line containing the first instance of stopstring_main.
+    stopStringLine=$(checkfortag "$stopstring_main" "$foundfile_main")
+    stopStringLine_exit=$?
 
-    if [[ $? -eq 0 ]] ; then
-        tailme_main=$(catfromline "$foundfile_main" "$stopStringLine")
-        findqatags "$tailme_main" "$grepstring_main" "$foundfile_main"
+    # Only proceed if the stopstring_main line is in the
+    # foundfile_main file.
+    if [[ "$stopStringLine_exit" -eq 0 ]] ; then
+
+        # This is the line before which we ignore instances of
+        # grepstring_main.
+        stopStringLineNum=$(echo "$stopStringLine" | cut -f 1 -d :)
+
+        findqatags "$grepstring_main" "$stopStringLineNum" "$foundfile_main"
     else
         echo "$stopstring_main" " not in " "$foundfile_main"
     fi
 }
 
+findqatags(){
+
+    # Flag to echo the qatagfile
+    local firstpass=0
+
+    # The string to grep.
+    local grepstring_fqt=$1
+
+    # Int corresponding to the lines before which to ignore.
+    local ignorelines=$2
+
+    # Input file
+    local qatagfile=$3
+
+    # Loop through the instances of grepstring_fqt that grep has
+    # found in qatagfile.
+    for item in $(grep -no "$grepstring_fqt" "$qatagfile")
+    do
+        # Only process instances where the line number associated with
+        # item are >= the line number from ignorelines.
+        if (( $(echo "$item" | cut -f 1 -d :) >= "$ignorelines" )) ; then
+
+            # Output the qatagfile filename
+            if [[ "$firstpass" -eq 0 ]] ; then
+                echo ""
+                echo "$qatagfile"
+                firstpass=1
+            fi
+
+            # Output the result from the grep for grepstring_fqt.
+            echo $item
+        fi
+    done
+}
+
 checkfortag(){
     local stopstring_cft=$1
     local foundfile_cft=$2
-    stopStringLine=$(grep -n -m 1 "$stopstring_cft" "$foundfile_cft")
+    grep -n -m 1 "$stopstring_cft" "$foundfile_cft"
 }
 
-catfromline(){
-    local catfile=$1
-    local catFromLineString=$2
-    filelen=$(cat "$catfile" | wc -l)
-    catfromline_cfl=$(echo "$catFromLineString" | cut -f 1 -d :)
-    tailme_cfl=$(echo "$filelen" - "$catfromline_cfl" + 1 | bc)
-    echo "$tailme_cfl"
-}
+# checkvalidity(){
+#     local stopstringline=$1
+#     local allgreps=$2
+#     echo $allgreps | cut -f 1 -d :
+# }
 
-findqatags(){
-    local tailme_fqt=$1
-    local grepstring_fqt=$2
-    local findqatagFile=$3
-    foundqatags=$(tail -n "$tailme_fqt" "$findqatagFile" | grep -no "$grepstring_fqt")
-    if [[ $? -eq 0 ]] ; then
-        echo "$findqatagFile"
-        echo "$foundqatags"
-        echo ""
-    fi
-}
+# catfromline(){
+#     local catfile=$1
+#     local catFromLineString=$2
+
+#     # Deterine the length of the catfile.
+#     #
+#     # Need to use cat with cut and wc to deal with catfile not having
+#     # a return carriage at the end.
+#     filelen=$(cat -n "$catfile" | cut -f 1 | wc -l)
+
+#     # Isolate the line number only from catFromLineString.
+#     catfromline_cfl=$(echo "$catFromLineString" | cut -f 1 -d :)
+
+#     # Compute the number of lines to issue to tail by subtracting
+#     # catfromline_cfl from filelen.
+#     #
+#     # +1 to include the specified line as well
+#     tailme_cfl=$(echo \("$filelen" - "$catfromline_cfl"\) + 1 | bc)
+#     echo "$tailme_cfl"
+# }
+
+# findqatags(){
+#     local tailme_fqt=$1
+#     local grepstring_fqt=$2
+#     local findqatagFile=$3
+#     foundqatags=$(tail -n "$tailme_fqt" "$findqatagFile" | grep -no "$grepstring_fqt")
+#     foundqatags_exit=$?
+
+#     echo $tailme_fqt
+
+#     # Original
+#     # if [[ "$foundqatags_exit" -eq 0 ]] ; then
+#     #     echo "$findqatagFile"
+#     #     echo "$foundqatags"
+#     #     echo ""
+#     # fi
+# }
+
+# addlinesabove(){
+#     foundline=$1
+#     echo $foundline
+#     # for item in "$foundline"
+#     # do
+#     #     lineInFile=$(echo "$item" | cut -f 1 -d :)
+#     #     echo $item
+#     #     echo $tailme_ala
+#     #     # echo "$tailme_ala" + "$lineInFile" | bc
+#     # done
+# }
 
 export -f main
 export -f checkfortag
-export -f catfromline
 export -f findqatags
+
+# export -f checkvalidity
+# export -f catfromline
+# export -f findqatagzz
+# export -f addlinesabove
 
 find "$htm_path" -type f -name "$usrhtm" -exec bash -c 'main "$0"' {} \;
