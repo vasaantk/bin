@@ -14,6 +14,7 @@ if [[ -z "$usrhtm" ]] ; then
     echo "#    -->$ find-qa-tags  Echogram_keyboard_shortcuts.htm"
 fi
 
+
 main(){
 
     # Input file
@@ -47,6 +48,7 @@ main(){
         echo "$stopstring_main" " not in " "$foundfile_main"
     fi
 }
+
 
 findqatags(){
 
@@ -83,75 +85,15 @@ findqatags(){
     done
 }
 
+
 checkfortag(){
     local stopstring_cft=$1
     local foundfile_cft=$2
     grep -n -m 1 "$stopstring_cft" "$foundfile_cft"
 }
 
-# checkvalidity(){
-#     local stopstringline=$1
-#     local allgreps=$2
-#     echo $allgreps | cut -f 1 -d :
-# }
-
-# catfromline(){
-#     local catfile=$1
-#     local catFromLineString=$2
-
-#     # Deterine the length of the catfile.
-#     #
-#     # Need to use cat with cut and wc to deal with catfile not having
-#     # a return carriage at the end.
-#     filelen=$(cat -n "$catfile" | cut -f 1 | wc -l)
-
-#     # Isolate the line number only from catFromLineString.
-#     catfromline_cfl=$(echo "$catFromLineString" | cut -f 1 -d :)
-
-#     # Compute the number of lines to issue to tail by subtracting
-#     # catfromline_cfl from filelen.
-#     #
-#     # +1 to include the specified line as well
-#     tailme_cfl=$(echo \("$filelen" - "$catfromline_cfl"\) + 1 | bc)
-#     echo "$tailme_cfl"
-# }
-
-# findqatags(){
-#     local tailme_fqt=$1
-#     local grepstring_fqt=$2
-#     local findqatagFile=$3
-#     foundqatags=$(tail -n "$tailme_fqt" "$findqatagFile" | grep -no "$grepstring_fqt")
-#     foundqatags_exit=$?
-
-#     echo $tailme_fqt
-
-#     # Original
-#     # if [[ "$foundqatags_exit" -eq 0 ]] ; then
-#     #     echo "$findqatagFile"
-#     #     echo "$foundqatags"
-#     #     echo ""
-#     # fi
-# }
-
-# addlinesabove(){
-#     foundline=$1
-#     echo $foundline
-#     # for item in "$foundline"
-#     # do
-#     #     lineInFile=$(echo "$item" | cut -f 1 -d :)
-#     #     echo $item
-#     #     echo $tailme_ala
-#     #     # echo "$tailme_ala" + "$lineInFile" | bc
-#     # done
-# }
 
 export -f main
 export -f checkfortag
 export -f findqatags
-
-# export -f checkvalidity
-# export -f catfromline
-# export -f findqatagzz
-# export -f addlinesabove
-
 find "$htm_path" -type f -name "$usrhtm" -exec bash -c 'main "$0"' {} \;
