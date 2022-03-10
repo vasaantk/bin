@@ -1,0 +1,30 @@
+#! /bin/bash
+
+# build-webhelp-checker computes the dates on which to expect a
+# Webhelp output from Jenkins.
+
+startdate=2022-02-22  # Revision 1319742
+dow=Mon
+
+today=$(date +%F)
+while [[ "$startdate" != "$today" ]]; do
+
+    startdatedow=$(date --date="$startdate" +%a)
+
+    if [[ "$startdatedow" == "$dow" ]]; then
+        dowdate=$(date --date="$startdate" +"%a %b %d %Y")
+        dowwk=$(date --date="$startdate" +%U)
+        dowmod=$(echo "scale=0; $dowwk % 2" | bc)
+
+        if [[ "$dowmod" == 1 ]]; then
+            build="TRUE"
+        else
+            build="FALSE"
+        fi
+
+        echo "$dowdate"", week ""$dowwk"", modulo ""$dowmod"", Build Webhelp ""$build"
+
+    fi
+
+    startdate=$(date -I -d "$startdate + 1 day")
+done
