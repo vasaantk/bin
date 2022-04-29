@@ -1,31 +1,51 @@
 #! /bin/bash
 
-# A kludge to automatically open the latest version of Echoview on my
-# system.
+# Open the latest version of Echoview on my system.
 
-echoVer=-1
-cd /mnt/c/Echoview\ 13/
-for item in .
-do
-    if [ -d "$item" ]; then
-        for ver in $(ls $item | cut -f 2 -d ' ' | cut -f 3 -d '.')
-        do
-            if [ "$ver" -gt "$echoVer" ]; then
-                echoVer="$ver"
-            fi
-        done
-    fi
-done
+echoview_files_dir="/mnt/c/Echoview 13"
+echoview_dir_prefix="Echoview 13.0"
+echoview_executable_subdir="WIN64_RELEASE/Echoview.exe"
 
-# Check if the help file exists
-cd /mnt/c/Echoview\ 13/Echoview\ 13.0.$echoVer*/WIN64_RELEASE/
-newfile=/mnt/c/SVN/Echoview12/Documentation/Help_file/\!SSL\!/Echoview_help_file_layouts/Echoview.chm
-if [[ ! -f "Echoview.chm" ]]; then
-    cp "$newfile" .
-elif [[ "$newfile" -nt Echoview.chm ]]; then
-    rm Echoview.chm
-    cp "$newfile" .
+
+main(){
+    local ev_files_dir=$1
+    local ev_dir_prefix=$2
+    local ev_executable=$3
+
+    latest_ev_version_index=$(get_latest_ev_version "$ev_files_dir" "$ev_dir_prefix")
+
+    execute_echo "$ev_files_dir" "$ev_dir_prefix" "$latest_ev_version_index" "$ev_executable"
+}
+
+
+get_latest_ev_version(){
+    local echoview_dir=$1
+    local echoview_files_prefix=$2
+    local latest_version=-1
+
+    cd "$echoview_dir"
+    ev_versions=$(ls -d "$echoview_files_prefix"*)
+
+    while read -r dir_name; do
+        current_version_number=$(echo "$dir_name" | cut -f 3 -d '.')
+        if [[ "$current_version_number" -gt "$latest_version" ]]; then
+            latest_version="$current_version_number"
+        fi
+    done <<< "$ev_versions"
+
+    echo $latest_version
+}
+
+
+execute_echo(){
+    local root_dir=$1
+    local ev_dir_prefix=$2
+    local latest_version=$3
+    local exe_location=$4
+    "$root_dir"/"$ev_dir_prefix"."$latest_version"*/"$exe_location" & disown
+}
+
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$echoview_files_dir" "$echoview_dir_prefix" "$echoview_executable_subdir"
 fi
-
-# Execute the program
-Echoview.exe & disown

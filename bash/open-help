@@ -1,27 +1,43 @@
 #! /bin/bash
 
-# A kludge to automatically open the latest version of Echoview on my
-# system.
+# Automatically open the latest .chm on my system found by open-echo.
 
-echoVer=-1
-cd /mnt/c/Echoview\ 13/
-for item in .
-do
-    if [ -d "$item" ]; then
-        for ver in $(ls $item | cut -f 2 -d ' ' | cut -f 3 -d '.')
-        do
-            if [ "$ver" -gt "$echoVer" ]; then
-                echoVer="$ver"
-            fi
-        done
-    fi
-done
+source open-echo
+chm_executable_subdir="WIN64_RELEASE"
 
-# Check if the help file exists
-cd /mnt/c/Echoview\ 13/Echoview\ 13.0.$echoVer*/WIN64_RELEASE/
 
-if [[ -z "$(ls Echoview_*.chm)" ]]; then
-    echo "Help file does not exist"
-else
-    explorer.exe "$(ls Echoview_*.chm)"
+main(){
+    local ev_files_dir=$1
+    local ev_dir_prefix=$2
+    local release_subdir=$3
+
+    latest_ev_version_index=$(get_latest_ev_version "$ev_files_dir" "$ev_dir_prefix")
+    open_latest_chm "$ev_files_dir" "$ev_dir_prefix" "$latest_ev_version_index" "$release_subdir"
+}
+
+
+open_latest_chm(){
+    local root_dir=$1
+    local ev_dir_prefix=$2
+    local latest_version=$3
+    local release_subdir=$4
+
+    cd "$root_dir"/"$ev_dir_prefix"."$latest_version"*/"$release_subdir"
+    newest_chm_found=$(ls -t *.chm | head -1)
+    echo "Opening" "$newest_chm_found"
+    explorer.exe "$newest_chm_found"
+}
+
+
+execute_chm(){
+    local root_dir=$1
+    local ev_dir_prefix=$2
+    local latest_version=$3
+    local exe_location=$4
+    "$root_dir"/"$ev_dir_prefix"."$latest_version"*/"$exe_location" & disown
+}
+
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$echoview_files_dir" "$echoview_dir_prefix" "$chm_executable_subdir"
 fi

@@ -78,5 +78,6 @@ open_help_page(){
     HH.EXE "$(basename $chmpath)"::"$pagepath" & disown
 }
 
-
-main "$chm_filename" "$help_file_page" "$help_file_project_path"
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$chm_filename" "$help_file_page" "$help_file_project_path"
+fi
