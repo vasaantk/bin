@@ -1,0 +1,82 @@
+#! bin/bash
+
+chm_filename=$1
+help_file_page=$2
+help_file_project_path="/mnt/c/SVN/Echoview13/Documentation/Help_file/contents"
+
+
+if [[ -z "$chm_filename" ]] || [[ -z "$help_file_page" ]]; then
+
+    echo "# open-help-page obtains the relative path to the user-specified"
+    echo "# page in" $help_file_project_path
+    echo "# It then opens that page in the .chm provided by the user."
+    echo "#"
+    echo "# Example usage:"
+    echo "#"
+    echo "#    -->$ open-help-page Echoview.chm Using_CTD_data.htm"
+    echo "#    -->$ open-help-page Echoview\ 2023/Echoview.chm About_single_targets.htm#Target_lengths"
+    exit
+fi
+
+
+main(){
+
+    local chm_filename_main=$1
+    local user_input=$2
+    local ev13_project_path_main=$3
+
+    has_relative_link=$(check_relative_link "$user_input")
+
+    if [[ "$has_relative_link" == "true" ]]; then
+        {
+            find_file=$(grab_filename_only "$user_input")
+        }
+    else
+        find_file=$user_input
+    fi
+
+    found_file=$(find "$ev13_project_path_main" -type f -name "$find_file")
+    dir_of_page=$(dirname "$found_file")
+    relative_dirpath=$(relative_chm_path "$ev13_project_path_main" "$dir_of_page")
+    open_page=$(echo "$relative_dirpath"/"$user_input")
+    path_to_chm="$chm_filename_main"
+    open_help_page "$path_to_chm" "$open_page"
+}
+
+
+check_relative_link(){
+    local userinput=$1
+    if [[ "$userinput" == *#* ]]; then
+        echo "true"
+    else
+        echo "false"
+    fi
+}
+
+
+grab_filename_only(){
+    local userinput=$1
+    local delim="#"
+    echo "$userinput" | cut -d "$delim" -f 1
+}
+
+
+relative_chm_path(){
+    local projectpath=$1
+    local pagedir=$2
+    local IFS="/"
+    read -ra subdirs <<< "$projectpath"
+    cutpathcount=$(echo "${#subdirs[@]} + 1" | bc)
+    echo "$pagedir" | cut -d "$IFS" -f "$cutpathcount"-
+}
+
+
+open_help_page(){
+    local chmpath=$1
+    local pagepath=$2
+    cd $(dirname $chmpath)
+    HH.EXE "$(basename $chmpath)"::"$pagepath" & disown
+}
+
+
+main "$chm_filename" "$help_file_page" "$help_file_project_path"
