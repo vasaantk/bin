@@ -4,7 +4,7 @@
 
 echoview_files_dir="/mnt/c/Echoview 13"
 echoview_dir_prefix="Echoview 13.0"
-echoview_executable_subdir="WIN64_RELEASE/Echoview.exe"
+echoview_executable_subdir="WIN64_RELEASE"
 
 
 main(){
@@ -42,7 +42,7 @@ execute_echo(){
     local ev_dir_prefix=$2
     local latest_version=$3
     local exe_location=$4
-    "$root_dir"/"$ev_dir_prefix"."$latest_version"*/"$exe_location" & disown
+    "$root_dir"/"$ev_dir_prefix"."$latest_version"*/"$exe_location"/Echoview.exe & disown
 }
 
 
