@@ -12,11 +12,12 @@ main(){
     local release_subdir=$3
 
     latest_ev_version_index=$(get_latest_ev_version "$ev_files_dir" "$ev_dir_prefix")
-    open_latest_chm "$ev_files_dir" "$ev_dir_prefix" "$latest_ev_version_index" "$release_subdir"
+    chm_path_name="$(get_latest_chm "$ev_files_dir" "$ev_dir_prefix" "$latest_ev_version_index" "$release_subdir")"
+    open_chm "$chm_path_name"
 }
 
 
-open_latest_chm(){
+get_latest_chm(){
     local root_dir=$1
     local ev_dir_prefix=$2
     local latest_version=$3
@@ -24,17 +25,16 @@ open_latest_chm(){
 
     cd "$root_dir"/"$ev_dir_prefix"."$latest_version"*/"$release_subdir"
     newest_chm_found=$(ls -t *.chm | head -1)
-    echo "Opening" "$newest_chm_found"
-    explorer.exe "$newest_chm_found"
+    echo "$(pwd)"/"$newest_chm_found"
 }
 
 
-execute_chm(){
-    local root_dir=$1
-    local ev_dir_prefix=$2
-    local latest_version=$3
-    local exe_location=$4
-    "$root_dir"/"$ev_dir_prefix"."$latest_version"*/"$exe_location" & disown
+open_chm(){
+    local chm_path_name=$1
+    cd "$(dirname "$chm_path_name")"
+    chm_file="$(basename "$chm_path_name")"
+    echo "Opening" "$chm_file"
+    explorer.exe "$chm_file" & disown
 }
 
 

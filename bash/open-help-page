@@ -1,5 +1,7 @@
 #! bin/bash
 
+source open-echo
+
 chm_filename=$1
 help_file_page=$2
 help_file_project_path="/mnt/c/SVN/Echoview13/Documentation/Help_file/contents"
@@ -35,12 +37,13 @@ main(){
         find_file=$user_input
     fi
 
+    # TODO: Incorporate a choosing function for when there are
+    # multiple hits from find.
     found_file=$(find "$ev13_project_path_main" -type f -name "$find_file")
     dir_of_page=$(dirname "$found_file")
     relative_dirpath=$(relative_chm_path "$ev13_project_path_main" "$dir_of_page")
     open_page=$(echo "$relative_dirpath"/"$user_input")
-    path_to_chm="$chm_filename_main"
-    open_help_page "$path_to_chm" "$open_page"
+    open_help_page "$chm_filename_main" "$open_page"
 }
 
 
@@ -74,9 +77,10 @@ relative_chm_path(){
 open_help_page(){
     local chmpath=$1
     local pagepath=$2
-    cd $(dirname $chmpath)
-    HH.EXE "$(basename $chmpath)"::"$pagepath" & disown
+    cd "$(dirname "$chmpath")"
+    HH.EXE "$(basename "$chmpath")"::"$pagepath" & disown
 }
+
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     main "$chm_filename" "$help_file_page" "$help_file_project_path"
