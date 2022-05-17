@@ -8,10 +8,10 @@ help_file_project_path="/mnt/c/SVN/Echoview13/Documentation/Help_file/contents"
 
 
 if [[ -z "$help_file_page" ]]; then
-
     echo "# open-help-page obtains the relative path to the user-specified"
     echo "# page in" $help_file_project_path
-    echo "# It then opens that page in the .chm provided by the user."
+    echo "# It then opens that page in the newest available .chm in"
+    echo "# the path or the one provided by the user."
     echo "#"
     echo "# Example usage:"
     echo "#"
