@@ -12,6 +12,8 @@ import re
 commonZones = {'CPT' : 'Africa/Johannesburg',
                'NY'  : 'America/New_York',
                'LA'  : 'America/Los_Angeles',
+               'CH'  : 'America/Chicago',
+               'SAN' : 'America/Santiago',
                'AET' : 'Australia/Hobart',
                'AWT' : 'Australia/Perth',
                'ACT' : 'Australia/Adelaide',
@@ -19,6 +21,7 @@ commonZones = {'CPT' : 'Africa/Johannesburg',
                'CET' : 'Europe/Rome',
                'NZ'  : 'Pacific/Auckland',
                'SGT' : 'Singapore',
+               'JPN' : 'Asia/Tokyo',
                'UTC' : 'UTC'}
 zoneKey = commonZones.keys()
 
