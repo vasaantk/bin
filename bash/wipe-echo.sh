@@ -14,7 +14,7 @@ main(){
 
     latest_ev_version_index=$(get_latest_ev_version "$ev_files_dir" "$ev_dir_prefix")
     latest_echo_dirname=$(get_latest_echo_dirname "$ev_files_dir" "$ev_dir_prefix" "$latest_ev_version_index")
-    wipe-echoes  "$ev_files_dir" "$ev_dir_prefix" "$latest_echo_dirname"
+    wipe-echoes "$ev_files_dir" "$ev_dir_prefix" "$latest_echo_dirname"
 }
 
 
@@ -22,6 +22,7 @@ get_latest_echo_dirname(){
     local root_dir=$1
     local ev_dir_prefix=$2
     local latest_version=$3
+
     basename "$(ls -d "$root_dir"/"$ev_dir_prefix"."$latest_version"*)"
 }
 
