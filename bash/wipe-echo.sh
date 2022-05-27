@@ -6,7 +6,6 @@ source open-echo
 
 echoview_files_dir="/mnt/c/Echoview 13"
 echoview_dir_prefix="Echoview 13.0"
-echoview_executable_subdir="WIN64_RELEASE"
 
 
 main(){
