@@ -4,6 +4,7 @@ inp_name=$1
 
 antipathy="/mnt/c/Program Files (x86)/Druide/Antidote 10/Application/Bin64/Antidote.exe"
 win_help_path="C:\SVN\Echoview13\Documentation\Help_file\contents\\"
+lin_help_path="/mnt/c/SVN/Echoview13/Documentation/Help_file/contents"
 
 if [[ -z "$inp_name" ]]; then
     echo '# Accepts a file name and searches the current dir for the file. If it'
@@ -12,6 +13,7 @@ if [[ -z "$inp_name" ]]; then
     echo '# Usage:'
     echo '#     -->$ auto-anti input.txt'
 else
+    cd "$lin_help_path"
     find_file=$(find . -type f -name "$inp_name")
     winnify=$(echo "$find_file" | sed 's/\//\\/g')
     "$antipathy" "$win_help_path""$winnify"

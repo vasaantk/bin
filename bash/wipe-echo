@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# Delete all but the latest version of Echoview on my system.
+# wipe-echo deletes all but the latest version of Echoview on my system.
 
 source open-echo
 
