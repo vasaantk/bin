@@ -1,0 +1,20 @@
+#! /bin/bash
+
+# Use svn-exp to parse the output dir and filename for an export in
+# conjunction with SVN's export feature. The usr-out.htm will exist in
+# the same dir as the input file.
+#
+# Example usage:
+#
+#     -->$ svn export -r r1234567 `svn-exp About_region_class.htm usr-out.htm
+
+find_path="/mnt/c/SVN/Echoview13/Documentation/Help_file/contents"
+usr_inp=$1
+usr_out=$2
+
+fnd_file=$(find "$find_path" -type f -iname "$usr_inp")
+
+inp_file=$(wslpath -w "$fnd_file")
+out_path=$(wslpath -w "$(dirname "$fnd_file")")
+out_file=$(echo "$out_path"\\"$usr_out")
+echo "$inp_file" "$out_file"
