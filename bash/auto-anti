@@ -25,5 +25,5 @@ else
     # pandoc -s -f html "$find_file" -t plain -o "$antitemppathy"
 
     winpath=$(wslpath -w "$antitemppathy")
-    "$antipathy" "$winpath"
+    "$antipathy" "$winpath" & disown
 fi
