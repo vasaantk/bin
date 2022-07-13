@@ -26,7 +26,7 @@ if ! [[ -z "$jira" ]]; then
 
         echo "-*- mode: org -*-" >> "$jira_file"
         echo "" >> "$jira_file"
-        echo "#+STARTUP: hideall" >> "$jira_file"
+        echo "#+STARTUP: overview" >> "$jira_file"
         echo "#+STARTUP: indent" >> "$jira_file"
         echo "#+TAGS: PHRASE(p) BUG(b)" >> "$jira_file"
         echo "" >> "$jira_file"
