@@ -16,12 +16,12 @@ fi
 
 cd "$homey"
 
-inpath=$(find . -type f -name "$infile")
+inpath=$(find . -type f -iname "$infile")
 if [[ -z "$inpath" ]]; then
     echo Not found: "$infile"
 fi
 
-outpath=$(find . -type f -name "$outfile")
+outpath=$(find . -type f -iname "$outfile")
 if [[ -z "$outpath" ]]; then
     echo Not found: "$outfile"
 fi
