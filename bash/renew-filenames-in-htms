@@ -1,0 +1,49 @@
+#! /bin/bash
+
+old_file_name=$1
+new_file_name=$2
+help_file_project_path="/mnt/c/SVN/Echoview13/Documentation/Help_file/"
+
+
+if [[ -z "$new_file_name" ]]; then
+
+    echo "# Use renew-file-names-in-htms to update all instances of"
+    echo "# the file names that appear in the .htms after you rename a"
+    echo "# file."
+    echo "#"
+    echo "# Insert the -i flag for sed. It has been disabled for"
+    echo "# safety."
+    echo "#"
+    echo "# Usage"
+    echo "#"
+    echo "#    -->$ renew-filenames-in-htms old_file_name.htm new_file_name.htm"
+    exit
+fi
+
+
+grep_for_htms_with_old_file_name(){
+    local old_file_name=$1
+    grep -lir "$old_file_name"
+}
+
+
+replace_file_name(){
+    local old_file_name=$1
+    local new_file_name=$2
+    local htm_paths=$3
+    while read -r htm_path; do
+        sed "s/$old_file_name/$new_file_name/Ig" "$htm_path"
+    done< <(echo "$htm_paths")
+}
+
+
+main(){
+    cd "$help_file_project_path"
+    htms_with_old_file_name=$(grep_for_htms_with_old_file_name "$old_file_name")
+    replace_file_name "$old_file_name" "$new_file_name" "$htms_with_old_file_name"
+}
+
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$help_file_page" "$help_file_project_path" "$chm_file_path"
+fi
