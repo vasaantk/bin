@@ -45,5 +45,5 @@ main(){
 
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    main "$help_file_page" "$help_file_project_path" "$chm_file_path"
+    main
 fi
