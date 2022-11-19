@@ -1,13 +1,11 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 # Written by Vasaant S/O Krishnan. Wednesday, 19 October 2016.
 
 import sys
 from datetime import *
-from pytz import *     # http://pytz.sourceforge.net/
+import pytz as tz     # http://pytz.sourceforge.net/
 import re
-# for tz in pytz.all_timezones:
-#     print tz
 
 commonZones = {'CPT' : 'Africa/Johannesburg',
                'NY'  : 'America/New_York',
@@ -27,17 +25,15 @@ zoneKey = commonZones.keys()
 
 usrInp = sys.argv[1:]
 if len(usrInp) == 0:
-    print ""
-    print "#  pytime.py converts the day and time [from] one zone [to]"
-    print "#  another. If no date/time is given, the current time is used."
-    print "#  Available time zones are:"
-    print "#"
+    print("#  pytime.py converts the day and time [from] one zone [to]")
+    print("#  another. If no date/time is given, the current time is used.")
+    print("#  Available time zones are:")
+    print("#")
     for i in sorted(zoneKey):
-        print "#  %8s  (%s)"%(i, commonZones[i])
-    print "#"
-    print "#  -->$ pytime.py   YYYY-MM-DD HH:MM  [from]-[to]"
-    print "#  -->$ pytime.py   [from]-[to]"
-    print ""
+        print("#  %8s  (%s)"%(i, commonZones[i]))
+    print("#")
+    print("#  -->$ pytime.py   YYYY-MM-DD HH:MM  [from]-[to]")
+    print("#  -->$ pytime.py   [from]-[to]")
     exit()
 
 #=====================================================================
@@ -54,7 +50,12 @@ for i in usrInp:
     rawDate = re.match('(\d\d\d\d \d\d \d\d)', i)
     rawTime = re.match('(\d\d \d\d)[ \d\d.\d+]*', i)
     rawZone = re.match('(\D+) (\D+)', i)
+    allZones = re.match('tz', i)
 
+    if allZones:
+        for tz in tz.all_timezones:
+            print(tz)
+        exit()
     if rawDate:
         dateFlag = True
         usrDate  = rawDate.group(1).split(' ')
@@ -78,11 +79,11 @@ else:
     userTime = datetime.now()
 
 if fromZone in zoneKey and toZone in zoneKey:
-    startZone = timezone(commonZones[fromZone])
-    reqZone   = timezone(commonZones[toZone])
+    startZone = tz.timezone(commonZones[fromZone])
+    reqZone   = tz.timezone(commonZones[toZone])
 
     assignTimeZone = startZone.localize(userTime)
     reqTime        = assignTimeZone.astimezone(reqZone)
 
-    print " %s  %s"%(userTime.strftime(timePrintFmt),startZone)
-    print " %s  %s"%( reqTime.strftime(timePrintFmt),reqZone)
+    print(" %s  %s"%(userTime.strftime(timePrintFmt),startZone))
+    print(" %s  %s"%( reqTime.strftime(timePrintFmt),reqZone))

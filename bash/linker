@@ -1,0 +1,41 @@
+#! /bin/bash
+
+infile=$1
+outfile=$2
+homey=/mnt/c/SVN/Echoview12/Documentation/Help_file
+
+if [[ -z "$infile" ]] && [[ -z "$outfile" ]]; then
+    echo "# linker takes two file names enters into a defined directory and"
+    echo "# searches for the files, priting out the relative path of the second"
+    echo "# w.r.t the first."
+    echo "#"
+    echo "# Example:"
+    echo "#    -->$ linker Biomass_density_estimator.htm New_in_Echoview_12_for_all_users.htm"
+    exit
+fi
+
+cd "$homey"
+
+inpath=$(find . -type f -name "$infile")
+if [[ -z "$inpath" ]]; then
+    echo Not found: "$infile"
+fi
+
+outpath=$(find . -type f -name "$outfile")
+if [[ -z "$outpath" ]]; then
+    echo Not found: "$outfile"
+fi
+
+if ! [[ -z "$inpath" ]] && ! [[ -z "$outpath" ]]; then
+    indir=$(dirname "$inpath")
+    numcd=0
+    cd "$indir"
+    while ! [[ "$indir" == "$homey" ]]
+    do
+        cd ../
+        indir=$(pwd)
+        ((numcd++))
+    done
+    relpath=$(printf '../%.0s' $(seq 1 $numcd))
+    echo "$relpath""${outpath:2}"
+fi

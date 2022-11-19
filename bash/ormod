@@ -1,0 +1,128 @@
+#! /bin/bash
+
+ormod=$1
+jira=$2
+
+if [[ -z "$ormod" ]] && [[ -z "$jira" ]]; then
+    echo "# ormod changes the mode (like chmod) of org file in the defined"
+    echo "# file. Valid modes are:"
+    echo "# "
+    echo "# u :  No mode"
+    echo "# td:  TODO"
+    echo "# ip:  IN-PROGRESS"
+    echo "# wa:  WAITING"
+    echo "# d :  DONE"
+    echo "# "
+    echo "# Usage:"
+    echo "#     -->$ ormod td 28889"
+    exit
+fi
+
+
+######################################################################
+#    Check if the task exists as a file
+jiradir=/mnt/c/Users/VasaantK/OneDrive\ -\ Echoview\ Software/Evernote/Jirae
+datadir=/mnt/c/Users/VasaantK/OneDrive\ -\ Echoview\ Software/Evernote/Database
+orgfile=\#$2.org
+
+if [[ -f "$jiradir/$orgfile" ]] && [[ -f "$datadir/$orgfile" ]]; then
+    echo "Same ticket"
+    echo "$jiradir"
+    echo "$datadir"
+    exit
+elif ! [[ -f "$jiradir/$orgfile" ]] && ! [[ -f "$datadir/$orgfile" ]]; then
+    echo No ticket
+    exit
+fi
+
+
+######################################################################
+#    Change into the working directory
+if [[ -f "$datadir/$orgfile" ]]; then
+    mv "$datadir/$orgfile" "$jiradir/$orgfile"
+    echo Transferred "$orgfile"
+fi
+cd "$jiradir"
+
+
+######################################################################
+#    Setup the different kinds of possible modes
+
+# Possible user inputs
+u=" "
+td="TODO"
+ip="IN-PROGRESS"
+wa="WAITING"
+d="DONE"
+
+# Possible headings
+vanilla="*$u#$jira"
+todo="* $td #$jira"
+inprog="* $ip #$jira"
+wait="* $wa #$jira"
+done="* $d #$jira"
+
+
+######################################################################
+#    Determine the existing mode
+if ! [[ -z $(grep "$vanilla" -m 1 "$orgfile") ]] ; then
+    currMod="$vanilla"
+fi
+if ! [[ -z $(grep "$todo" -m 1 "$orgfile") ]] ; then
+    currMod="$todo"
+fi
+if ! [[ -z $(grep "$inprog" -m 1 "$orgfile") ]] ; then
+    currMod="$inprog"
+fi
+if ! [[ -z $(grep "$wait" -m 1 "$orgfile") ]] ; then
+    currMod="$wait"
+fi
+if ! [[ -z $(grep "$done" -m 1 "$orgfile") ]] ; then
+    currMod="$done"
+fi
+
+if [[ -z "$currMod" ]]; then
+    echo "No mode found in" "$orgfile"
+    exit
+fi
+echo " Change: ""$currMod"
+
+
+######################################################################
+#    Possible mode choices
+if [[ $ormod == "u" ]]; then
+    newmod="$vanilla"
+fi
+if [[ $ormod == "td" ]]; then
+    newmod="$todo"
+fi
+if [[ $ormod == "ip" ]]; then
+    newmod="$inprog"
+fi
+if [[ $ormod == "wa" ]]; then
+    newmod="$wait"
+fi
+if [[ $ormod == "d" ]]; then
+    newmod="$done"
+fi
+
+if [[ -z "$newmod" ]]; then
+    echo "Invalid change mode requested. Use:"
+    echo "u td ip wa d"
+    exit
+fi
+echo "     to:" "$newmod"
+
+
+######################################################################
+#    Confirm change
+read -n 1 -p "  y/[n]: " usrinp
+
+if [[ "$usrinp" == "y" ]]; then
+    sed -i "s|$currMod|$newmod|" "$orgfile"
+    echo ""
+    echo " Mode changed."
+else
+    echo ""
+    echo " No changes."
+fi

@@ -1,0 +1,12 @@
+#! /bin/bash
+
+pythonFile=$1
+
+if [[ -z "$1" ]]; then
+    echo "Windows' Python"
+    echo ""
+    echo "Usage:"
+    echo "    -->$ wyp crypt.py"
+    exit
+fi
+/mnt/c/Program\ Files/Python39/python.exe $1

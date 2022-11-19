@@ -1,6 +1,6 @@
 #! bin/bash
 
-# Get windows to open open in Windows using wsl
+# Get windows to open in Windows using wsl
 
 usr_inp=$1
 explorer.exe $(wslpath -w "$usr_inp")
