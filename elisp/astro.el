@@ -48,13 +48,11 @@ Version 2019-11-10"
 
 (defun date ()
   (backward-kill-sexp)
-  (insert (shell-command-to-string "echo %date% %time:~0,5%"))
-  (delete-backward-char 1))
+  (insert (shell-command-to-string "echo -n $(date +%A,%t%d%t%B%t%Y,%t%H:%M%t%p)")))
 
 (defun time ()
   (backward-kill-sexp)
-  (insert (shell-command-to-string "echo %time:~0,5%"))
-  (delete-backward-char 1))
+  (insert (shell-command-to-string "echo -n $(date +%H:%M%t%p)")))
 
 (defun deg2rad (ANGLE)
 "Convert an angle from degrees to radians."
