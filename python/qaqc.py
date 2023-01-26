@@ -4,7 +4,7 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 import datetime
-
+import re
 
 class qaqc:
 
@@ -38,6 +38,20 @@ class qaqc:
         swp_keys = list(self.swp.keys())
         all_keys = rf_keys + swp_keys
         return set(all_keys)
+
+
+    def discarded_events(self, logfile):
+        all_stations = self.print_all_stations()
+
+        for station in all_stations:
+            station_indexer = 0
+            with open(logfile, 'r') as log:
+                for line in log:
+                    station_log = re.search("\[Surface-wave\]\s{0}".format(station), line)
+                    if station_log:
+                        station_indexer += 1
+                print(f"{station}: {station_indexer}")
+
 
 
     def print_azim_corrections(self):
