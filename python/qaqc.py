@@ -44,13 +44,27 @@ class qaqc:
         all_stations = self.print_all_stations()
 
         for station in all_stations:
-            station_indexer = 0
+            surface_wave_indexer = 0
+            primary_wave_indexer = 0
             with open(logfile, 'r') as log:
                 for line in log:
-                    station_log = re.search("\[Surface-wave\]\s{0}".format(station), line)
-                    if station_log:
-                        station_indexer += 1
-                print(f"{station}: {station_indexer}")
+                    surface_wave_event_log = re.search("\[Surface-wave\]\s{0}".format(station), line)
+                    primary_wave_event_log = re.search("\[P-wave\]\s{0}".format(station), line)
+                    surface_wave_output_stream_log = re.search("{0}: Wrote\s+(\d+)\s+Surface-wave streams to output file".format(station), line)
+                    primary_wave_output_stream_log = re.search("{0}: Wrote\s+(\d+)\s+P-wave streams to output file".format(station), line)
+                    if surface_wave_event_log:
+                        surface_wave_indexer += 1
+                    if primary_wave_event_log:
+                        primary_wave_indexer += 1
+                    if surface_wave_output_stream_log:
+                        good_surface_wave_events = int(surface_wave_output_stream_log.group(1))
+                    if primary_wave_output_stream_log:
+                        good_primary_wave_events = int(primary_wave_output_stream_log.group(1))
+
+                discarded_surface_wave_events = surface_wave_indexer - good_surface_wave_events
+                discarded_primary_wave_events = primary_wave_indexer - good_primary_wave_events
+
+                print(f"{station}: {discarded_surface_wave_events} {discarded_primary_wave_events}")
 
 
 
