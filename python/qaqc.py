@@ -41,6 +41,12 @@ class qaqc:
 
 
     def discarded_events(self, logfile):
+
+        """
+        Compute the number of discarded events from the log from
+        extract_waveforms_7D.pbs (i.e., stderr from
+        extract_event_traces.py).
+        """
         all_stations = self.print_all_stations()
 
         for station in all_stations:
@@ -62,9 +68,11 @@ class qaqc:
                         good_primary_wave_events = int(primary_wave_output_stream_log.group(1))
 
                 discarded_surface_wave_events = surface_wave_indexer - good_surface_wave_events
+                sw_pc = int(100*discarded_surface_wave_events/surface_wave_indexer)
                 discarded_primary_wave_events = primary_wave_indexer - good_primary_wave_events
+                pw_pc = int(100*discarded_primary_wave_events/primary_wave_indexer)
 
-                print(f"{station}: {discarded_surface_wave_events} {discarded_primary_wave_events}")
+                print(f"{station:>10s} {discarded_surface_wave_events:4d} ({sw_pc:2d}%) {discarded_primary_wave_events:4d} ({pw_pc:d}%) ")
 
 
 
