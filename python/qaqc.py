@@ -31,6 +31,9 @@ class qaqc:
 
 
     def print_all_stations(self):
+        """
+        Create a set of all station names from the dataset.
+        """
         rf_keys = list(self.rf.keys())
         swp_keys = list(self.swp.keys())
         all_keys = rf_keys + swp_keys
