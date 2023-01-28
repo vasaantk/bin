@@ -49,6 +49,9 @@ class qaqc:
         """
         all_stations = self.print_all_stations()
 
+        print("      Number of discarded events")
+        print("          Surface wave    P-wave")
+        print("================================")
         for station in all_stations:
             surface_wave_indexer = 0
             primary_wave_indexer = 0
