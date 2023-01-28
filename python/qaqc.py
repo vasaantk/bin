@@ -72,7 +72,7 @@ class qaqc:
                 discarded_primary_wave_events = primary_wave_indexer - good_primary_wave_events
                 pw_pc = int(100*discarded_primary_wave_events/primary_wave_indexer)
 
-                print(f"{station:>10s} {discarded_surface_wave_events:4d} ({sw_pc:2d}%) {discarded_primary_wave_events:4d} ({pw_pc:d}%) ")
+                print(f"{station:10s} {discarded_surface_wave_events:4d} ({sw_pc:2d}%) {discarded_primary_wave_events:4d} ({pw_pc:d}%) ")
 
 
 
