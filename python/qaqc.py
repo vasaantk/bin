@@ -71,11 +71,12 @@ class qaqc:
                         good_primary_wave_events = int(primary_wave_output_stream_log.group(1))
 
                 discarded_surface_wave_events = surface_wave_indexer - good_surface_wave_events
-                sw_pc = int(100*discarded_surface_wave_events/surface_wave_indexer)
-                discarded_primary_wave_events = primary_wave_indexer - good_primary_wave_events
-                pw_pc = int(100*discarded_primary_wave_events/primary_wave_indexer)
+                sw_pc = float(100*np.divide(discarded_surface_wave_events, surface_wave_indexer))
 
-                print(f"{station:10s} {discarded_surface_wave_events:4d} ({sw_pc:2d}%) {discarded_primary_wave_events:4d} ({pw_pc:d}%) ")
+                discarded_primary_wave_events = primary_wave_indexer - good_primary_wave_events
+                pw_pc = float(100*np.divide(discarded_primary_wave_events, primary_wave_indexer))
+
+                print(f"{station:10s} {discarded_surface_wave_events:4d} ({sw_pc:2.0f}%) {discarded_primary_wave_events:4d} ({pw_pc:2.0f}%) ")
 
 
 
