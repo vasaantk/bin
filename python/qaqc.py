@@ -58,7 +58,19 @@ class qaqc:
             with open(logfile, 'r') as log:
                 log_as_list = log.readlines()
 
-                station_surface_wave_events_count = get_event_counts(log_as_list, station)
+                station_surface_wave_events_count = float(get_event_counts(log_as_list, station, "Surface-wave"))
+                station_p_wave_events_count = float(get_event_counts(log_as_list, station, "P-wave"))
+
+                accepted_station_surface_wave_events_count = float(get_wrote_stream_count(log_as_list, station, "Surface-wave"))
+                accepted_station_p_wave_events_count = float(get_wrote_stream_count(log_as_list, station, "P-wave"))
+
+                discarded_surface_wave_events = accepted_station_surface_wave_events_count - station_surface_wave_events_count
+                discarded_p_wave_events = accepted_station_p_wave_events_count - station_p_wave_events_count
+
+                discarded_surface_wave_events_pc = float(100*np.divide(discarded_surface_wave_events, station_surface_wave_events_count))
+                discarded_p_wave_events_pc = float(100*np.divide(discarded_p_wave_events, station_p_wave_events_count))
+
+                print(f"{station:10s} {discarded_surface_wave_events:4d} ({discarded_surface_wave_events_pc:2.0f}%) {discarded_p_wave_events:4d} ({discarded_p_wave_events_pc:2.0f}%)")
 
                 #     surface_wave_event_log = re.search("\[Surface-wave\]\s{0}".format(station), line)
                 #     surface_wave_event_log = re.search("\[Surface-wave\]\s{0}".format(station), line)
@@ -242,13 +254,19 @@ def get_json_data(json_file):
     return jdata
 
 
-def get_event_counts(log_as_list, station):
-    surface_wave_indexer = []
-    surface_wave_date_string = "\[Surface-wave\]\s{0}\s\|\s(\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d)".format(station)
-
+def get_event_counts(log_as_list, station, wave_type):
+    wave_indexer = []
+    wave_datetime_stamp = "\[{0}\]\s{1}\s\|\s(\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d)".format(wave_type, station)
     for item in log_as_list:
-        surface_wave_event_log = re.search(surface_wave_date_string, item)
-        if surface_wave_event_log:
-            surface_wave_indexer.append(surface_wave_event_log.group(1))
-            # print(surface_wave_event_log.group(1), item)
-    print(station, len(set(surface_wave_indexer)))
+        wave_event_log = re.search(wave_datetime_stamp, item)
+        if wave_event_log:
+            wave_indexer.append(wave_event_log.group(1))
+    return len(set(wave_indexer))
+
+
+def get_wrote_stream_count(log_as_list, station, wave_type):
+    wave_stream_string = "{0}:\s+Wrote\s+(\d+)\s+{1} streams to output file".format(station, wave_type)
+    for item in log_as_list:
+        stream_count = re.search(wave_stream_string, item)
+        if stream_count:
+            return stream_count.group(1)
