@@ -6,6 +6,7 @@ import numpy as np
 import datetime
 import re
 
+
 class qaqc:
 
     def __init__(self, jdata_file):
@@ -14,11 +15,10 @@ class qaqc:
         self.rf = self.data['rf']
         self.swp = self.data['swp']
 
-
     def compare_rf_and_swp_stations(self):
         rf_keys = list(self.rf.keys())
         swp_keys = list(self.swp.keys())
-        key_compare = rf_keys==swp_keys
+        key_compare = rf_keys == swp_keys
         print(f"Total number of stations: {len(self.print_all_stations())}")
         print(f"\nRF == SWP stations in {self.jdata_file}: {key_compare}\n")
         if not key_compare:
@@ -29,7 +29,6 @@ class qaqc:
             if not_in_swp != []:
                 print_absent_stations("Not in SWP:", not_in_swp)
 
-
     def print_all_stations(self):
         """
         Create a set of all station names from the dataset.
@@ -39,9 +38,7 @@ class qaqc:
         all_keys = rf_keys + swp_keys
         return set(all_keys)
 
-
     def discarded_events(self, logfile):
-
         """
         Compute the number of discarded events from the log from
         extract_waveforms_7D.pbs (i.e., stderr from
@@ -52,80 +49,43 @@ class qaqc:
         print("      Number of discarded events")
         print("          Surface wave    P-wave")
         print("================================")
+
         for station in all_stations:
 
-            primary_wave_indexer = 0
             with open(logfile, 'r') as log:
                 log_as_list = log.readlines()
 
-                station_surface_wave_events_count = float(get_event_counts(log_as_list, station, "Surface-wave"))
-                station_p_wave_events_count = float(get_event_counts(log_as_list, station, "P-wave"))
+                station_surface_wave_events_count = get_event_counts(
+                    log_as_list, station, "Surface-wave")
+                station_p_wave_events_count = get_event_counts(
+                    log_as_list, station, "P-wave")
 
-                accepted_station_surface_wave_events_count = float(get_wrote_stream_count(log_as_list, station, "Surface-wave"))
-                accepted_station_p_wave_events_count = float(get_wrote_stream_count(log_as_list, station, "P-wave"))
+                accepted_station_surface_wave_events_count = get_wrote_stream_count(
+                    log_as_list, station, "Surface-wave")
+                accepted_station_p_wave_events_count = get_wrote_stream_count(
+                    log_as_list, station, "P-wave")
 
-                discarded_surface_wave_events = accepted_station_surface_wave_events_count - station_surface_wave_events_count
-                discarded_p_wave_events = accepted_station_p_wave_events_count - station_p_wave_events_count
+                discarded_surface_wave_events = station_surface_wave_events_count - \
+                    accepted_station_surface_wave_events_count
+                discarded_p_wave_events = station_p_wave_events_count - \
+                    accepted_station_p_wave_events_count
 
-                discarded_surface_wave_events_pc = float(100*np.divide(discarded_surface_wave_events, station_surface_wave_events_count))
-                discarded_p_wave_events_pc = float(100*np.divide(discarded_p_wave_events, station_p_wave_events_count))
+                discarded_surface_wave_events_pc = 100 * \
+                    np.divide(discarded_surface_wave_events,
+                              station_surface_wave_events_count)
+                discarded_p_wave_events_pc = 100 * \
+                    np.divide(discarded_p_wave_events,
+                              station_p_wave_events_count)
 
                 print(f"{station:10s} {discarded_surface_wave_events:4d} ({discarded_surface_wave_events_pc:2.0f}%) {discarded_p_wave_events:4d} ({discarded_p_wave_events_pc:2.0f}%)")
-
-                #     surface_wave_event_log = re.search("\[Surface-wave\]\s{0}".format(station), line)
-                #     surface_wave_event_log = re.search("\[Surface-wave\]\s{0}".format(station), line)
-                #     primary_wave_event_log = re.search("\[P-wave\]\s{0}".format(station), line)
-                #     surface_wave_output_stream_log = re.search("{0}: Wrote\s+(\d+)\s+Surface-wave streams to output file".format(station), line)
-                #     primary_wave_output_stream_log = re.search("{0}: Wrote\s+(\d+)\s+P-wave streams to output file".format(station), line)
-                #     if surface_wave_event_log:
-                #         surface_wave_indexer += 1
-                #     if primary_wave_event_log:
-                #         primary_wave_indexer += 1
-                #     if surface_wave_output_stream_log:
-                #         good_surface_wave_events = int(surface_wave_output_stream_log.group(1))
-                #     if primary_wave_output_stream_log:
-                #         good_primary_wave_events = int(primary_wave_output_stream_log.group(1))
-
-                # discarded_surface_wave_events = surface_wave_indexer - good_surface_wave_events
-                # sw_pc = float(100*np.divide(discarded_surface_wave_events, surface_wave_indexer))
-
-                # discarded_primary_wave_events = primary_wave_indexer - good_primary_wave_events
-                # pw_pc = float(100*np.divide(discarded_primary_wave_events, primary_wave_indexer))
-
-                # print(f"{station:10s} {discarded_surface_wave_events:4d} ({sw_pc:2.0f}%) {discarded_primary_wave_events:4d} ({pw_pc:2.0f}%) ")
-
-
-
-                # for line in log:
-                #     surface_wave_event_log = re.search("\[Surface-wave\]\s{0}".format(station), line)
-                #     primary_wave_event_log = re.search("\[P-wave\]\s{0}".format(station), line)
-                #     surface_wave_output_stream_log = re.search("{0}: Wrote\s+(\d+)\s+Surface-wave streams to output file".format(station), line)
-                #     primary_wave_output_stream_log = re.search("{0}: Wrote\s+(\d+)\s+P-wave streams to output file".format(station), line)
-                #     if surface_wave_event_log:
-                #         surface_wave_indexer.append( += 1
-                #     if primary_wave_event_log:
-                #         primary_wave_indexer += 1
-                #     if surface_wave_output_stream_log:
-                #         good_surface_wave_events = int(surface_wave_output_stream_log.group(1))
-                #     if primary_wave_output_stream_log:
-                #         good_primary_wave_events = int(primary_wave_output_stream_log.group(1))
-
-                # discarded_surface_wave_events = surface_wave_indexer - good_surface_wave_events
-                # sw_pc = float(100*np.divide(discarded_surface_wave_events, surface_wave_indexer))
-
-                # discarded_primary_wave_events = primary_wave_indexer - good_primary_wave_events
-                # pw_pc = float(100*np.divide(discarded_primary_wave_events, primary_wave_indexer))
-
-                # print(f"{station:10s} {discarded_surface_wave_events:4d} ({sw_pc:2.0f}%) {discarded_primary_wave_events:4d} ({pw_pc:2.0f}%) ")
-
-
 
     def print_azim_corrections(self):
 
         all_stations = self.print_all_stations()
 
         print("{:>40s}".format("Azimuth corrections (degrees)"))
-        print("{:10s} {:>10s} {:>10s} {:>10s} {:>10s}".format("Station", "RF", "SWP", "SWP Unc", "|RF-SWP|"))
+        print("{:10s} {:>10s} {:>10s} {:>10s} {:>10s}".format(
+            "Station", "RF", "SWP", "SWP Unc", "|RF-SWP|"))
         print("======================================================")
         for station in all_stations:
             rf_az_corr = False
@@ -148,19 +108,19 @@ class qaqc:
             else:
                 az_corr_diff = "N/A"
 
-            print(f"{station:10s} {rf_az_corr_str:>10s} {swp_az_corr_str:>10s} {swp_az_unc:>10s} {az_corr_diff:>10s}")
-
+            print(
+                f"{station:10s} {rf_az_corr_str:>10s} {swp_az_corr_str:>10s} {swp_az_unc:>10s} {az_corr_diff:>10s}")
 
     def repeat_stations(self):
         all_stations = list(self.print_all_stations())
         trunc_station_names = [i[0:7] for i in all_stations]
-        repeat_stations = set([x for x in trunc_station_names if trunc_station_names.count(x) > 1])
+        repeat_stations = set(
+            [x for x in trunc_station_names if trunc_station_names.count(x) > 1])
         print("Repeated station names:")
         for station in repeat_stations:
             for i in all_stations:
                 if station in i:
                     print(i)
-
 
     def plot_hist(self, bins=180):
         all_stations = list(self.print_all_stations())
@@ -174,7 +134,8 @@ class qaqc:
             except KeyError:
                 rf_az_plot[i] = np.nan
             try:
-                swp_az_plot[i] = self.swp[all_stations[i]]['azimuth_correction']
+                swp_az_plot[i] = self.swp[all_stations[i]
+                                          ]['azimuth_correction']
             except KeyError:
                 swp_az_plot[i] = np.nan
 
@@ -182,14 +143,14 @@ class qaqc:
         fonts = 25
 
         axs[0].set_title("RF\n azimuth corrections ($^\circ$)", fontsize=fonts)
-        axs[1].set_title("SWP\n azimuth corrections ($^\circ$)", fontsize=fonts)
+        axs[1].set_title(
+            "SWP\n azimuth corrections ($^\circ$)", fontsize=fonts)
 
         axs[0].hist(rf_az_plot, bins=bins)
         axs[1].hist(swp_az_plot, bins=bins)
 
         axs[0].tick_params(axis="both", labelsize=fonts)
         axs[1].tick_params(axis="both", labelsize=fonts)
-
 
     def date_ranges(self):
         all_stations = list(self.print_all_stations())
@@ -216,7 +177,8 @@ class qaqc:
             else:
                 data_diff_str = ""
 
-            print(f"{station:12s} {rf_days_str:10s} {swp_days_str:10s} {data_diff_str:10s}")
+            print(
+                f"{station:12s} {rf_days_str:10s} {swp_days_str:10s} {data_diff_str:10s}")
 
 
 def compute_date_diff(dictionary, key, value):
@@ -225,8 +187,10 @@ def compute_date_diff(dictionary, key, value):
     except KeyError:
         return False
     if len(date_range) == 2:
-        start_date_time = datetime.datetime.strptime(date_range[0], "%Y-%m-%dT%H:%M:%S.%fZ")
-        stop_date_time = datetime.datetime.strptime(date_range[1], "%Y-%m-%dT%H:%M:%S.%fZ")
+        start_date_time = datetime.datetime.strptime(
+            date_range[0], "%Y-%m-%dT%H:%M:%S.%fZ")
+        stop_date_time = datetime.datetime.strptime(
+            date_range[1], "%Y-%m-%dT%H:%M:%S.%fZ")
         return stop_date_time-start_date_time
     else:
         return False
@@ -256,7 +220,8 @@ def get_json_data(json_file):
 
 def get_event_counts(log_as_list, station, wave_type):
     wave_indexer = []
-    wave_datetime_stamp = "\[{0}\]\s{1}\s\|\s(\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d)".format(wave_type, station)
+    wave_datetime_stamp = "\[{0}\]\s{1}\s\|\s(\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d)".format(
+        wave_type, station)
     for item in log_as_list:
         wave_event_log = re.search(wave_datetime_stamp, item)
         if wave_event_log:
@@ -265,8 +230,9 @@ def get_event_counts(log_as_list, station, wave_type):
 
 
 def get_wrote_stream_count(log_as_list, station, wave_type):
-    wave_stream_string = "{0}:\s+Wrote\s+(\d+)\s+{1} streams to output file".format(station, wave_type)
+    wave_stream_string = "{0}:\s+Wrote\s+(\d+)\s+{1} streams to output file".format(
+        station, wave_type)
     for item in log_as_list:
         stream_count = re.search(wave_stream_string, item)
         if stream_count:
-            return stream_count.group(1)
+            return int(stream_count.group(1))
