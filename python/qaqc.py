@@ -53,34 +53,34 @@ class qaqc:
         print("          Surface wave    P-wave")
         print("================================")
         for station in all_stations:
-            surface_wave_indexer = 0
+
             primary_wave_indexer = 0
             with open(logfile, 'r') as log:
+                log_as_list = log.readlines()
 
-                log_in_memory = set(log.readlines())
+                station_surface_wave_events_count = get_event_counts(log_as_list, station)
 
-                for line in log_in_memory:
-                    surface_wave_event_log = re.search("\[Surface-wave\]\s{0}".format(station), line)
-                    surface_wave_event_log = re.search("\[Surface-wave\]\s{0}".format(station), line)
-                    primary_wave_event_log = re.search("\[P-wave\]\s{0}".format(station), line)
-                    surface_wave_output_stream_log = re.search("{0}: Wrote\s+(\d+)\s+Surface-wave streams to output file".format(station), line)
-                    primary_wave_output_stream_log = re.search("{0}: Wrote\s+(\d+)\s+P-wave streams to output file".format(station), line)
-                    if surface_wave_event_log:
-                        surface_wave_indexer += 1
-                    if primary_wave_event_log:
-                        primary_wave_indexer += 1
-                    if surface_wave_output_stream_log:
-                        good_surface_wave_events = int(surface_wave_output_stream_log.group(1))
-                    if primary_wave_output_stream_log:
-                        good_primary_wave_events = int(primary_wave_output_stream_log.group(1))
+                #     surface_wave_event_log = re.search("\[Surface-wave\]\s{0}".format(station), line)
+                #     surface_wave_event_log = re.search("\[Surface-wave\]\s{0}".format(station), line)
+                #     primary_wave_event_log = re.search("\[P-wave\]\s{0}".format(station), line)
+                #     surface_wave_output_stream_log = re.search("{0}: Wrote\s+(\d+)\s+Surface-wave streams to output file".format(station), line)
+                #     primary_wave_output_stream_log = re.search("{0}: Wrote\s+(\d+)\s+P-wave streams to output file".format(station), line)
+                #     if surface_wave_event_log:
+                #         surface_wave_indexer += 1
+                #     if primary_wave_event_log:
+                #         primary_wave_indexer += 1
+                #     if surface_wave_output_stream_log:
+                #         good_surface_wave_events = int(surface_wave_output_stream_log.group(1))
+                #     if primary_wave_output_stream_log:
+                #         good_primary_wave_events = int(primary_wave_output_stream_log.group(1))
 
-                discarded_surface_wave_events = surface_wave_indexer - good_surface_wave_events
-                sw_pc = float(100*np.divide(discarded_surface_wave_events, surface_wave_indexer))
+                # discarded_surface_wave_events = surface_wave_indexer - good_surface_wave_events
+                # sw_pc = float(100*np.divide(discarded_surface_wave_events, surface_wave_indexer))
 
-                discarded_primary_wave_events = primary_wave_indexer - good_primary_wave_events
-                pw_pc = float(100*np.divide(discarded_primary_wave_events, primary_wave_indexer))
+                # discarded_primary_wave_events = primary_wave_indexer - good_primary_wave_events
+                # pw_pc = float(100*np.divide(discarded_primary_wave_events, primary_wave_indexer))
 
-                print(f"{station:10s} {discarded_surface_wave_events:4d} ({sw_pc:2.0f}%) {discarded_primary_wave_events:4d} ({pw_pc:2.0f}%) ")
+                # print(f"{station:10s} {discarded_surface_wave_events:4d} ({sw_pc:2.0f}%) {discarded_primary_wave_events:4d} ({pw_pc:2.0f}%) ")
 
 
 
@@ -240,3 +240,15 @@ def get_json_data(json_file):
     with open(json_file) as jfile:
         jdata = json.load(jfile)
     return jdata
+
+
+def get_event_counts(log_as_list, station):
+    surface_wave_indexer = []
+    surface_wave_date_string = "\[Surface-wave\]\s{0}\s\|\s(\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d)".format(station)
+
+    for item in log_as_list:
+        surface_wave_event_log = re.search(surface_wave_date_string, item)
+        if surface_wave_event_log:
+            surface_wave_indexer.append(surface_wave_event_log.group(1))
+            # print(surface_wave_event_log.group(1), item)
+    print(station, len(set(surface_wave_indexer)))
