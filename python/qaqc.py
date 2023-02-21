@@ -46,6 +46,7 @@ class qaqc:
         """
         all_stations = self.print_all_stations()
 
+        print("")
         print("      Number of discarded events")
         print("          Surface wave    P-wave")
         print("================================")
@@ -77,7 +78,7 @@ class qaqc:
                     np.divide(discarded_p_wave_events,
                               station_p_wave_events_count)
 
-                print(f"{station:10s} {discarded_surface_wave_events:4d} ({discarded_surface_wave_events_pc:2.0f}%) {discarded_p_wave_events:4d} ({discarded_p_wave_events_pc:2.0f}%)")
+                print(f"{station:10s} {discarded_surface_wave_events:4.0f} ({discarded_surface_wave_events_pc:2.0f}%) {discarded_p_wave_events:4.0f} ({discarded_p_wave_events_pc:2.0f}%)")
 
     def print_azim_corrections(self):
 
@@ -236,3 +237,5 @@ def get_wrote_stream_count(log_as_list, station, wave_type):
         stream_count = re.search(wave_stream_string, item)
         if stream_count:
             return int(stream_count.group(1))
+    print(f"Check log for {station} discards.")
+    return np.nan
