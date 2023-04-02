@@ -122,6 +122,9 @@ class qaqc:
             for i in all_stations:
                 if station in i:
                     print(i)
+        if repeat_stations == set([]):
+            print("None")
+        print("")
 
     def plot_hist(self, bins=180):
         all_stations = list(self.print_all_stations())
