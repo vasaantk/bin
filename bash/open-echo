@@ -3,7 +3,7 @@
 # Open the latest version of Echoview on my system.
 
 echoview_files_dir="/mnt/c/Echoview 13"
-echoview_dir_prefix="Echoview 13.0"
+echoview_dir_prefix="Echoview 13.1"
 echoview_executable_subdir="WIN64_RELEASE"
 
 

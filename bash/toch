@@ -1,0 +1,105 @@
+#! /bin/bash
+
+htm_path="/mnt/c/Users/VasaantK/echoviewhelp/contents"
+help_file_page=$1
+
+if [[ -z "$help_file_page" ]]; then
+    echo '# toch outputs a HTML table of contents (toc) from the'
+    echo '# header (h) tags of a Help file page in'
+    echo '# '"$htm_path"
+    echo '#'
+    echo '# Usage:'
+    echo '#     -->$ toch page_name.htm'
+    exit
+fi
+
+main(){
+    local htm_path=$1
+    local help_file=$2
+
+    found_file=$(find "$htm_path" -type f -iname "$help_file")
+    headers=$(return_headers "$found_file")
+    create_toch "$headers"
+}
+
+
+return_headers(){
+    local help_file=$1
+    grep "<h.>" "$help_file"
+}
+
+
+create_toch(){
+    local heads=$1
+    local header_tag="<h1>"
+    local ul_counter=0
+
+    header_tag_index=$(grab_header_index "$header_tag")
+    while read -r head; do
+        next_header_tag=$(grab_header_element "$head")
+        next_header_tag_index=$(grab_header_index "$head")
+
+        if (( "$header_tag_index" < "$next_header_tag_index" )); then
+
+            # Open a new subsection
+            echo "<ul>"
+            echo_header "$head"
+
+            ul_counter=$(("$ul_counter"+1))
+            header_tag="$next_header_tag"
+            header_tag_index="$next_header_tag_index"
+
+        elif (( "$header_tag_index" > "$next_header_tag_index" )); then
+
+            # Close multiple subsections up to the penultimate one
+            multi_block=$(( "$header_tag_index"-"$next_header_tag_index" ))
+            while (( "$multi_block" != 1 )); do
+                echo "</ul>"
+                ul_counter=$(("$ul_counter"-1))
+                multi_block=$(("$multi_block"-1))
+            done
+
+            # Close the final subsection
+            echo "</ul>"
+            echo_header "$head"
+
+            ul_counter=$(("$ul_counter"-1))
+            header_tag="$next_header_tag"
+            header_tag_index="$next_header_tag_index"
+
+        else
+            echo_header "$head"
+        fi
+
+    done < <(echo "$heads")
+
+    # Close trailing subsections
+    while (( "$ul_counter" > 0 )); do
+        echo "</ul>"
+        ul_counter=$(("$ul_counter"-1))
+    done
+}
+
+
+echo_header(){
+    local head=$1
+    echo "$head" | sed 's/h.>/li>/g'
+}
+
+
+grab_header_index(){
+    local header_string=$1
+    header_element=$(grab_header_element "$header_string")
+    echo "$header_element" | grep -o '[0-9]*'
+}
+
+
+grab_header_element(){
+    local header_string=$1
+    echo "$header_string" | grep -o "<h.>" | tr -d " "
+}
+
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$htm_path" "$help_file_page"
+fi
