@@ -1,0 +1,42 @@
+#! /bin/bash
+
+htm_path="/mnt/c/Users/VasaantK/echoviewhelp/contents"
+help_file_page=$1
+
+
+if [[ -z "$help_file_page" ]]; then
+    echo '# tidy-help-page runs tidy on the specified Help page and'
+    echo '# removes the tidy HTML element from the page.'
+    echo '#'
+    echo '# Usage:'
+    echo '#     -->$ tidy-help-page page_name.htm'
+    exit
+fi
+
+
+main(){
+    local htm_path=$1
+    local help_file=$2
+
+    found_file=$(find "$htm_path" -type f -iname "$help_file")
+    exec_tidy "$found_file"
+    remove_tidy_element "$found_file"
+
+}
+
+
+exec_tidy(){
+    local tidy_file=$1
+    tidy --wrap 0 -qmi "$tidy_file"
+}
+
+
+remove_tidy_element(){
+    local tidy_file=$1
+    sed -i '/meta\ name=\"generator\"\ content=\"HTML/d' "$tidy_file"
+}
+
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$htm_path" "$help_file_page"
+fi

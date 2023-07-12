@@ -10,7 +10,7 @@ if [[ -z "$new_link_name" ]]; then
 
     echo "# Use renew-relative-links-in-htms to update all instances of"
     echo "# the relative link names that appear in the .htms after"
-    echo "#  you rename a relative link."
+    echo "# you rename a relative link."
     echo "#"
     echo "# Insert the -i flag for sed. It has been disabled for"
     echo "# safety."

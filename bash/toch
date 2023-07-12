@@ -8,6 +8,9 @@ if [[ -z "$help_file_page" ]]; then
     echo '# header (h) tags of a Help file page in'
     echo '# '"$htm_path"
     echo '#'
+    echo '# toch assumes that cascading subsections are in numerical'
+    echo '# order.'
+    echo '#'
     echo '# Usage:'
     echo '#     -->$ toch page_name.htm'
     exit
