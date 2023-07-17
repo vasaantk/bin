@@ -22,8 +22,13 @@ main(){
     local help_file=$2
 
     found_file=$(find "$htm_path" -type f -iname "$help_file")
+    echo "    Checking relative links in" "$found_file"
     all_relative_links=$(return_relative_link_strings "$found_file")
-    check_all_relative_links "$all_relative_links"
+    if [[ ! -z "$all_relative_links" ]]; then
+        check_all_relative_links "$all_relative_links"
+    else
+        echo "  No relative links in file."
+    fi
 }
 
 return_relative_link_strings(){
@@ -38,7 +43,6 @@ return_relative_link_strings(){
 
 check_all_relative_links(){
     local all_relative_links=$1
-    echo "    Checking relative links in" "$found_file"
     while read -r rel_link
     do
         local_relative_link=$(echo "$rel_link" | grep -E "^#")
