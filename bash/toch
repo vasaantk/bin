@@ -86,7 +86,7 @@ create_toch(){
 
 echo_header(){
     local head=$1
-    echo "$head" | sed 's/h.>/li>/g'
+    echo "$head" | sed 's/h.>/li>/g' | sed 's/name=\"/href=\"\#/' | sed 's/ id=\".*\"><\/a>/>/' | sed 's/<\/li>/<\/a><\/li>/'
 }
 
 
