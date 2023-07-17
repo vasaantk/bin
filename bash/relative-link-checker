@@ -48,12 +48,11 @@ check_all_relative_links(){
         local_relative_link=$(echo "$rel_link" | grep -E "^#")
         if [[ "$local_relative_link" ]]; then
             file_with_link="$found_file"
-            link_name=$(link_name_from_fragment "$local_relative_link")
         else
             file_to_find=$(file_name_from_link_fragment "$rel_link")
             file_with_link=$(find "$htm_path" -type f -iname "$file_to_find")
-            link_name=$(link_name_from_fragment "$rel_link")
         fi
+        link_name=$(link_name_from_fragment "$rel_link")
         verify_this_link "$file_with_link" "$link_name"
     done < <(echo "$all_relative_links")
 }
@@ -74,7 +73,7 @@ verify_this_link(){
     local rel_link=$2
     link_found=$(grep -o "name=\""$rel_link"\"" "$file_with_link")
         if [[ ! "$link_found" ]]; then
-            echo \""$rel_link"\" does not exist.
+            echo "  "\""$rel_link"\" does not exist.
         fi
 }
 
