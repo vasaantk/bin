@@ -1,0 +1,79 @@
+#! /bin/bash
+
+htm_path="/mnt/c/Users/VasaantK/echoviewhelp/contents"
+help_file_page=$1
+
+
+if [[ -z "$help_file_page" ]]; then
+    echo '# relative-link-checker searches for fragments in the input'
+    echo '# file that call relative links. It then verifies if those'
+    echo '# relative links exist.'
+    echo '# '
+    echo '# IMPORTANT: The algorithm will not work if the relative'
+    echo '# link is defined but commented out in the source file.'
+    echo '# '
+    echo '# Usage:'
+    echo '#     -->$ relative-link-checker input_file.htm'
+    exit
+fi
+
+main(){
+    local htm_path=$1
+    local help_file=$2
+
+    found_file=$(find "$htm_path" -type f -iname "$help_file")
+    all_relative_links=$(return_relative_link_strings "$found_file")
+    check_all_relative_links "$all_relative_links"
+}
+
+return_relative_link_strings(){
+    local found_file=$1
+    # 1. Replace spaces in the input file with newlines.
+    # 2. Replace > characters with newlines to isolate instances where
+    #    there is no space after the <a href...  element.
+    # 3. grep for href lines only and delete them.
+    # 4. Only return unique instances.
+    sed "s/\ /\n/g" "$found_file" | sed "s/\">/\n/g" | grep href | grep \# | sed "s/href=\"//g" | sort | uniq
+}
+
+check_all_relative_links(){
+    local all_relative_links=$1
+    echo "    Checking relative links in" "$found_file"
+    while read -r rel_link
+    do
+        local_relative_link=$(echo "$rel_link" | grep -E "^#")
+        if [[ "$local_relative_link" ]]; then
+            file_with_link="$found_file"
+            link_name=$(link_name_from_fragment "$local_relative_link")
+        else
+            file_to_find=$(file_name_from_link_fragment "$rel_link")
+            file_with_link=$(find "$htm_path" -type f -iname "$file_to_find")
+            link_name=$(link_name_from_fragment "$rel_link")
+        fi
+        verify_this_link "$file_with_link" "$link_name"
+    done < <(echo "$all_relative_links")
+}
+
+file_name_from_link_fragment(){
+    local link_fragment=$1
+    file_pathname=$(echo "$link_fragment" | cut -f 1 -d \#)
+    echo "$file_pathname" | rev | cut -f 1 -d / | rev
+}
+
+link_name_from_fragment(){
+    local link_fragment=$1
+    echo "$link_fragment" | cut -f 2 -d \#
+}
+
+verify_this_link(){
+    local file_with_link=$1
+    local rel_link=$2
+    link_found=$(grep -o "name=\""$rel_link"\"" "$file_with_link")
+        if [[ ! "$link_found" ]]; then
+            echo \""$rel_link"\" does not exist.
+        fi
+}
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$htm_path" "$help_file_page"
+fi
