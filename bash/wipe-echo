@@ -5,7 +5,7 @@
 source open-echo
 
 echoview_files_dir="/mnt/c/Echoview 14"
-echoview_dir_prefix="Echoview 14"
+echoview_dir_prefix="Echoview 14.0"
 
 
 main(){
