@@ -7,6 +7,14 @@
 ;;;========================================================
 ;;; Code:
 ;;
+(defun toch ()
+  "Execute toch within a Windows Emacs buffer via WSL2."
+  (interactive)
+  (setq exec-toch (concat "/mnt/c/Users/VasaantK/OneDrive\\ -\\ Echoview\\ Software/bin/bash/toch " (buffer-name)))
+  (let ((output (string-trim-right (shell-command-to-string (concat "bash.exe -c '" exec-toch "'")))))
+    (insert output)))
+
+
 (defun elink (goToFileName &optional linkName)
   "Execute linker within a Windows Emacs buffer via WSL2."
   (interactive
