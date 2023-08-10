@@ -7,6 +7,21 @@
 ;;;========================================================
 ;;; Code:
 ;;
+(defun elink (goToFileName &optional linkName)
+  "Execute linker within a Windows Emacs buffer via WSL2."
+  (interactive
+   (list (read-from-minibuffer "Page: ")
+         (if (region-active-p) (buffer-substring-no-properties (region-beginning) (region-end)))))
+
+  (unless linkName
+    (setq linkName (read-from-minibuffer "Link (optional): ")))
+
+  (setq exec-linker (concat "/mnt/c/Users/VasaantK/OneDrive\\ -\\ Echoview\\ Software/bin/bash/linker " (buffer-name) " " goToFileName ".htm"))
+  (let ((output (string-trim-right (shell-command-to-string (concat "bash.exe -c '" exec-linker "'")))))
+    (insert (concat "<a href=\"" output)))
+  (backward-delete-char-untabify 1)
+  (insert (concat "\">" linkName "</a>")))
+
 (defun clocker()
   (backward-kill-sexp)
   (insert "#+BEGIN: clocktable :fileskip0 t :scope file\n")
