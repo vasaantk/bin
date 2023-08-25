@@ -114,7 +114,7 @@ class qaqc:
 
     def repeat_stations(self):
         all_stations = list(self.print_all_stations())
-        trunc_station_names = [i[0:7] for i in all_stations]
+        trunc_station_names = [station_root_name(i) for i in all_stations]
         repeat_stations = set(
             [x for x in trunc_station_names if trunc_station_names.count(x) > 1])
         print("Repeated station names:")
@@ -242,3 +242,9 @@ def get_wrote_stream_count(log_as_list, station, wave_type):
             return int(stream_count.group(1))
     print(f"Check log for {station} discards.")
     return np.nan
+
+
+def station_root_name(station_name):
+    dot_char_separator_indices = [pos for pos, char in enumerate(station_name) if char == '.']
+    network_station_index = dot_char_separator_indices[1]
+    return station_name[0:network_station_index]
