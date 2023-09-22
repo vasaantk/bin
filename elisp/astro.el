@@ -14,25 +14,33 @@
   (let ((output (string-trim-right (shell-command-to-string (concat "bash.exe -c '" exec-toch "'")))))
     (insert output)))
 
+(defun get-htm-filenames ()
+  (interactive)
+  (setq get-help-filename-command (format "%s" "find /mnt/c/Users/VasaantK/echoviewhelp/contents -type f -iname \"*.htm\" -exec basename {} \\; "))
+  (setq bash-command (format "%s" "bash.exe -c"))
+  (let* ((db-contents
+          (shell-command-to-string (format "%s '%s'" bash-command get-help-filename-command)))
+         (db-list (split-string db-contents "\n" t)))
+    (let ((input (completing-read "Page file name: " db-list)))
+      (format "%s" input))))
 
 (defun elink (goToFileName &optional linkName)
   "Execute linker within a Windows Emacs buffer via WSL2."
   (interactive
-   (list (read-from-minibuffer "Page: ")
+   (list (get-htm-filenames)
          (if (region-active-p)
-             (progn
-               (buffer-substring-no-properties (region-beginning) (region-end))
-               (kill-region (region-beginning) (region-end))))))
+             (buffer-substring-no-properties (region-beginning) (region-end)))))
+  (if (region-active-p)
+      (kill-region (region-beginning) (region-end)))
   (unless linkName
     (setq linkName (read-from-minibuffer "Link: ")))
   (setq linker-path (format "%s" "/mnt/c/Users/VasaantK/OneDrive\\ -\\ Echoview\\ Software/bin/bash/linker"))
-  (setq file-with-ext (format "%s%s" goToFileName ".htm"))
+  (setq file-with-ext (format "%s" goToFileName))
   (setq linker-command (format "%s %s %s" linker-path (buffer-name) file-with-ext))
   (setq bash-command (format "%s" "bash.exe -c"))
   (setq output (replace-regexp-in-string "\n" "" (shell-command-to-string (format "%s '%s'" bash-command linker-command))))
   (setq result (format "%s%s%s%s%s" "<a href=\"" output "\">" linkName "</a>"))
   (insert result))
-
 
 (defun doco ()
   "Open the current file or `dired' marked files in Google Chrome browser.
