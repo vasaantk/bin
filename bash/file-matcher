@@ -1,0 +1,19 @@
+#! /bin/bash
+
+# file-matcher.sh checks the files in the pwd against the list of
+# files in README.txt and outputs a list of files in the pwd that are
+# not catalogued in the latter.
+#
+#       README.txt format
+#
+#       | filename.ext | Optional text |
+#
+# Usage:
+#    -->$ file-matcher.sh
+
+for file in * ; do
+    find_file=$(grep "$file" <(grep -E "\|" README.txt | cut -f 2 -d "|"))
+    if [[ -z "$find_file" ]] ; then
+        echo "$file"
+    fi
+done
