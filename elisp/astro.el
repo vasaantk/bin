@@ -14,6 +14,7 @@
   (let ((output (string-trim-right (shell-command-to-string (concat "bash.exe -c '" exec-toch "'")))))
     (insert output)))
 
+
 (defun get-htm-filenames ()
   (interactive)
   (setq get-help-filename-command (format "%s" "find /mnt/c/Users/VasaantK/echoviewhelp/contents -type f -iname \"*.htm\" -exec basename {} \\; "))
@@ -23,6 +24,7 @@
          (db-list (split-string db-contents "\n" t)))
     (let ((input (completing-read "Page file name: " db-list)))
       (format "%s" input))))
+
 
 (defun elink (goToFileName &optional linkName)
   "Execute linker within a Windows Emacs buffer via WSL2."
@@ -41,6 +43,7 @@
   (setq output (replace-regexp-in-string "\n" "" (shell-command-to-string (format "%s '%s'" bash-command linker-command))))
   (setq result (format "%s%s%s%s%s" "<a href=\"" output "\">" linkName "</a>"))
   (insert result))
+
 
 (defun doco ()
   "Open the current file or `dired' marked files in Google Chrome browser.
@@ -80,12 +83,22 @@ Version 2019-11-10"
 
 (defun date ()
   (backward-kill-sexp)
-  (insert (shell-command-to-string "echo -n $(date +%A,%t%d%t%B%t%Y,%t%H:%M%t%p)")))
+  (cond
+   ((string-match "i686-w64-mingw32" (emacs-version))
+    (insert (shell-command-to-string "echo %date% %time:~0,5%")))
+   ((string-match "x86_64-apple-darwin" (emacs-version))
+    (insert (shell-command-to-string "echo -n $(date +%A,%t%d%t%B%t%Y,%t%H:%M%t%p)"))))
+  (delete-backward-char 1))
 
 
 (defun time ()
   (backward-kill-sexp)
-  (insert (shell-command-to-string "echo -n $(date +%H:%M%t%p)")))
+  (cond
+   ((string-match "i686-w64-mingw32" (emacs-version))
+    (insert (shell-command-to-string "echo %time:~0,5%")))
+   ((string-match "x86_64-apple-darwin" (emacs-version))
+    (insert (shell-command-to-string "echo -n $(date +%H:%M%t%p)"))))
+  (delete-backward-char 1))
 
 
 (defun deg2rad (ANGLE)
