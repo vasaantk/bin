@@ -84,7 +84,7 @@ Version 2019-11-10"
 (defun date ()
   (backward-kill-sexp)
   (cond
-   ((string-match "i686-w64-mingw32" (emacs-version))
+   ((string-match "x86_64-w64-mingw32" (emacs-version))
     (insert (shell-command-to-string "echo %date% %time:~0,5%")))
    ((string-match "x86_64-apple-darwin" (emacs-version))
     (insert (shell-command-to-string "echo -n $(date +%A,%t%d%t%B%t%Y,%t%H:%M%t%p)"))))
@@ -94,7 +94,7 @@ Version 2019-11-10"
 (defun time ()
   (backward-kill-sexp)
   (cond
-   ((string-match "i686-w64-mingw32" (emacs-version))
+   ((string-match "x86_64-w64-mingw32" (emacs-version))
     (insert (shell-command-to-string "echo %time:~0,5%")))
    ((string-match "x86_64-apple-darwin" (emacs-version))
     (insert (shell-command-to-string "echo -n $(date +%H:%M%t%p)"))))
