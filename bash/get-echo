@@ -7,10 +7,9 @@
 # sudo mkdir /mnt/p
 # sudo mount -t drvfs '\\fserve\echoview_private' /mnt/p
 
-# echo_new=$(ls -td /mnt/p/Version\ 13.1/Builds/* | head -1)
-echo_new=$(ls -td /mnt/p/Version\ 14.0/Builds/* | head -1)
+echo_new=$(ls -td /mnt/p/Version\ 15.0/Builds/* | head -1)
 echo_ver=$(basename "$echo_new")
-dest_dir=/mnt/c/Echoview\ 14/
+dest_dir=/mnt/c/Echoview\ 15/
 if [[ ! -d "$dest_dir$echo_ver" ]]; then
     cp -rf "$echo_new" "$dest_dir"
     getdeps="$dest_dir$echo_ver"/WIN64_RELEASE/_GetRunTimeDependencies.bat
