@@ -1,0 +1,67 @@
+#! /bin/bash
+
+# This script looks for the <page href=" string in Echoview.toc. It
+# then gets the file name associated with that tag, and searches in
+# the file for the "title" tag. After getting the title, it
+# substitutes it with the navtitle tag into Echoview.toc.
+#
+# Change "sed" to "sed -i" for the changes to be written to file. It
+# has been disabled for safety.
+#
+# Usage:
+#    -->$ navtitle-in-toc.sh
+#
+# Vasaant Krishnan
+# Tue 05/07/2022
+
+help_toc_path="/mnt/c/users/vasaantk/echoviewhelp/toc/Echoview.toc"
+page_href="<page href=\""
+
+
+main(){
+    local toc_path=$1
+    local page_href=$2
+
+    add_navtitle_tag "$toc_path" "$page_href"
+}
+
+
+add_navtitle_tag(){
+    local toc_path=$1
+    local page_href=$2
+
+    cd "$(toc_dir "$toc_path")"
+
+    while read -r line ;
+    do
+        title_from_htm=$(grep -m 1 title "$line" | cut -f 2 -d \> | cut -f 1 -d \<)
+        navtitle_tag=$(gen_navtitle "$page_href" "$line" "$title_from_htm")
+        current_line=$(echo "$page_href""$line")
+
+        sed -i "s|$current_line|$navtitle_tag|g" "$toc_path"
+
+    done < <(grep "$page_href" "$toc_path" | cut -f 2 -d \")
+}
+
+
+toc_dir(){
+    local help_toc_path=$1
+    echo "$help_toc_path" | rev | cut -f 2- -d "/" | rev
+}
+
+
+gen_navtitle(){
+    local page_href=$1
+    local file_name=$2
+    local title_from_htm=$3
+
+    page=$(echo "$page_href" | cut -f 1 -d " ")
+    href=$(echo "$page_href" | cut -f 2 -d " ")
+
+    echo "$page"" navtitle=\"""$title_from_htm""\" ""$href""$file_name"
+}
+
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$help_toc_path" "$page_href"
+fi
