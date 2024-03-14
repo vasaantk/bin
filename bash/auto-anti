@@ -5,6 +5,7 @@ inp_name=$1
 # antipathy="/mnt/c/Program Files (x86)/Druide/Antidote 10/Application/Bin64/Antidote.exe"
 antipathy="/mnt/c/Program Files/Druide/Antidote 11/Application/Bin64/Antidote.exe"
 lin_help_path="/mnt/c/Users/vasaantk/echoviewhelp/contents"
+# lin_help_path="/mnt/c/Users/vasaantk/echoexplorehelp/contents"
 antitemppathy="/mnt/c/Users/vasaantk/AppData/Local/Temp/antitmp"
 
 if [[ -z "$inp_name" ]]; then
